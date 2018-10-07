@@ -1,6 +1,5 @@
 from Application.Model import Model
 from Application.View import MagnifierWindow, MainWindow, PlotterWindow
-from pathlib import Path
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2 as opencv
 import numpy
@@ -17,6 +16,8 @@ class Controller(object):
         self.plotterWindow = PlotterWindow(self.mainWindow)
         self.magnifierWindow = MagnifierWindow(self.mainWindow)
 
+        # create menubar option for saving as original image in the right side
+        # it can't be put in the UI init class because rightMenuBar's addAction method doesn't take a QAction object
         self.mainWindow.rightMenuBar = QtWidgets.QMenuBar()
         self.mainWindow.menuBar.setCornerWidget(self.mainWindow.rightMenuBar)
         self.mainWindow.rightMenuBar.addAction('Save as original image', self.__actionSaveAsOriginalImage)
@@ -76,14 +77,15 @@ class Controller(object):
         self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
 
     def __actionSaveProcessedImage(self):
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(parent=self.mainWindow, caption='Save processed image',
-                                              filter='Bitmap file (*.bmp *.dib);;'
-                                                     'JPEG file (*.jpeg *.jpg *.jpe);;'
-                                                     'JPEG 2000 file (*.jp2);;'
-                                                     'Portable Network Graphics file (*.png);;'
-                                                     'WebP file (*.webp);;'
-                                                     'Portable Image Format file (*.pbm *.pgm *.ppm);;'
-                                                     'Sun rasters file (*.ras *.sr);;'
-                                                     'Tagged Image file (*.tiff *.tif)')
+        if self.model.processedImage is not None:
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(parent=self.mainWindow, caption='Save processed image',
+                                                  filter='Bitmap file (*.bmp *.dib);;'
+                                                         'JPEG file (*.jpeg *.jpg *.jpe);;'
+                                                         'JPEG 2000 file (*.jp2);;'
+                                                         'Portable Network Graphics file (*.png);;'
+                                                         'WebP file (*.webp);;'
+                                                         'Sun rasters file (*.ras *.sr);;'
+                                                         'Tagged Image file (*.tiff *.tif)',
+                                                  initialFilter='Portable Network Graphics file (*.png)')
 
-        opencv.imwrite(filename, self.model.processedImage)
+            opencv.imwrite(filename, self.model.processedImage)
