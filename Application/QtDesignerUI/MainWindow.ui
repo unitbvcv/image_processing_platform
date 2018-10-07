@@ -291,10 +291,10 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLoad_grayscale_image"/>
-    <addaction name="actionLoad_color_image"/>
+    <addaction name="actionLoadGrayscaleImage"/>
+    <addaction name="actionLoadColorImage"/>
     <addaction name="separator"/>
-    <addaction name="actionSave_processed_image"/>
+    <addaction name="actionSaveProcessedImage"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -310,17 +310,17 @@
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>
   </widget>
-  <action name="actionLoad_grayscale_image">
+  <action name="actionLoadGrayscaleImage">
    <property name="text">
     <string>Load grayscale image</string>
    </property>
   </action>
-  <action name="actionLoad_color_image">
+  <action name="actionLoadColorImage">
    <property name="text">
     <string>Load color image</string>
    </property>
   </action>
-  <action name="actionSave_processed_image">
+  <action name="actionSaveProcessedImage">
    <property name="text">
     <string>Save processed image</string>
    </property>
