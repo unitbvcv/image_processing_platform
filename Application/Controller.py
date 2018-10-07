@@ -38,7 +38,7 @@ class Controller(object):
     def actionLoadColorImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open color file',
                                                          filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
-                                                                '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif'
+                                                                '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
                                                          )
         if filename != None and Path(filename).is_file():
             self.model.loadOriginalImage(filename, opencv.IMREAD_COLOR)
