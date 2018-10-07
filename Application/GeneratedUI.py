@@ -1,28 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
-from MyWindows.PlotterWindow import PlotterWindow
+from pyqtgraph import PlotWidget
 
 
-class MainWindow(QtWidgets.QMainWindow):
-
-    def __init__(self, parent = None, flags = Qt.WindowFlags()):
-        super().__init__(parent, flags)
-        self.__setupUi()
-
-        # Add "Save as original image" button to the right of the menuBar
-        self.rightMenuBar = QtWidgets.QMenuBar(self.menuBar)
-        # TODO: add connection for action
-        self.rightMenuBar.addAction("Save as original image")
-        self.menuBar.setCornerWidget(self.rightMenuBar)
-
-        self.actionPlotter.triggered.connect(self.openPlotter)
-
-        self.plotterWindow = PlotterWindow(self)
-
-    def __setupUi(self):
-        self.setObjectName("MainWindow")
-        self.resize(878, 560)
-        self.centralWidget = QtWidgets.QWidget(self)
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(1024, 768)
+        self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralWidget)
         self.verticalLayout.setContentsMargins(11, 11, 11, 11)
@@ -46,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaOriginalImage.setWidgetResizable(True)
         self.scrollAreaOriginalImage.setObjectName("scrollAreaOriginalImage")
         self.scrollAreaWidgetOriginalImage = QtWidgets.QWidget()
-        self.scrollAreaWidgetOriginalImage.setGeometry(QtCore.QRect(0, 0, 398, 360))
+        self.scrollAreaWidgetOriginalImage.setGeometry(QtCore.QRect(0, 0, 471, 568))
         self.scrollAreaWidgetOriginalImage.setObjectName("scrollAreaWidgetOriginalImage")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetOriginalImage)
         self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
@@ -76,7 +60,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.setWidgetResizable(True)
         self.scrollAreaProcessedImage.setObjectName("scrollAreaProcessedImage")
         self.scrollAreaWidgetProcessedImage = QtWidgets.QWidget()
-        self.scrollAreaWidgetProcessedImage.setGeometry(QtCore.QRect(0, 0, 397, 360))
+        self.scrollAreaWidgetProcessedImage.setGeometry(QtCore.QRect(0, 0, 470, 568))
         self.scrollAreaWidgetProcessedImage.setObjectName("scrollAreaWidgetProcessedImage")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetProcessedImage)
         self.horizontalLayout_4.setContentsMargins(11, 11, 11, 11)
@@ -177,28 +161,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelMousePosition.setObjectName("labelMousePosition")
         self.gridLayoutMouseLabels.addWidget(self.labelMousePosition, 1, 0, 1, 2)
         self.verticalLayout.addLayout(self.gridLayoutMouseLabels)
-        self.setCentralWidget(self.centralWidget)
-        self.menuBar = QtWidgets.QMenuBar(self)
-        self.menuBar.setGeometry(QtCore.QRect(0, 0, 878, 26))
+        MainWindow.setCentralWidget(self.centralWidget)
+        self.menuBar = QtWidgets.QMenuBar(MainWindow)
+        self.menuBar.setGeometry(QtCore.QRect(0, 0, 1024, 26))
         self.menuBar.setObjectName("menuBar")
         self.menuFile = QtWidgets.QMenu(self.menuBar)
         self.menuFile.setObjectName("menuFile")
         self.menuTools = QtWidgets.QMenu(self.menuBar)
         self.menuTools.setObjectName("menuTools")
-        self.setMenuBar(self.menuBar)
-        self.actionLoad_grayscale_image = QtWidgets.QAction(self)
+        MainWindow.setMenuBar(self.menuBar)
+        self.actionLoad_grayscale_image = QtWidgets.QAction(MainWindow)
         self.actionLoad_grayscale_image.setObjectName("actionLoad_grayscale_image")
-        self.actionLoad_color_image = QtWidgets.QAction(self)
+        self.actionLoad_color_image = QtWidgets.QAction(MainWindow)
         self.actionLoad_color_image.setObjectName("actionLoad_color_image")
-        self.actionSave_processed_image = QtWidgets.QAction(self)
+        self.actionSave_processed_image = QtWidgets.QAction(MainWindow)
         self.actionSave_processed_image.setObjectName("actionSave_processed_image")
-        self.actionExit = QtWidgets.QAction(self)
+        self.actionExit = QtWidgets.QAction(MainWindow)
         self.actionExit.setObjectName("actionExit")
-        self.actionMagnifier = QtWidgets.QAction(self)
+        self.actionMagnifier = QtWidgets.QAction(MainWindow)
         self.actionMagnifier.setObjectName("actionMagnifier")
-        self.actionPlotter = QtWidgets.QAction(self)
+        self.actionPlotter = QtWidgets.QAction(MainWindow)
         self.actionPlotter.setObjectName("actionPlotter")
-        self.actionInvert = QtWidgets.QAction(self)
+        self.actionInvert = QtWidgets.QAction(MainWindow)
         self.actionInvert.setObjectName("actionInvert")
         self.menuFile.addAction(self.actionLoad_grayscale_image)
         self.menuFile.addAction(self.actionLoad_color_image)
@@ -213,16 +197,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
 
-        self.__retranslateUi()
-        QtCore.QMetaObject.connectSlotsByName(self)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def __retranslateUi(self):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Image Processing Tool"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Image Processing Tool"))
         self.groupBoxOriginalImage.setTitle(_translate("MainWindow", "Original image"))
         self.groupBoxProcessedImage.setTitle(_translate("MainWindow", "Processed image"))
         self.buttonResetZoom.setText(_translate("MainWindow", "Reset"))
-        self.labelZoomFactor.setText(_translate("MainWindow", "1.00 x"))
+        self.labelZoomFactor.setText(_translate("MainWindow", "1.00x"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuTools.setTitle(_translate("MainWindow", "Tools"))
         self.actionLoad_grayscale_image.setText(_translate("MainWindow", "Load grayscale image"))
@@ -233,5 +217,46 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
         self.actionInvert.setText(_translate("MainWindow", "Invert"))
 
-    def openPlotter(self):
-        self.plotterWindow.show()
+class Ui_PlotterWindow(object):
+    def setupUi(self, PlotterWindow):
+        PlotterWindow.setObjectName("PlotterWindow")
+        PlotterWindow.resize(800, 600)
+        self.centralwidget = QtWidgets.QWidget(PlotterWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
+        self.labelFunction = QtWidgets.QLabel(self.centralwidget)
+        self.labelFunction.setObjectName("labelFunction")
+        self.gridLayout.addWidget(self.labelFunction, 0, 0, 1, 1)
+        self.comboBoxFunction = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBoxFunction.setObjectName("comboBoxFunction")
+        self.gridLayout.addWidget(self.comboBoxFunction, 0, 1, 1, 1)
+        spacerItem = QtWidgets.QSpacerItem(613, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 0, 2, 1, 1)
+        self.graphicsView = PlotWidget(self.centralwidget)
+        self.graphicsView.setObjectName("graphicsView")
+        self.gridLayout.addWidget(self.graphicsView, 1, 0, 1, 3)
+        PlotterWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(PlotterWindow)
+        QtCore.QMetaObject.connectSlotsByName(PlotterWindow)
+
+    def retranslateUi(self, PlotterWindow):
+        _translate = QtCore.QCoreApplication.translate
+        PlotterWindow.setWindowTitle(_translate("PlotterWindow", "Plotter"))
+        self.labelFunction.setText(_translate("PlotterWindow", "Plot function:"))
+
+class Ui_MagnifierWindow(object):
+    def setupUi(self, MagnifierWindow):
+        MagnifierWindow.setObjectName("MagnifierWindow")
+        MagnifierWindow.resize(800, 600)
+        self.centralwidget = QtWidgets.QWidget(MagnifierWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        MagnifierWindow.setCentralWidget(self.centralwidget)
+
+        self.retranslateUi(MagnifierWindow)
+        QtCore.QMetaObject.connectSlotsByName(MagnifierWindow)
+
+    def retranslateUi(self, MagnifierWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MagnifierWindow.setWindowTitle(_translate("MagnifierWindow", "MainWindow"))
