@@ -201,6 +201,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
 
+        self.rightMenuBar = QtWidgets.QMenuBar()
+        self.menuBar.setCornerWidget(self.rightMenuBar)
+        # TODO: add connection to 'Save as initial image' action
+        self.rightMenuBar.addAction('Save as initial image')
+
         self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
