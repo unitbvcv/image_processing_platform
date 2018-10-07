@@ -31,8 +31,14 @@
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QScrollArea" name="scrollAreaOriginalImage">
+           <property name="sizeAdjustPolicy">
+            <enum>QAbstractScrollArea::AdjustToContents</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
            </property>
            <widget class="QWidget" name="scrollAreaWidgetOriginalImage">
             <property name="geometry">
@@ -50,10 +56,10 @@
                 <string/>
                </property>
                <property name="scaledContents">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                </property>
               </widget>
              </item>
@@ -78,8 +84,14 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QScrollArea" name="scrollAreaProcessedImage">
+           <property name="sizeAdjustPolicy">
+            <enum>QAbstractScrollArea::AdjustToContents</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
            </property>
            <widget class="QWidget" name="scrollAreaWidgetProcessedImage">
             <property name="geometry">
@@ -97,10 +109,10 @@
                 <string/>
                </property>
                <property name="scaledContents">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
                <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
                </property>
               </widget>
              </item>
