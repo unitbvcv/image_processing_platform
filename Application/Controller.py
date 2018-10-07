@@ -5,8 +5,8 @@ class Controller(object):
     def __init__(self):
         # instantiate the QMainWindow objects
         self.mainWindow = MainWindow()
-        self.plotterWindow = PlotterWindow()
-        self.magnifierWindow = MagnifierWindow()
+        self.plotterWindow = PlotterWindow(self.mainWindow)
+        self.magnifierWindow = MagnifierWindow(self.mainWindow)
 
         # show the main window
         self.mainWindow.show()

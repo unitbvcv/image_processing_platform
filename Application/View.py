@@ -4,7 +4,7 @@ from pyqtgraph import PlotWidget
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.setupUi()
 
     def setupUi(self):
@@ -223,8 +223,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
 class PlotterWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(PlotterWindow, self).__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.setupUi()
 
     def setupUi(self):
@@ -257,8 +257,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
 
 
 class MagnifierWindow(QtWidgets.QMainWindow):
-    def __init__(self):
-        super(MagnifierWindow, self).__init__()
+    def __init__(self, parent):
+        super().__init__(parent)
         self.setupUi()
 
     def setupUi(self):
