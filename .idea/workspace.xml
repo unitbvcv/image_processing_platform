@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a829f824-c7d6-420f-b976-f03299325dd3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/QtDesignerUI/MainWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/Application/QtDesignerUI/MainWindow.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/View.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/View.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,7 +15,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ImageProcessingTool$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1538920530631" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1538923777930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1538928500438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="228403155">
@@ -64,13 +65,13 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="46" />
-          <entry key="py" value="992" />
+          <entry key="py" value="2633" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="46" />
-          <entry key="Python" value="992" />
+          <entry key="Python" value="2633" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -123,17 +124,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="528">
-              <caret line="40" column="35" selection-start-line="40" selection-start-column="35" selection-end-line="40" selection-end-column="35" />
+            <state relative-caret-position="272">
+              <caret line="22" column="96" selection-start-line="22" selection-start-column="96" selection-end-line="22" selection-end-column="96" />
               <folding>
-                <element signature="e#0#71#0" expanded="true" />
-                <marker date="1538923774943" expanded="true" signature="124:125" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="124:129" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="1204:1213" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="1273:1282" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="1333:1342" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="1414:1423" ph="..." />
-                <marker date="1538923774943" expanded="true" signature="1504:1513" ph="..." />
+                <element signature="e#0#35#0" expanded="true" />
+                <marker date="1538928499083" expanded="true" signature="244:245" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="244:249" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="1856:2561" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="2596:2605" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="3771:3780" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="3852:3861" ph="..." />
+                <marker date="1538928499083" expanded="true" signature="3942:3951" ph="..." />
               </folding>
             </state>
           </provider>
@@ -141,7 +142,15 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/Model.py">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="10" column="62" lean-forward="true" selection-start-line="10" selection-start-column="62" selection-end-line="10" selection-end-column="62" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+                <marker date="1538925945141" expanded="true" signature="56:61" ph="..." />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -165,8 +174,8 @@
         <option value="$PROJECT_DIR$/MyWindows/GeneratedUI.py" />
         <option value="$PROJECT_DIR$/ImageProcessingTool.pyw" />
         <option value="$PROJECT_DIR$/Application/GeneratedUI.py" />
-        <option value="$PROJECT_DIR$/Application/Model.py" />
         <option value="$PROJECT_DIR$/Application/View.py" />
+        <option value="$PROJECT_DIR$/Application/Model.py" />
         <option value="$PROJECT_DIR$/Application/Controller.py" />
       </list>
     </option>
@@ -287,13 +296,13 @@
     <frame x="-7" y="-7" width="2062" height="1136" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.14635365" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14635365" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32901296" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4995005" visible="true" weight="0.1545364" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4995005" visible="true" weight="0.1545364" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3998006" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32901296" />
@@ -316,13 +325,40 @@
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Application/Controller.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self.model.originalImage" language="Python" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="debuggerHistoryManager">
+    <expressions id="watch">
+      <expression>
+        <expression-string>self.model.originalImage</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.model.originalImage.dtype</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/MyWindows/MainWindow.py" />
     <entry file="file://$PROJECT_DIR$/MyWindows/PlotterWindow.py" />
     <entry file="file://$PROJECT_DIR$/ImageProcessingTool.pyproj" />
-    <entry file="file://$PROJECT_DIR$/Application/Model.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/ImageProcessingTool.pyw">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="96">
@@ -352,19 +388,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Application/Model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="10" column="62" lean-forward="true" selection-start-line="10" selection-start-column="62" selection-end-line="10" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+            <marker date="1538925945141" expanded="true" signature="56:61" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Application/Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="40" column="35" selection-start-line="40" selection-start-column="35" selection-end-line="40" selection-end-column="35" />
+        <state relative-caret-position="272">
+          <caret line="22" column="96" selection-start-line="22" selection-start-column="96" selection-end-line="22" selection-end-column="96" />
           <folding>
-            <element signature="e#0#71#0" expanded="true" />
-            <marker date="1538923774943" expanded="true" signature="124:125" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="124:129" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="1204:1213" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="1273:1282" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="1333:1342" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="1414:1423" ph="..." />
-            <marker date="1538923774943" expanded="true" signature="1504:1513" ph="..." />
+            <element signature="e#0#35#0" expanded="true" />
+            <marker date="1538928499083" expanded="true" signature="244:245" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="244:249" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="1856:2561" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="2596:2605" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="3771:3780" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="3852:3861" ph="..." />
+            <marker date="1538928499083" expanded="true" signature="3942:3951" ph="..." />
           </folding>
         </state>
       </provider>
