@@ -313,9 +313,9 @@ class Label(QtWidgets.QLabel):
         while parentWidget.objectName() != 'centralWidget':
             parentWidget = parentWidget.parentWidget()
 
-        # if label has pixmap / is there a method for it?
         labelMousePosition = parentWidget.findChild(QtWidgets.QLabel, 'labelMousePosition')
-        labelMousePosition.setText('Mouse position: x=' + str(QMouseEvent.x())
-                                   + ' y=' + str(QMouseEvent.y()))
-
-    # TODO: override clear and setPixmap to set bool for mousemoveevent
+        if self.pixmap() is not None:
+            labelText = 'Mouse position: x=' + str(QMouseEvent.x()) + ' y=' + str(QMouseEvent.y())
+        else:
+            labelText = ''
+        labelMousePosition.setText(labelText)
