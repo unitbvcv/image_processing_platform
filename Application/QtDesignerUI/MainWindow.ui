@@ -45,13 +45,16 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>471</width>
-              <height>568</height>
+              <width>477</width>
+              <height>587</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
               <widget class="QLabel" name="labelOriginalImage">
+               <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -98,13 +101,16 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>470</width>
-              <height>568</height>
+              <width>477</width>
+              <height>587</height>
              </rect>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLabel" name="labelProcessedImage">
+               <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
                <property name="text">
                 <string/>
                </property>
@@ -296,7 +302,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

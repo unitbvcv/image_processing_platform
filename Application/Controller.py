@@ -43,9 +43,9 @@ class Controller(object):
 
     def __actionLoadColorImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open color file',
-                                                         filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
-                                                                '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
-                                                         )
+                                                            filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
+                                                                   '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
+                                                            )
 
         self.model.loadOriginalImage(filename, opencv.IMREAD_COLOR)
         self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
@@ -79,13 +79,14 @@ class Controller(object):
     def __actionSaveProcessedImage(self):
         if self.model.processedImage is not None:
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(parent=self.mainWindow, caption='Save processed image',
-                                                  filter='Bitmap file (*.bmp *.dib);;'
-                                                         'JPEG file (*.jpeg *.jpg *.jpe);;'
-                                                         'JPEG 2000 file (*.jp2);;'
-                                                         'Portable Network Graphics file (*.png);;'
-                                                         'WebP file (*.webp);;'
-                                                         'Sun rasters file (*.ras *.sr);;'
-                                                         'Tagged Image file (*.tiff *.tif)',
-                                                  initialFilter='Portable Network Graphics file (*.png)')
+                                                                filter='Bitmap file (*.bmp *.dib);;'
+                                                                       'JPEG file (*.jpeg *.jpg *.jpe);;'
+                                                                       'JPEG 2000 file (*.jp2);;'
+                                                                       'Portable Network Graphics file (*.png);;'
+                                                                       'WebP file (*.webp);;'
+                                                                       'Sun rasters file (*.ras *.sr);;'
+                                                                       'Tagged Image file (*.tiff *.tif)',
+                                                                initialFilter='Portable Network Graphics file (*.png)'
+                                                                )
 
             opencv.imwrite(filename, self.model.processedImage)

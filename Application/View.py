@@ -44,10 +44,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.labelOriginalImage = QtWidgets.QLabel(self.scrollAreaWidgetOriginalImage)
+        self.labelOriginalImage = Label(self.scrollAreaWidgetOriginalImage)
         self.labelOriginalImage.setText("")
         self.labelOriginalImage.setScaledContents(False)
         self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelOriginalImage.setMouseTracking(True)
         self.labelOriginalImage.setObjectName("labelOriginalImage")
         self.horizontalLayout_3.addWidget(self.labelOriginalImage)
         self.scrollAreaOriginalImage.setWidget(self.scrollAreaWidgetOriginalImage)
@@ -76,10 +77,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.horizontalLayout_4.setContentsMargins(11, 11, 11, 11)
         self.horizontalLayout_4.setSpacing(6)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.labelProcessedImage = QtWidgets.QLabel(self.scrollAreaWidgetProcessedImage)
+        self.labelProcessedImage = Label(self.scrollAreaWidgetProcessedImage)
         self.labelProcessedImage.setText("")
         self.labelProcessedImage.setScaledContents(False)
         self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelProcessedImage.setMouseTracking(True)
         self.labelProcessedImage.setObjectName("labelProcessedImage")
         self.horizontalLayout_4.addWidget(self.labelProcessedImage)
         self.scrollAreaProcessedImage.setWidget(self.scrollAreaWidgetProcessedImage)
@@ -300,3 +302,20 @@ class MagnifierWindow(QtWidgets.QMainWindow):
     def __retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MagnifierWindow", "MainWindow"))
+
+
+class Label(QtWidgets.QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mouseMoveEvent(self, QMouseEvent):
+        parentWidget = self.parentWidget()
+        while parentWidget.objectName() != 'centralWidget':
+            parentWidget = parentWidget.parentWidget()
+
+        # if label has pixmap / is there a method for it?
+        labelMousePosition = parentWidget.findChild(QtWidgets.QLabel, 'labelMousePosition')
+        labelMousePosition.setText('Mouse position: x=' + str(QMouseEvent.x())
+                                   + ' y=' + str(QMouseEvent.y()))
+
+    # TODO: override clear and setPixmap to set bool for mousemoveevent
