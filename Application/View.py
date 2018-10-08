@@ -308,7 +308,12 @@ class Label(QtWidgets.QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+    mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
+
     def mouseMoveEvent(self, QMouseEvent):
+        self.mouse_moved.emit(QMouseEvent)
+
+        # updating the mouse position label
         parentWidget = self.parentWidget()
         while parentWidget.objectName() != 'centralWidget':
             parentWidget = parentWidget.parentWidget()

@@ -31,6 +31,10 @@ class Controller(object):
         self.mainWindow.actionPlotter.triggered.connect(self.__actionPlotter)
         self.mainWindow.actionSaveProcessedImage.triggered.connect(self.__actionSaveProcessedImage)
 
+        # connect image labels to slots for updating the ui
+        self.mainWindow.labelOriginalImage.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
+
         # show the main window
         self.mainWindow.show()
 
@@ -90,3 +94,23 @@ class Controller(object):
                                                                 )
 
             opencv.imwrite(filename, self.model.processedImage)
+
+    def __mouseMovedEvent(self, QMouseEvent):
+
+        x = QMouseEvent.x()
+        y = QMouseEvent.y()
+
+        # updating original image pixel label
+        if self.mainWindow.labelOriginalImage.pixmap() is not None and self.model.originalImage is not None:
+            if len(self.model.originalImage.shape) == 3:
+                pass
+            elif len(self.model.originalImage.shape) == 2:
+                pass
+
+        # updating processed image pixel label
+        if self.mainWindow.labelOriginalImage.pixmap() is not None and self.model.processedImage is not None:
+            if len(self.model.processedImage.shape) == 3:
+                pass
+            elif len(self.model.processedImage.shape) == 2:
+                pass
+
