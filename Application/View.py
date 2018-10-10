@@ -288,8 +288,25 @@ class MagnifierWindow(QtWidgets.QMainWindow):
     def __init__(self, parent):
         super().__init__(parent)
         self.__setupUi()
+        self.frameListOriginalImage = []
+        self.frameListProcessedImage = []
 
-    def setupUi(self):
+        # add programmatically a 9x9 grid of frames and 3 labels for each
+        for row in range(9):
+            newRowFrameListOriginalImage = []
+            newRowFrameListProcessedImage = []
+
+            for column in range(9):
+                newRowFrameListOriginalImage.append(QtWidgets.QFrame())
+                self.gridLayoutOriginalImage.addWidget(newRowFrameListOriginalImage[-1], row, column)
+
+                newRowFrameListProcessedImage.append(QtWidgets.QFrame())
+                self.gridLayoutOriginalImage.addWidget(newRowFrameListProcessedImage[-1], row, column)
+
+            self.frameListOriginalImage.append(newRowFrameListOriginalImage)
+            self.frameListProcessedImage.append(newRowFrameListProcessedImage)
+
+    def __setupUi(self):
         self.setObjectName("MagnifierWindow")
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
@@ -314,10 +331,10 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.horizontalLayout.addWidget(self.groupBoxProcessedImage)
         self.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi()
+        self.__retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def retranslateUi(self):
+    def __retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
         self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
