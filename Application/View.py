@@ -289,19 +289,39 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.__setupUi()
 
-    def __setupUi(self):
+    def setupUi(self):
         self.setObjectName("MagnifierWindow")
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.groupBoxOriginalImage = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBoxOriginalImage.setObjectName("groupBoxOriginalImage")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBoxOriginalImage)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.gridLayoutOriginalImage = QtWidgets.QGridLayout()
+        self.gridLayoutOriginalImage.setObjectName("gridLayoutOriginalImage")
+        self.gridLayout_3.addLayout(self.gridLayoutOriginalImage, 0, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.groupBoxOriginalImage)
+        self.groupBoxProcessedImage = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBoxProcessedImage.setObjectName("groupBoxProcessedImage")
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBoxProcessedImage)
+        self.gridLayout_4.setObjectName("gridLayout_4")
+        self.gridLayoutProcessedImage = QtWidgets.QGridLayout()
+        self.gridLayoutProcessedImage.setObjectName("gridLayoutProcessedImage")
+        self.gridLayout_4.addLayout(self.gridLayoutProcessedImage, 0, 0, 1, 1)
+        self.horizontalLayout.addWidget(self.groupBoxProcessedImage)
         self.setCentralWidget(self.centralwidget)
 
-        self.__retranslateUi()
+        self.retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def __retranslateUi(self):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MagnifierWindow", "MainWindow"))
+        self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
+        self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
+        self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
 
 
 class Label(QtWidgets.QLabel):

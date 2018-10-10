@@ -113,4 +113,3 @@ class Controller(object):
                 pass
             elif len(self.model.processedImage.shape) == 2:
                 pass
-
