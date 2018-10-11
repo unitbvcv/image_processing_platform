@@ -34,6 +34,8 @@ class Controller(object):
         # connect image labels to slots for updating the ui
         self.mainWindow.labelOriginalImage.mouse_moved.connect(self.__mouseMovedEvent)
         self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
 
         # show the main window
         self.mainWindow.show()
@@ -113,3 +115,45 @@ class Controller(object):
                 pass
             elif len(self.model.processedImage.shape) == 2:
                 pass
+
+    def __mousePressedEvent(self, QMouseEvent):
+
+        if self.magnifierWindow.isVisible():
+            rows = len(self.magnifierWindow.frameListOriginalImage)
+            columns = len(self.magnifierWindow.frameListOriginalImage[0])
+
+            for row in range(rows):
+                for column in range(columns):
+                    if self.model.originalImage is not None:
+                        pixelOriginalImage = self.model.originalImage[QMouseEvent.y() - column // 2, QMouseEvent.x() - row // 2]
+                    else:
+                        pixelOriginalImage = None
+
+                    if self.model.processedImage is not None:
+                        pixelProcessedImage = self.model.processedImage[QMouseEvent.y() - columns//2, QMouseEvent.x() - row // 2]
+                    else:
+                        pixelProcessedImage = None
+
+                    frameRectOriginalImage = self.magnifierWindow.frameListOriginalImage[row][column].rect()
+                    frameRectProcessedImage = self.magnifierWindow.frameListProcessedImage[row][column].rect()
+
+                    painterOriginalImage = QtGui.QPainter(self.magnifierWindow.frameListOriginalImage[row][column])
+                    painterProcessedImage = QtGui.QPainter(self.magnifierWindow.frameListProcessedImage[row][column])
+
+                    if pixelOriginalImage is None:
+                        painterOriginalImage.eraseRect(frameRectOriginalImage)
+                    else:
+                        if pixelOriginalImage.shape == 3:
+                            painterOriginalImage.fillRect(frameRectOriginalImage, QtGui.QColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0]))
+                        elif pixelOriginalImage.shape == 1:
+                            painterOriginalImage.fillRect(frameRectOriginalImage, QtGui.QColor(pixelOriginalImage[0], pixelOriginalImage[0], pixelOriginalImage[0]))
+
+                    if pixelProcessedImage is None:
+                        painterProcessedImage.eraseRect(frameRectProcessedImage)
+                    else:
+                        if pixelProcessedImage.shape == 3:
+                            painterProcessedImage.fillRect(frameRectProcessedImage, QtGui.QColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0]))
+                        elif pixelProcessedImage.shape == 1:
+                            painterOriginalImage.fillRect(frameRectOriginalImage, QtGui.QColor(pixelProcessedImage[0], pixelProcessedImage[0], pixelProcessedImage[0]))
+
+            self.magnifierWindow.repaint()

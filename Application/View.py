@@ -346,6 +346,7 @@ class Label(QtWidgets.QLabel):
         super().__init__(parent)
 
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
+    mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
 
     def mouseMoveEvent(self, QMouseEvent):
         self.mouse_moved.emit(QMouseEvent)
@@ -361,3 +362,6 @@ class Label(QtWidgets.QLabel):
         else:
             labelText = ''
         labelMousePosition.setText(labelText)
+
+    def mousePressEvent(self, QMouseEvent):
+        self.mouse_pressed.emit(QMouseEvent)
