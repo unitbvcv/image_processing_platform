@@ -9,6 +9,17 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__()
         self.__setupUi()
 
+        # synchronize the scrollbars of the scrollAreas
+        self.scrollAreaOriginalImage.horizontalScrollBar().valueChanged.connect(
+            self.scrollAreaProcessedImage.horizontalScrollBar().setValue)
+        self.scrollAreaProcessedImage.horizontalScrollBar().valueChanged.connect(
+            self.scrollAreaOriginalImage.horizontalScrollBar().setValue)
+
+        self.scrollAreaOriginalImage.verticalScrollBar().valueChanged.connect(
+            self.scrollAreaProcessedImage.verticalScrollBar().setValue)
+        self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
+            self.scrollAreaOriginalImage.verticalScrollBar().setValue)
+
     def __setupUi(self):
         self.setObjectName("MainWindow")
         self.resize(1024, 768)
