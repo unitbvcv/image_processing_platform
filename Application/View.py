@@ -302,7 +302,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
                 self.gridLayoutOriginalImage.addWidget(newRowFrameListOriginalImage[-1], row, column)
 
                 newRowFrameListProcessedImage.append(Frame())
-                self.gridLayoutOriginalImage.addWidget(newRowFrameListProcessedImage[-1], row, column)
+                self.gridLayoutProcessedImage.addWidget(newRowFrameListProcessedImage[-1], row, column)
 
             self.frameListOriginalImage.append(newRowFrameListOriginalImage)
             self.frameListProcessedImage.append(newRowFrameListProcessedImage)
@@ -319,6 +319,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBoxOriginalImage)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.gridLayoutOriginalImage = QtWidgets.QGridLayout()
+        self.gridLayoutOriginalImage.setSpacing(0)
         self.gridLayoutOriginalImage.setObjectName("gridLayoutOriginalImage")
         self.gridLayout_3.addLayout(self.gridLayoutOriginalImage, 0, 0, 1, 1)
         self.horizontalLayout.addWidget(self.groupBoxOriginalImage)
@@ -327,6 +328,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBoxProcessedImage)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayoutProcessedImage = QtWidgets.QGridLayout()
+        self.gridLayoutProcessedImage.setSpacing(0)
         self.gridLayoutProcessedImage.setObjectName("gridLayoutProcessedImage")
         self.gridLayout_4.addLayout(self.gridLayoutProcessedImage, 0, 0, 1, 1)
         self.horizontalLayout.addWidget(self.groupBoxProcessedImage)

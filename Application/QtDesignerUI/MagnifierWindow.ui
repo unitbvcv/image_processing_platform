@@ -22,7 +22,11 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayoutOriginalImage"/>
+        <layout class="QGridLayout" name="gridLayoutOriginalImage">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -34,7 +38,11 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayoutProcessedImage"/>
+        <layout class="QGridLayout" name="gridLayoutProcessedImage">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+        </layout>
        </item>
       </layout>
      </widget>

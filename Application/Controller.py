@@ -125,9 +125,7 @@ class Controller(object):
                 for column in range(self.magnifierWindow.frameGridSize):
                     if self.model.originalImage is not None:
                         pixelOriginalImage = self.model.originalImage[
-                            QMouseEvent.y() - offset + column, QMouseEvent.x() - offset + row]
-
-                        print('Pixel original image: ', pixelOriginalImage)
+                            QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
 
                         if len(pixelOriginalImage) == 3:
                             pixelOriginalImage = QtGui.QColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
@@ -138,7 +136,7 @@ class Controller(object):
 
                     if self.model.processedImage is not None:
                         pixelProcessedImage = self.model.processedImage[
-                            QMouseEvent.y() - offset + column, QMouseEvent.x() - offset + row]
+                            QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
 
                         if len(pixelProcessedImage) == 3:
                             pixelProcessedImage = QtGui.QColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
