@@ -127,10 +127,10 @@ class Controller(object):
                         pixelOriginalImage = self.model.originalImage[
                             QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
 
-                        if len(pixelOriginalImage) == 3:
+                        if len(self.model.originalImage.shape) == 3:
                             pixelOriginalImage = QtGui.QColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
-                        elif len(pixelOriginalImage) == 1:
-                            pixelOriginalImage = QtGui.QColor(pixelOriginalImage[0], pixelOriginalImage[0], pixelOriginalImage[0])
+                        elif len(self.model.originalImage.shape) == 2:
+                            pixelOriginalImage = QtGui.QColor(pixelOriginalImage, pixelOriginalImage, pixelOriginalImage)
                     else:
                         pixelOriginalImage = None
 
@@ -138,10 +138,10 @@ class Controller(object):
                         pixelProcessedImage = self.model.processedImage[
                             QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
 
-                        if len(pixelProcessedImage) == 3:
+                        if len(self.model.processedImage.shape) == 3:
                             pixelProcessedImage = QtGui.QColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
-                        elif len(pixelProcessedImage) == 1:
-                            pixelProcessedImage = QtGui.QColor(pixelProcessedImage[0], pixelProcessedImage[0], pixelProcessedImage[0])
+                        elif len(self.model.processedImage.shape) == 2:
+                            pixelProcessedImage = QtGui.QColor(pixelProcessedImage, pixelProcessedImage, pixelProcessedImage)
                     else:
                         pixelProcessedImage = None
 
