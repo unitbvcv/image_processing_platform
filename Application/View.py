@@ -290,17 +290,18 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.__setupUi()
         self.frameListOriginalImage = []
         self.frameListProcessedImage = []
+        self.frameGridSize = 9
 
-        # add programmatically a 9x9 grid of frames and 3 labels for each
-        for row in range(9):
+        # add programmatically a 9x9 grid of frames
+        for row in range(self.frameGridSize):
             newRowFrameListOriginalImage = []
             newRowFrameListProcessedImage = []
 
-            for column in range(9):
-                newRowFrameListOriginalImage.append(QtWidgets.QFrame())
+            for column in range(self.frameGridSize):
+                newRowFrameListOriginalImage.append(Frame())
                 self.gridLayoutOriginalImage.addWidget(newRowFrameListOriginalImage[-1], row, column)
 
-                newRowFrameListProcessedImage.append(QtWidgets.QFrame())
+                newRowFrameListProcessedImage.append(Frame())
                 self.gridLayoutOriginalImage.addWidget(newRowFrameListProcessedImage[-1], row, column)
 
             self.frameListOriginalImage.append(newRowFrameListOriginalImage)
@@ -365,3 +366,24 @@ class Label(QtWidgets.QLabel):
 
     def mousePressEvent(self, QMouseEvent):
         self.mouse_pressed.emit(QMouseEvent)
+
+
+class Frame(QtWidgets.QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.backgroundColor = QtGui.QColor(255, 255, 255)
+
+    def setFrameColor(self, backgroundColor : QtGui.QColor):
+        if backgroundColor is not None:
+            self.backgroundColor = backgroundColor
+        else:
+            self.backgroundColor = QtGui.QColor(255, 255, 255)
+        self.repaint()
+
+    def resetFrameColor(self):
+        self.backgroundColor = QtGui.QColor(255, 255, 255)
+        self.repaint()
+
+    def paintEvent(self, QPaintEvent):
+        painter = QtGui.QPainter(self)
+        painter.fillRect(self.rect(), self.backgroundColor)

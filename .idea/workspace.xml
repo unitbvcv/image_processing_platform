@@ -14,7 +14,7 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ImageProcessingTool$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1538920530631" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1539254752210" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1539335722471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="228403155">
@@ -59,21 +59,22 @@
         <counts>
           <entry key="project.closed" value="4" />
           <entry key="project.open.time.0" value="1" />
-          <entry key="project.open.time.5" value="3" />
+          <entry key="project.open.time.4" value="1" />
+          <entry key="project.open.time.5" value="4" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="5" />
+          <entry key="project.opened" value="7" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="159" />
-          <entry key="py" value="7460" />
+          <entry key="py" value="9771" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="159" />
-          <entry key="Python" value="7460" />
+          <entry key="Python" value="9771" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -143,13 +144,15 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="720">
-              <caret line="366" selection-start-line="366" selection-end-line="366" />
+            <state relative-caret-position="-5">
+              <caret line="373" column="23" lean-forward="true" selection-start-line="373" selection-start-column="23" selection-end-line="373" selection-end-column="23" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
                 <element signature="e#157#15574#0" />
                 <element signature="e#15625#17159#0" />
                 <element signature="e#15745#16922#0" />
+                <marker date="1539335142927" expanded="true" signature="21114:21750" ph="..." />
+                <marker date="1539335142927" expanded="true" signature="21528:21616" ph="..." />
               </folding>
             </state>
           </provider>
@@ -158,8 +161,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="509">
-              <caret line="159" selection-start-line="159" selection-end-line="159" />
+            <state relative-caret-position="246">
+              <caret line="140" column="94" selection-start-line="140" selection-start-column="94" selection-end-line="140" selection-end-column="94" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -223,7 +226,7 @@
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="950" />
-    <option name="width" value="979" />
+    <option name="width" value="980" />
     <option name="height" value="1050" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -334,13 +337,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.40638003" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32786885" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4995005" weight="0.15244755" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4995005" visible="true" weight="0.32027972" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3958042" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -354,7 +358,7 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" />
+      <window_info anchor="right" id="SciView" order="3" weight="0.3295302" />
       <window_info anchor="right" id="Database" order="4" />
     </layout>
   </component>
@@ -371,6 +375,17 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <condition expression="self.backgroundColor.red() != 255" language="Python" />
+          <url>file://$PROJECT_DIR$/Application/View.py</url>
+          <line>387</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">
@@ -379,36 +394,81 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="QMouseEvent.x()" language="Python" />
+        <watch expression="QMouseEvent.y()" language="Python" />
+        <watch expression="self.model.originalImage" language="Python" />
+        <watch expression="self.model.originalImage[QMouseEvent.y() - offset:QMouseEvent.y() + offset, QMouseEvent.x() - offset:QMouseEvent.x() + offset]" language="Python" />
+        <watch expression="self.frameListOriginalImage[row][column]" language="Python" />
+        <watch expression="self.rect()" language="Python" />
+        <watch expression="self.backgroundColor.red()" language="Python" />
+        <watch expression="self.backgroundColor.green()" language="Python" />
+        <watch expression="self.backgroundColor.blue()" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
+    <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>self.backgroundColor.red() != 255</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>if self.backgroundColor.red() != 255</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+    </expressions>
     <expressions id="watch">
       <expression>
-        <expression-string>QMouseEvent.x</expression-string>
+        <expression-string>self.backgroundColor.green()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>QMouseEvent</expression-string>
+        <expression-string>self.backgroundColor.blue()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.frameArrayOriginalImage</expression-string>
+        <expression-string>self.backgroundColor.red()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>controller.magnifierWindow.frameArrayOriginalImage</expression-string>
+        <expression-string>self.backgroundColor.rgb()</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.model.originalImage</expression-string>
+        <expression-string>self.backgroundColor</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>self.model.originalImage.dtype</expression-string>
+        <expression-string>self.rect()</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.frameListOriginalImage[row][column]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.frameListOriginalImage[row, column]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.model.originalImage[QMouseEvent.y() - offset:QMouseEvent.y() + offset, QMouseEvent.x() - offset:QMouseEvent.x() + offset]</expression-string>
+        <language-id>Python</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>self.model.originalImage[QMouseEvent.y() - offset:QMouseEvent.y() + offset]</expression-string>
         <language-id>Python</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -428,6 +488,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Application/View.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5">
+          <caret line="373" column="23" lean-forward="true" selection-start-line="373" selection-start-column="23" selection-end-line="373" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#42#0" expanded="true" />
+            <element signature="e#157#15574#0" />
+            <element signature="e#15625#17159#0" />
+            <element signature="e#15745#16922#0" />
+            <marker date="1539335142927" expanded="true" signature="21114:21750" ph="..." />
+            <marker date="1539335142927" expanded="true" signature="21528:21616" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Application/Model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -435,23 +510,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Application/View.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="366" selection-start-line="366" selection-end-line="366" />
-          <folding>
-            <element signature="e#0#42#0" expanded="true" />
-            <element signature="e#157#15574#0" />
-            <element signature="e#15625#17159#0" />
-            <element signature="e#15745#16922#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Application/Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="509">
-          <caret line="159" selection-start-line="159" selection-end-line="159" />
+        <state relative-caret-position="246">
+          <caret line="140" column="94" selection-start-line="140" selection-start-column="94" selection-end-line="140" selection-end-column="94" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
