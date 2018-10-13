@@ -119,6 +119,7 @@ class Controller(object):
     def __mousePressedEvent(self, QMouseEvent):
         # show the click point on the main window label
         self.mainWindow.labelOriginalImage.setClickPosition(QMouseEvent.pos())
+        self.mainWindow.labelProcessedImage.setClickPosition(QMouseEvent.pos())
 
         # calculate the parameters for the magnifier window
         offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
