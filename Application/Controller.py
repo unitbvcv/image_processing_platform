@@ -139,16 +139,16 @@ class Controller(object):
 
                     if self.model.originalImage is not None:
                         if len(self.model.originalImage.shape) == 3:
-                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
+                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
                         elif len(self.model.originalImage.shape) == 2:
-                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(pixelOriginalImage)
+                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(pixelOriginalImage)
                     else:
                         self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(None)
 
                     if self.model.processedImage is not None:
                         if len(self.model.processedImage.shape) == 3:
-                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
+                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
                         elif len(self.model.originalImage.shape) == 2:
-                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(pixelProcessedImage)
+                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(pixelProcessedImage)
                     else:
-                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(None)
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)

@@ -330,7 +330,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBoxOriginalImage)
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.gridLayoutOriginalImage = QtWidgets.QGridLayout()
-        self.gridLayoutOriginalImage.setSpacing(0)
+        self.gridLayoutOriginalImage.setSpacing(2)
         self.gridLayoutOriginalImage.setObjectName("gridLayoutOriginalImage")
         self.gridLayout_3.addLayout(self.gridLayoutOriginalImage, 0, 0, 1, 1)
         self.horizontalLayout.addWidget(self.groupBoxOriginalImage)
@@ -339,7 +339,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBoxProcessedImage)
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayoutProcessedImage = QtWidgets.QGridLayout()
-        self.gridLayoutProcessedImage.setSpacing(0)
+        self.gridLayoutProcessedImage.setSpacing(2)
         self.gridLayoutProcessedImage.setObjectName("gridLayoutProcessedImage")
         self.gridLayout_4.addLayout(self.gridLayoutProcessedImage, 0, 0, 1, 1)
         self.horizontalLayout.addWidget(self.groupBoxProcessedImage)
@@ -387,9 +387,8 @@ class Frame(QtWidgets.QFrame):
         self.__isVisible = False
         self.__backgroundColor = QtGui.QColor(255, 255, 255)
         self.__isGrayscale = True
-        self.__isVisible = False
 
-    def setFrameColor(self, red, green, blue):
+    def setFrameColorRgb(self, red, green, blue):
         if red is not None and green is not None and blue is not None:
             self.__backgroundColor = QtGui.QColor(red, green, blue)
             self.__isGrayscale = False
@@ -401,7 +400,7 @@ class Frame(QtWidgets.QFrame):
 
         self.update()
 
-    def setFrameColor(self, grayLevel):
+    def setFrameColorGrayLevel(self, grayLevel):
         if grayLevel is not None:
             self.__backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
             self.__isGrayscale = True
@@ -414,33 +413,39 @@ class Frame(QtWidgets.QFrame):
         self.update()
 
     def paintEvent(self, QPaintEvent):
-        painter = QtGui.QPainter(self)
-
         if self.__isVisible:
+            painter = QtGui.QPainter(self)
             painter.fillRect(self.rect(), self.__backgroundColor)
 
             font = QtGui.QFont("Arial")
-            font.setPointSize(12)
+            font.setPointSize(8)
+            painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
-            pen = QtGui.QPen(QtCore.Qt.black)
-            pen.setWidth(0)
-            painter.setPen(pen)
+
+            if self.__backgroundColor.lightness() < 127:
+                painter.setPen(QtCore.Qt.white)
+            else:
+                painter.setBrush(QtCore.Qt.black)
 
             if self.__isGrayscale:
-                painter.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
-                painterPath = QtGui.QPainterPath()
                 text = str(self.__backgroundColor.red())
 
                 horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
-                painterPath.addText((self.width() - horizontalAdvance) / 2,
-                                    self.height() / 2 - fontMetrics.height(),
-                                    font,
-                                    text)
-                painter.drawPath(painterPath)
+
+                painter.drawText((self.width() - horizontalAdvance) / 2,
+                                 self.height() / 2 + fontMetrics.height() / 2,
+                                 text)
             else:
-                painter.setBrush(QtGui.QBrush(QtCore.Qt.red, QtCore.Qt.SolidPattern))
-                # painter.drawPath()
-                # painter.setBrush(QtGui.QBrush(QtCore.Qt.green, QtCore.Qt.SolidPattern))
-                # painter.drawPath()
-                # painter.setBrush(QtGui.QBrush(QtCore.Qt.blue, QtCore.Qt.SolidPattern))
-                # painter.drawPath()
+                textRed = str(self.__backgroundColor.red())
+                textGreen = str(self.__backgroundColor.green())
+                textBlue = str(self.__backgroundColor.blue())
+
+                horizontalAdvanceRed = fontMetrics.horizontalAdvance(textRed, len(textRed))
+                horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textGreen, len(textGreen))
+                horizontalAdvanceBlue = fontMetrics.horizontalAdvance(textBlue, len(textBlue))
+
+                middleTextLine = self.height() / 2 + fontMetrics.height() / 3
+
+                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(), textRed)
+                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, middleTextLine, textGreen)
+                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(), textBlue)
