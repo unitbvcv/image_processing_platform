@@ -384,19 +384,63 @@ class Label(QtWidgets.QLabel):
 class Frame(QtWidgets.QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.backgroundColor = QtGui.QColor(255, 255, 255)
+        self.__isVisible = False
+        self.__backgroundColor = QtGui.QColor(255, 255, 255)
+        self.__isGrayscale = True
+        self.__isVisible = False
 
-    def setFrameColor(self, backgroundColor : QtGui.QColor):
-        if backgroundColor is not None:
-            self.backgroundColor = backgroundColor
+    def setFrameColor(self, red, green, blue):
+        if red is not None and green is not None and blue is not None:
+            self.__backgroundColor = QtGui.QColor(red, green, blue)
+            self.__isGrayscale = False
+            self.__isVisible = True
         else:
-            self.backgroundColor = QtGui.QColor(255, 255, 255)
-        self.repaint()
+            self.__isVisible = False
+            self.__isGrayscale = True
+            self.__backgroundColor = QtGui.QColor(255, 255, 255)
 
-    def resetFrameColor(self):
-        self.backgroundColor = QtGui.QColor(255, 255, 255)
-        self.repaint()
+        self.update()
+
+    def setFrameColor(self, grayLevel):
+        if grayLevel is not None:
+            self.__backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
+            self.__isGrayscale = True
+            self.__isVisible = True
+        else:
+            self.__isVisible = False
+            self.__isGrayscale = True
+            self.__backgroundColor = QtGui.QColor(255, 255, 255)
+
+        self.update()
 
     def paintEvent(self, QPaintEvent):
         painter = QtGui.QPainter(self)
-        painter.fillRect(self.rect(), self.backgroundColor)
+
+        if self.__isVisible:
+            painter.fillRect(self.rect(), self.__backgroundColor)
+
+            font = QtGui.QFont("Arial")
+            font.setPointSize(12)
+            fontMetrics = QtGui.QFontMetrics(font)
+            pen = QtGui.QPen(QtCore.Qt.black)
+            pen.setWidth(0)
+            painter.setPen(pen)
+
+            if self.__isGrayscale:
+                painter.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
+                painterPath = QtGui.QPainterPath()
+                text = str(self.__backgroundColor.red())
+
+                horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
+                painterPath.addText((self.width() - horizontalAdvance) / 2,
+                                    self.height() / 2 - fontMetrics.height(),
+                                    font,
+                                    text)
+                painter.drawPath(painterPath)
+            else:
+                painter.setBrush(QtGui.QBrush(QtCore.Qt.red, QtCore.Qt.SolidPattern))
+                # painter.drawPath()
+                # painter.setBrush(QtGui.QBrush(QtCore.Qt.green, QtCore.Qt.SolidPattern))
+                # painter.drawPath()
+                # painter.setBrush(QtGui.QBrush(QtCore.Qt.blue, QtCore.Qt.SolidPattern))
+                # painter.drawPath()

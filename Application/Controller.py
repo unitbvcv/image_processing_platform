@@ -70,7 +70,6 @@ class Controller(object):
         self.model.processedImage = None
 
     def __actionMagnifier(self):
-        # TODO
         self.magnifierWindow.show()
 
     def __actionPlotter(self):
@@ -123,27 +122,33 @@ class Controller(object):
 
             for row in range(self.magnifierWindow.frameGridSize):
                 for column in range(self.magnifierWindow.frameGridSize):
-                    if self.model.originalImage is not None:
-                        pixelOriginalImage = self.model.originalImage[
-                            QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
+                    yPos = QMouseEvent.y() - offset + row
+                    xPos = QMouseEvent.x() - offset + column
 
-                        if len(self.model.originalImage.shape) == 3:
-                            pixelOriginalImage = QtGui.QColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
-                        elif len(self.model.originalImage.shape) == 2:
-                            pixelOriginalImage = QtGui.QColor(pixelOriginalImage, pixelOriginalImage, pixelOriginalImage)
+                    if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
+                            yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
+                        pixelOriginalImage = self.model.originalImage[yPos, xPos]
                     else:
                         pixelOriginalImage = None
 
-                    if self.model.processedImage is not None:
-                        pixelProcessedImage = self.model.processedImage[
-                            QMouseEvent.y() - offset + row, QMouseEvent.x() - offset + column]
-
-                        if len(self.model.processedImage.shape) == 3:
-                            pixelProcessedImage = QtGui.QColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
-                        elif len(self.model.processedImage.shape) == 2:
-                            pixelProcessedImage = QtGui.QColor(pixelProcessedImage, pixelProcessedImage, pixelProcessedImage)
+                    if self.model.processedImage is not None and yPos >= 0 and xPos >= 0 and \
+                            yPos < self.model.processedImage.shape[0] and xPos < self.model.processedImage.shape[1]:
+                        pixelProcessedImage = self.model.processedImage[yPos, xPos]
                     else:
                         pixelProcessedImage = None
 
-                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(pixelOriginalImage)
-                    self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(pixelProcessedImage)
+                    if self.model.originalImage is not None:
+                        if len(self.model.originalImage.shape) == 3:
+                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
+                        elif len(self.model.originalImage.shape) == 2:
+                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(pixelOriginalImage)
+                    else:
+                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(None)
+
+                    if self.model.processedImage is not None:
+                        if len(self.model.processedImage.shape) == 3:
+                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
+                        elif len(self.model.originalImage.shape) == 2:
+                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(pixelProcessedImage)
+                    else:
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColor(None)
