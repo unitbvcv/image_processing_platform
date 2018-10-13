@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraph import PlotWidget
 import cv2 as opencv
 import numpy
+import Application.Settings
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -240,25 +241,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
         self.actionInvert.setText(_translate("MainWindow", "Invert"))
 
-    def __setLabelImage(self, image, label):
-        label.clear()
-
-        if image is not None:
-            if len(image.shape) == 3:
-                label.setPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(opencv.cvtColor(image, opencv.COLOR_BGR2RGB),
-                                                                     image.shape[1], image.shape[0],
-                                                                     QtGui.QImage.Format_RGB888)))
-            elif len(image.shape) == 2:
-                label.setPixmap(QtGui.QPixmap.fromImage(QtGui.QImage(image,
-                                                                     image.shape[1], image.shape[0],
-                                                                     QtGui.QImage.Format_Grayscale8)))
-
     def setImages(self, originalImage, processedImage):
-        self.__setLabelImage(originalImage, self.labelOriginalImage)
-        self.labelOriginalImage.update()
-
-        self.__setLabelImage(processedImage, self.labelProcessedImage)
-        self.labelProcessedImage.update()
+        self.labelOriginalImage.setLabelImage(originalImage)
+        self.labelProcessedImage.setLabelImage(processedImage)
 
 
 class PlotterWindow(QtWidgets.QMainWindow):
@@ -301,14 +286,13 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.__setupUi()
         self.frameListOriginalImage = []
         self.frameListProcessedImage = []
-        self.frameGridSize = 9
 
         # add programmatically a 9x9 grid of frames
-        for row in range(self.frameGridSize):
+        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             newRowFrameListOriginalImage = []
             newRowFrameListProcessedImage = []
 
-            for column in range(self.frameGridSize):
+            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 newRowFrameListOriginalImage.append(Frame())
                 self.gridLayoutOriginalImage.addWidget(newRowFrameListOriginalImage[-1], row, column)
 
@@ -358,9 +342,23 @@ class MagnifierWindow(QtWidgets.QMainWindow):
 class Label(QtWidgets.QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.__clickPosition = None
+        self.__image = None
 
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
     mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
+
+    def setClickPosition(self, clickPosition : QtCore.QPoint):
+        self.__clickPosition = clickPosition
+        self.update()
+
+    def setLabelImage(self, image):
+        self.__image = image
+        if image is not None:
+            self.setFixedSize(image.shape[1], image.shape[0])
+        else:
+            self.setFixedSize(0, 0)
+        self.update()
 
     def mouseMoveEvent(self, QMouseEvent):
         self.mouse_moved.emit(QMouseEvent)
@@ -379,6 +377,25 @@ class Label(QtWidgets.QLabel):
 
     def mousePressEvent(self, QMouseEvent):
         self.mouse_pressed.emit(QMouseEvent)
+
+    def paintEvent(self, QPaintEvent):
+        painter = QtGui.QPainter(self)
+
+        if self.__image is not None:
+            if len(self.__image.shape) == 3:
+                painter.drawImage(0, 0, QtGui.QImage(opencv.cvtColor(self.__image, opencv.COLOR_BGR2RGB), self.__image.shape[1], self.__image.shape[0], QtGui.QImage.Format_RGB888))
+            elif len(self.__image.shape) == 2:
+                painter.drawImage(0, 0, QtGui.QImage(self.__image, self.__image.shape[1], self.__image.shape[0], QtGui.QImage.Format_Grayscale8))
+
+        if self.__clickPosition is not None:
+            cornerCalcOffset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
+
+            painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
+            painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
+            painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
+                             self.__clickPosition.y() - cornerCalcOffset,
+                             Application.Settings.MagnifierWindowSettings.frameGridSize,
+                             Application.Settings.MagnifierWindowSettings.frameGridSize)
 
 
 class Frame(QtWidgets.QFrame):

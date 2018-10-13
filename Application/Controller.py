@@ -3,6 +3,7 @@ from Application.View import MagnifierWindow, MainWindow, PlotterWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2 as opencv
 import numpy
+import Application.Settings
 
 
 class Controller(object):
@@ -116,39 +117,41 @@ class Controller(object):
                 pass
 
     def __mousePressedEvent(self, QMouseEvent):
+        # show the click point on the main window label
+        self.mainWindow.labelOriginalImage.setClickPosition(QMouseEvent.pos())
 
-        if self.magnifierWindow.isVisible():
-            offset = self.magnifierWindow.frameGridSize // 2
+        # calculate the parameters for the magnifier window
+        offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
 
-            for row in range(self.magnifierWindow.frameGridSize):
-                for column in range(self.magnifierWindow.frameGridSize):
-                    yPos = QMouseEvent.y() - offset + row
-                    xPos = QMouseEvent.x() - offset + column
+        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+                yPos = QMouseEvent.y() - offset + row
+                xPos = QMouseEvent.x() - offset + column
 
-                    if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
-                            yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
-                        pixelOriginalImage = self.model.originalImage[yPos, xPos]
-                    else:
-                        pixelOriginalImage = None
+                if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
+                        yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
+                    pixelOriginalImage = self.model.originalImage[yPos, xPos]
+                else:
+                    pixelOriginalImage = None
 
-                    if self.model.processedImage is not None and yPos >= 0 and xPos >= 0 and \
-                            yPos < self.model.processedImage.shape[0] and xPos < self.model.processedImage.shape[1]:
-                        pixelProcessedImage = self.model.processedImage[yPos, xPos]
-                    else:
-                        pixelProcessedImage = None
+                if self.model.processedImage is not None and yPos >= 0 and xPos >= 0 and \
+                        yPos < self.model.processedImage.shape[0] and xPos < self.model.processedImage.shape[1]:
+                    pixelProcessedImage = self.model.processedImage[yPos, xPos]
+                else:
+                    pixelProcessedImage = None
 
-                    if self.model.originalImage is not None:
-                        if len(self.model.originalImage.shape) == 3:
-                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
-                        elif len(self.model.originalImage.shape) == 2:
-                            self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(pixelOriginalImage)
-                    else:
-                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(None)
+                if self.model.originalImage is not None:
+                    if len(self.model.originalImage.shape) == 3:
+                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
+                    elif len(self.model.originalImage.shape) == 2:
+                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(pixelOriginalImage)
+                else:
+                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(None)
 
-                    if self.model.processedImage is not None:
-                        if len(self.model.processedImage.shape) == 3:
-                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
-                        elif len(self.model.originalImage.shape) == 2:
-                            self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(pixelProcessedImage)
-                    else:
-                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
+                if self.model.processedImage is not None:
+                    if len(self.model.processedImage.shape) == 3:
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
+                    elif len(self.model.originalImage.shape) == 2:
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(pixelProcessedImage)
+                else:
+                    self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
