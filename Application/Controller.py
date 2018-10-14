@@ -240,6 +240,7 @@ class Controller(QtCore.QObject):
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
+                self.magnifierWindow.frameListProcessedImage[row][column].setColorDisplayFormat(colorSpace)
 
     def __magnifierColorSpaceIndexChanged(self, index):
         displayFormat = None
