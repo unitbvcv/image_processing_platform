@@ -40,6 +40,11 @@ class Controller(object):
 
         # add options for the plotter
         self.plotterWindow.comboBoxFunction.addItems([item.value for item in Application.Settings.PlotterWindowSettings.Functions])
+        plotItem = self.plotterWindow.graphicsView.getPlotItem()
+        plotItem.setMenuEnabled(False)
+        plotItem.addLegend()
+        self.plotterWindow.comboBoxFunction.currentIndexChanged.connect(self.__plotterFunctionIndexChanged)
+        self.__lastClick = None
 
         # show the main window
         self.mainWindow.show()
@@ -159,3 +164,40 @@ class Controller(object):
                         self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(pixelProcessedImage)
                 else:
                     self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
+
+        # calculate the parameters for the plotter window
+        self.__lastClick = QMouseEvent.pos()
+        self.calculateAndSetPlotterParameters()
+
+    def __plotterFunctionIndexChanged(self, index):
+        self.calculateAndSetPlotterParameters()
+
+    def calculateAndSetPlotterParameters(self):
+        plotItem = self.plotterWindow.graphicsView.getPlotItem()
+        # TODO: rethink this part to be easily usable and editable by others
+        plotItem.clear()
+        plotItem.legend.removeItem('Original image')
+        plotItem.legend.removeItem('Processed image')
+
+        if self.plotterWindow.comboBoxFunction.currentIndex() == 0:
+            if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                plotItem.plot(range(self.model.originalImage.shape[1]),
+                              self.model.originalImage[self.__lastClick.y()],
+                              pen=QtGui.QColor(QtCore.Qt.red),
+                              name='Original image')
+            if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                plotItem.plot(range(self.model.processedImage.shape[1]),
+                              self.model.processedImage[self.__lastClick.y()],
+                              pen=QtGui.QColor(QtCore.Qt.green),
+                              name='Processed image')
+        else:
+            if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                plotItem.plot(range(self.model.originalImage.shape[0]),
+                              self.model.originalImage[:, self.__lastClick.x()],
+                              pen=QtGui.QColor(QtCore.Qt.red),
+                              name='Original image')
+            if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                plotItem.plot(range(self.model.processedImage.shape[0]),
+                              self.model.processedImage[:, self.__lastClick.x()],
+                              pen=QtGui.QColor(QtCore.Qt.green),
+                              name='Processed image')
