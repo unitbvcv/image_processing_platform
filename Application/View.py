@@ -312,9 +312,14 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
         self.centralwidget.setObjectName("centralwidget")
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setObjectName("gridLayout")
         self.groupBoxOriginalImage = QtWidgets.QGroupBox(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBoxOriginalImage.sizePolicy().hasHeightForWidth())
+        self.groupBoxOriginalImage.setSizePolicy(sizePolicy)
         self.groupBoxOriginalImage.setObjectName("groupBoxOriginalImage")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.groupBoxOriginalImage)
         self.gridLayout_3.setObjectName("gridLayout_3")
@@ -322,8 +327,13 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayoutOriginalImage.setSpacing(2)
         self.gridLayoutOriginalImage.setObjectName("gridLayoutOriginalImage")
         self.gridLayout_3.addLayout(self.gridLayoutOriginalImage, 0, 0, 1, 1)
-        self.horizontalLayout.addWidget(self.groupBoxOriginalImage)
+        self.gridLayout.addWidget(self.groupBoxOriginalImage, 1, 0, 1, 1)
         self.groupBoxProcessedImage = QtWidgets.QGroupBox(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.groupBoxProcessedImage.sizePolicy().hasHeightForWidth())
+        self.groupBoxProcessedImage.setSizePolicy(sizePolicy)
         self.groupBoxProcessedImage.setObjectName("groupBoxProcessedImage")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.groupBoxProcessedImage)
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -331,7 +341,23 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayoutProcessedImage.setSpacing(2)
         self.gridLayoutProcessedImage.setObjectName("gridLayoutProcessedImage")
         self.gridLayout_4.addLayout(self.gridLayoutProcessedImage, 0, 0, 1, 1)
-        self.horizontalLayout.addWidget(self.groupBoxProcessedImage)
+        self.gridLayout.addWidget(self.groupBoxProcessedImage, 1, 1, 1, 1)
+        self.horizontalLayoutColorSpace = QtWidgets.QHBoxLayout()
+        self.horizontalLayoutColorSpace.setObjectName("horizontalLayoutColorSpace")
+        self.labelColorSpace = QtWidgets.QLabel(self.centralwidget)
+        self.labelColorSpace.setObjectName("labelColorSpace")
+        self.horizontalLayoutColorSpace.addWidget(self.labelColorSpace)
+        self.comboBoxColorSpace = QtWidgets.QComboBox(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.comboBoxColorSpace.sizePolicy().hasHeightForWidth())
+        self.comboBoxColorSpace.setSizePolicy(sizePolicy)
+        self.comboBoxColorSpace.setObjectName("comboBoxColorSpace")
+        self.horizontalLayoutColorSpace.addWidget(self.comboBoxColorSpace)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayoutColorSpace.addItem(spacerItem)
+        self.gridLayout.addLayout(self.horizontalLayoutColorSpace, 0, 0, 1, 2)
         self.setCentralWidget(self.centralwidget)
 
         self.__retranslateUi()
@@ -342,6 +368,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
         self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
         self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
+        self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
 
 
 class Label(QtWidgets.QLabel):
@@ -396,16 +423,18 @@ class Frame(QtWidgets.QFrame):
         super().__init__(parent)
         self.__isVisible = False
         self.__backgroundColor = QtGui.QColor(255, 255, 255)
-        self.__isGrayscale = True
+        self.__colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
+
+    def setColorDisplayFormat(self, format : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+        self.__colorDisplayFormat = format
+        self.update()
 
     def setFrameColorRgb(self, red, green, blue):
         if red is not None and green is not None and blue is not None:
             self.__backgroundColor = QtGui.QColor(red, green, blue)
-            self.__isGrayscale = False
             self.__isVisible = True
         else:
             self.__isVisible = False
-            self.__isGrayscale = True
             self.__backgroundColor = QtGui.QColor(255, 255, 255)
 
         self.update()
@@ -413,11 +442,9 @@ class Frame(QtWidgets.QFrame):
     def setFrameColorGrayLevel(self, grayLevel):
         if grayLevel is not None:
             self.__backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
-            self.__isGrayscale = True
             self.__isVisible = True
         else:
             self.__isVisible = False
-            self.__isGrayscale = True
             self.__backgroundColor = QtGui.QColor(255, 255, 255)
 
         self.update()
@@ -437,25 +464,52 @@ class Frame(QtWidgets.QFrame):
             else:
                 painter.setBrush(QtCore.Qt.black)
 
-            if self.__isGrayscale:
-                text = str(self.__backgroundColor.red())
+            if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY:
+                text = str((self.__backgroundColor.red() + self.__backgroundColor.green() + self.__backgroundColor.blue()) // 3)
 
                 horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
 
                 painter.drawText((self.width() - horizontalAdvance) / 2,
                                  self.height() / 2 + fontMetrics.height() / 2,
                                  text)
-            else:
-                textRed = str(self.__backgroundColor.red())
-                textGreen = str(self.__backgroundColor.green())
-                textBlue = str(self.__backgroundColor.blue())
+            elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK:
+                # TODO: proper text positions
+                textCyan = str(self.__backgroundColor.cyan())
+                textMagenta = str(self.__backgroundColor.magenta())
+                textYellow = str(self.__backgroundColor.yellow())
+                textBlack = str(self.__backgroundColor.black())
 
-                horizontalAdvanceRed = fontMetrics.horizontalAdvance(textRed, len(textRed))
-                horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textGreen, len(textGreen))
-                horizontalAdvanceBlue = fontMetrics.horizontalAdvance(textBlue, len(textBlue))
+                horizontalAdvanceCyan = fontMetrics.horizontalAdvance(textCyan, len(textCyan))
+                horizontalAdvanceMagenta = fontMetrics.horizontalAdvance(textMagenta, len(textMagenta))
+                horizontalAdvanceYellow = fontMetrics.horizontalAdvance(textYellow, len(textYellow))
+                horizontalAdvanceBlack = fontMetrics.horizontalAdvance(textBlack, len(textBlack))
+
+                textZoneHeight = (self.height() - 5) / 4
+
+                painter.drawText((self.width() - horizontalAdvanceCyan) / 2, textZoneHeight, textCyan)
+                painter.drawText((self.width() - horizontalAdvanceMagenta) / 2, textZoneHeight * 2, textMagenta)
+                painter.drawText((self.width() - horizontalAdvanceYellow) / 2, textZoneHeight * 3, textYellow)
+                painter.drawText((self.width() - horizontalAdvanceBlack) / 2, textZoneHeight * 4, textBlack)
+            else:
+                if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB:
+                    textFirst = str(self.__backgroundColor.red())
+                    textSecond = str(self.__backgroundColor.green())
+                    textThird = str(self.__backgroundColor.blue())
+                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL:
+                    textFirst = str(self.__backgroundColor.hue())
+                    textSecond = str(self.__backgroundColor.saturation())
+                    textThird = str(self.__backgroundColor.lightness())
+                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV:
+                    textFirst = str(self.__backgroundColor.hue())
+                    textSecond = str(self.__backgroundColor.saturation())
+                    textThird = str(self.__backgroundColor.value())
+
+                horizontalAdvanceRed = fontMetrics.horizontalAdvance(textFirst, len(textFirst))
+                horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textSecond, len(textSecond))
+                horizontalAdvanceBlue = fontMetrics.horizontalAdvance(textThird, len(textThird))
 
                 middleTextLine = self.height() / 2 + fontMetrics.height() / 3
 
-                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(), textRed)
-                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, middleTextLine, textGreen)
-                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(), textBlue)
+                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(), textFirst)
+                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, middleTextLine, textSecond)
+                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(), textThird)

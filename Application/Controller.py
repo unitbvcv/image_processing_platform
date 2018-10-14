@@ -39,8 +39,12 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
         self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
 
+        # add options for the magnifier
+        self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
+        self.magnifierWindow.comboBoxColorSpace.currentIndexChanged.connect(self.__magnifierColorSpaceIndexChanged)
+
         # add options for the plotter
-        self.plotterWindow.comboBoxFunction.addItems([item.value for item in Application.Settings.PlotterWindowSettings.Functions])
+        self.plotterWindow.comboBoxFunction.addItems([item.value[1] for item in Application.Settings.PlotterWindowSettings.Functions])
         plotItem = self.plotterWindow.graphicsView.getPlotItem()
         plotItem.setMenuEnabled(False)
         plotItem.addLegend()
@@ -68,6 +72,8 @@ class Controller(QtCore.QObject):
 
         self.model.processedImage = None
 
+        self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
+
     def __actionLoadGrayscaleImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
@@ -78,6 +84,8 @@ class Controller(QtCore.QObject):
         self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
 
         self.model.processedImage = None
+
+        self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
 
     def __actionMagnifier(self):
         self.magnifierWindow.show()
@@ -191,19 +199,19 @@ class Controller(QtCore.QObject):
 
         # calculate the parameters for the plotter window
         self.__lastClick = QMouseEvent.pos()
-        self.calculateAndSetPlotterParameters()
+        self.__calculateAndSetPlotterParameters()
 
     def __plotterFunctionIndexChanged(self, index):
-        self.calculateAndSetPlotterParameters()
+        self.__calculateAndSetPlotterParameters()
 
-    def calculateAndSetPlotterParameters(self):
+    def __calculateAndSetPlotterParameters(self):
         plotItem = self.plotterWindow.graphicsView.getPlotItem()
         # TODO: rethink this part to be easily usable and editable by others
         plotItem.clear()
         plotItem.legend.removeItem('Original image')
         plotItem.legend.removeItem('Processed image')
 
-        if self.plotterWindow.comboBoxFunction.currentIndex() == 0:
+        if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
             if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                 plotItem.plot(range(self.model.originalImage.shape[1]),
                               self.model.originalImage[self.__lastClick.y()],
@@ -214,7 +222,7 @@ class Controller(QtCore.QObject):
                               self.model.processedImage[self.__lastClick.y()],
                               pen=QtGui.QColor(QtCore.Qt.green),
                               name='Processed image')
-        else:
+        elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
             if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                 plotItem.plot(range(self.model.originalImage.shape[0]),
                               self.model.originalImage[:, self.__lastClick.x()],
@@ -225,3 +233,26 @@ class Controller(QtCore.QObject):
                               self.model.processedImage[:, self.__lastClick.x()],
                               pen=QtGui.QColor(QtCore.Qt.green),
                               name='Processed image')
+
+    def __setMagnifierColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+        self.magnifierWindow.comboBoxColorSpace.setCurrentIndex(colorSpace.value[0])
+
+        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+                self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
+
+    def __magnifierColorSpaceIndexChanged(self, index):
+        displayFormat = None
+
+        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
+        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL
+        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV
+        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK
+        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY
+
+        self.__setMagnifierColorSpace(displayFormat)
