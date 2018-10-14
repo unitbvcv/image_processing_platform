@@ -6,9 +6,10 @@ import numpy
 import Application.Settings
 
 
-class Controller(object):
+class Controller(QtCore.QObject):
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        super().__init__(parent)
         # instantiate the model
         self.model = Model()
 
@@ -110,19 +111,41 @@ class Controller(object):
         x = QMouseEvent.x()
         y = QMouseEvent.y()
 
+        labelText = ''
+
+        # updating pixel position label
+        senderImageLabel = self.sender()
+        if senderImageLabel == self.mainWindow.labelOriginalImage:
+            if self.model.originalImage is not None:
+                labelText = f'Mouse position: x={x} y={y}'
+        elif senderImageLabel == self.mainWindow.labelProcessedImage:
+            if self.model.processedImage is not None:
+                labelText = f'Mouse position: x={x} y={y}'
+        self.mainWindow.labelMousePosition.setText(labelText)
+
+        labelText = ''
+
         # updating original image pixel label
-        if self.mainWindow.labelOriginalImage.pixmap() is not None and self.model.originalImage is not None:
+        if self.model.originalImage is not None:
             if len(self.model.originalImage.shape) == 3:
-                pass
+                pixel = self.model.originalImage[y][x]
+                labelText = f'Red: {pixel[2]} Green: {pixel[1]} Blue {pixel[0]}'
             elif len(self.model.originalImage.shape) == 2:
-                pass
+                pixel = self.model.originalImage[y][x]
+                labelText = f'Gray value: {pixel}'
+        self.mainWindow.labelOriginalImagePixelValue.setText(labelText)
+
+        labelText = ''
 
         # updating processed image pixel label
-        if self.mainWindow.labelOriginalImage.pixmap() is not None and self.model.processedImage is not None:
+        if self.model.processedImage is not None:
             if len(self.model.processedImage.shape) == 3:
-                pass
+                pixel = self.model.processedImage[y][x]
+                labelText = f'Red: {pixel[2]} Green: {pixel[1]} Blue {pixel[0]}'
             elif len(self.model.processedImage.shape) == 2:
-                pass
+                pixel = self.model.processedImage[y][x]
+                labelText = f'Gray value: {pixel}'
+        self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
     def __mousePressedEvent(self, QMouseEvent):
         # show the click point on the main window label

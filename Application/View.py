@@ -368,18 +368,6 @@ class Label(QtWidgets.QLabel):
     def mouseMoveEvent(self, QMouseEvent):
         self.mouse_moved.emit(QMouseEvent)
 
-        # updating the mouse position label
-        parentWidget = self.parentWidget()
-        while parentWidget.objectName() != 'centralWidget':
-            parentWidget = parentWidget.parentWidget()
-
-        labelMousePosition = parentWidget.findChild(QtWidgets.QLabel, 'labelMousePosition')
-        if self.pixmap() is not None:
-            labelText = 'Mouse position: x=' + str(QMouseEvent.x()) + ' y=' + str(QMouseEvent.y())
-        else:
-            labelText = ''
-        labelMousePosition.setText(labelText)
-
     def mousePressEvent(self, QMouseEvent):
         self.mouse_pressed.emit(QMouseEvent)
 
