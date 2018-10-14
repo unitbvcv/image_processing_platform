@@ -83,7 +83,6 @@ class Controller(QtCore.QObject):
         self.magnifierWindow.show()
 
     def __actionPlotter(self):
-        # TODO
         self.plotterWindow.show()
 
     def __actionSaveAsOriginalImage(self):
@@ -149,8 +148,10 @@ class Controller(QtCore.QObject):
 
     def __mousePressedEvent(self, QMouseEvent):
         # show the click point on the main window label
-        self.mainWindow.labelOriginalImage.setClickPosition(QMouseEvent.pos())
-        self.mainWindow.labelProcessedImage.setClickPosition(QMouseEvent.pos())
+        if self.model.originalImage is not None:
+            self.mainWindow.labelOriginalImage.setClickPosition(QMouseEvent.pos())
+        if self.model.processedImage is not None:
+            self.mainWindow.labelProcessedImage.setClickPosition(QMouseEvent.pos())
 
         # calculate the parameters for the magnifier window
         offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
