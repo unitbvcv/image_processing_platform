@@ -59,7 +59,7 @@ class Controller(QtCore.QObject):
 
     def __actionInvert(self):
         self.model.processedImage = numpy.invert(self.model.originalImage)
-        self.mainWindow.setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
+        self.__setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
 
     def __actionLoadColorImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open color file',
@@ -73,6 +73,11 @@ class Controller(QtCore.QObject):
         self.model.processedImage = None
 
         self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
+        self.magnifierWindow.reset()
+        self.plotterWindow.reset()
+        self.mainWindow.labelOriginalImage.setClickPosition(None)
+        self.mainWindow.labelProcessedImage.setClickPosition(None)
+        self.__lastClick = None
 
     def __actionLoadGrayscaleImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
@@ -86,6 +91,11 @@ class Controller(QtCore.QObject):
         self.model.processedImage = None
 
         self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
+        self.magnifierWindow.reset()
+        self.plotterWindow.reset()
+        self.mainWindow.labelOriginalImage.setClickPosition(None)
+        self.mainWindow.labelProcessedImage.setClickPosition(None)
+        self.__lastClick = None
 
     def __actionMagnifier(self):
         self.magnifierWindow.show()
@@ -96,7 +106,7 @@ class Controller(QtCore.QObject):
     def __actionSaveAsOriginalImage(self):
         self.model.originalImage = self.model.processedImage
         self.model.processedImage = None
-        self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
+        self.__setImages(originalImage=self.model.originalImage, processedImage=None)
 
     def __actionSaveProcessedImage(self):
         if self.model.processedImage is not None:
@@ -155,50 +165,18 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
     def __mousePressedEvent(self, QMouseEvent):
+        self.__lastClick = QMouseEvent.pos()
+
         # show the click point on the main window label
         if self.model.originalImage is not None:
-            self.mainWindow.labelOriginalImage.setClickPosition(QMouseEvent.pos())
+            self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick)
         if self.model.processedImage is not None:
-            self.mainWindow.labelProcessedImage.setClickPosition(QMouseEvent.pos())
+            self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick)
 
         # calculate the parameters for the magnifier window
-        offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
-
-        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-                yPos = QMouseEvent.y() - offset + row
-                xPos = QMouseEvent.x() - offset + column
-
-                if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
-                        yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
-                    pixelOriginalImage = self.model.originalImage[yPos, xPos]
-                else:
-                    pixelOriginalImage = None
-
-                if self.model.processedImage is not None and yPos >= 0 and xPos >= 0 and \
-                        yPos < self.model.processedImage.shape[0] and xPos < self.model.processedImage.shape[1]:
-                    pixelProcessedImage = self.model.processedImage[yPos, xPos]
-                else:
-                    pixelProcessedImage = None
-
-                if self.model.originalImage is not None:
-                    if len(self.model.originalImage.shape) == 3:
-                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2], pixelOriginalImage[1], pixelOriginalImage[0])
-                    elif len(self.model.originalImage.shape) == 2:
-                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(pixelOriginalImage)
-                else:
-                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
-
-                if self.model.processedImage is not None:
-                    if len(self.model.processedImage.shape) == 3:
-                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
-                    elif len(self.model.originalImage.shape) == 2:
-                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(pixelProcessedImage)
-                else:
-                    self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
+        self.__calculateAndSetMagnifierParameters()
 
         # calculate the parameters for the plotter window
-        self.__lastClick = QMouseEvent.pos()
         self.__calculateAndSetPlotterParameters()
 
     def __plotterFunctionIndexChanged(self, index):
@@ -207,32 +185,35 @@ class Controller(QtCore.QObject):
     def __calculateAndSetPlotterParameters(self):
         plotItem = self.plotterWindow.graphicsView.getPlotItem()
         # TODO: rethink this part to be easily usable and editable by others
-        plotItem.clear()
-        plotItem.legend.removeItem('Original image')
-        plotItem.legend.removeItem('Processed image')
+        self.plotterWindow.reset()
 
-        if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
-            if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                plotItem.plot(range(self.model.originalImage.shape[1]),
-                              self.model.originalImage[self.__lastClick.y()],
-                              pen=QtGui.QColor(QtCore.Qt.red),
-                              name='Original image')
-            if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                plotItem.plot(range(self.model.processedImage.shape[1]),
-                              self.model.processedImage[self.__lastClick.y()],
-                              pen=QtGui.QColor(QtCore.Qt.green),
-                              name='Processed image')
-        elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
-            if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                plotItem.plot(range(self.model.originalImage.shape[0]),
-                              self.model.originalImage[:, self.__lastClick.x()],
-                              pen=QtGui.QColor(QtCore.Qt.red),
-                              name='Original image')
-            if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                plotItem.plot(range(self.model.processedImage.shape[0]),
-                              self.model.processedImage[:, self.__lastClick.x()],
-                              pen=QtGui.QColor(QtCore.Qt.green),
-                              name='Processed image')
+        if self.__lastClick is not None:
+            if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
+                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotItem.plot(range(self.model.originalImage.shape[1]),
+                                  self.model.originalImage[self.__lastClick.y()],
+                                  pen=QtGui.QColor(QtCore.Qt.red),
+                                  name='Original image')
+                    self.plotterWindow.plotLegendStringList.append('Original image')
+                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotItem.plot(range(self.model.processedImage.shape[1]),
+                                  self.model.processedImage[self.__lastClick.y()],
+                                  pen=QtGui.QColor(QtCore.Qt.green),
+                                  name='Processed image')
+                    self.plotterWindow.plotLegendStringList.append('Processed image')
+            elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
+                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotItem.plot(range(self.model.originalImage.shape[0]),
+                                  self.model.originalImage[:, self.__lastClick.x()],
+                                  pen=QtGui.QColor(QtCore.Qt.red),
+                                  name='Original image')
+                    self.plotterWindow.plotLegendStringList.append('Original image')
+                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotItem.plot(range(self.model.processedImage.shape[0]),
+                                  self.model.processedImage[:, self.__lastClick.x()],
+                                  pen=QtGui.QColor(QtCore.Qt.green),
+                                  name='Processed image')
+                    self.plotterWindow.plotLegendStringList.append('Processed image')
 
     def __setMagnifierColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
         self.magnifierWindow.comboBoxColorSpace.setCurrentIndex(colorSpace.value[0])
@@ -257,3 +238,50 @@ class Controller(QtCore.QObject):
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY
 
         self.__setMagnifierColorSpace(displayFormat)
+
+    def __calculateAndSetMagnifierParameters(self):
+        offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
+
+        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+                yPos = self.__lastClick.y() - offset + row
+                xPos = self.__lastClick.x() - offset + column
+
+                if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
+                        yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
+                    pixelOriginalImage = self.model.originalImage[yPos, xPos]
+                else:
+                    pixelOriginalImage = None
+
+                if self.model.processedImage is not None and yPos >= 0 and xPos >= 0 and \
+                        yPos < self.model.processedImage.shape[0] and xPos < self.model.processedImage.shape[1]:
+                    pixelProcessedImage = self.model.processedImage[yPos, xPos]
+                else:
+                    pixelProcessedImage = None
+
+                if self.model.originalImage is not None:
+                    if len(self.model.originalImage.shape) == 3:
+                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2],
+                                                                                                  pixelOriginalImage[1],
+                                                                                                  pixelOriginalImage[0])
+                    elif len(self.model.originalImage.shape) == 2:
+                        self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(
+                            pixelOriginalImage)
+                else:
+                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
+
+                if self.model.processedImage is not None:
+                    if len(self.model.processedImage.shape) == 3:
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(
+                            pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])
+                    elif len(self.model.originalImage.shape) == 2:
+                        self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(
+                            pixelProcessedImage)
+                else:
+                    self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
+
+    def __setImages(self, originalImage, processedImage):
+        self.mainWindow.setImages(processedImage=processedImage, originalImage=originalImage)
+
+        self.__calculateAndSetMagnifierParameters()
+        self.__calculateAndSetPlotterParameters()

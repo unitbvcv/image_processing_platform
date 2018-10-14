@@ -251,6 +251,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.__setupUi()
 
+        self.plotLegendStringList = []
+
     def __setupUi(self):
         self.setObjectName("PlotterWindow")
         self.resize(800, 600)
@@ -283,6 +285,14 @@ class PlotterWindow(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("PlotterWindow", "Plotter"))
         self.labelFunction.setText(_translate("PlotterWindow", "Plot function:"))
+
+    def reset(self):
+        self.graphicsView.plotItem.clear()
+
+        for legendString in self.plotLegendStringList:
+            self.graphicsView.plotItem.legend.removeItem(legendString)
+
+        self.plotLegendStringList.clear()
 
 
 class MagnifierWindow(QtWidgets.QMainWindow):
