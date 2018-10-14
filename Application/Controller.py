@@ -124,10 +124,10 @@ class Controller(QtCore.QObject):
         senderImageLabel = self.sender()
         if senderImageLabel == self.mainWindow.labelOriginalImage:
             if self.model.originalImage is not None:
-                labelText = f'Mouse position: x={x} y={y}'
+                labelText = f'Mouse position: (X, Y) = ({x}, {y})'
         elif senderImageLabel == self.mainWindow.labelProcessedImage:
             if self.model.processedImage is not None:
-                labelText = f'Mouse position: x={x} y={y}'
+                labelText = f'Mouse position: (X, Y) = ({x}, {y})'
         self.mainWindow.labelMousePosition.setText(labelText)
 
         labelText = ''
@@ -136,10 +136,10 @@ class Controller(QtCore.QObject):
         if self.model.originalImage is not None:
             if len(self.model.originalImage.shape) == 3:
                 pixel = self.model.originalImage[y][x]
-                labelText = f'Red: {pixel[2]} Green: {pixel[1]} Blue {pixel[0]}'
+                labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
             elif len(self.model.originalImage.shape) == 2:
                 pixel = self.model.originalImage[y][x]
-                labelText = f'Gray value: {pixel}'
+                labelText = f'(Gray) = ({pixel})'
         self.mainWindow.labelOriginalImagePixelValue.setText(labelText)
 
         labelText = ''
@@ -148,10 +148,10 @@ class Controller(QtCore.QObject):
         if self.model.processedImage is not None:
             if len(self.model.processedImage.shape) == 3:
                 pixel = self.model.processedImage[y][x]
-                labelText = f'Red: {pixel[2]} Green: {pixel[1]} Blue {pixel[0]}'
+                labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
             elif len(self.model.processedImage.shape) == 2:
                 pixel = self.model.processedImage[y][x]
-                labelText = f'Gray value: {pixel}'
+                labelText = f'(Gray) = ({pixel})'
         self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
     def __mousePressedEvent(self, QMouseEvent):
