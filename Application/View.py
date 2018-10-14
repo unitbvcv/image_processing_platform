@@ -370,6 +370,12 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
         self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
 
+    def reset(self):
+        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+                self.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
+                self.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
+
 
 class Label(QtWidgets.QLabel):
     def __init__(self, parent=None):
