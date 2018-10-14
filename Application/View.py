@@ -262,6 +262,11 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.labelFunction.setObjectName("labelFunction")
         self.gridLayout.addWidget(self.labelFunction, 0, 0, 1, 1)
         self.comboBoxFunction = QtWidgets.QComboBox(self.centralwidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.comboBoxFunction.sizePolicy().hasHeightForWidth())
+        self.comboBoxFunction.setSizePolicy(sizePolicy)
         self.comboBoxFunction.setObjectName("comboBoxFunction")
         self.gridLayout.addWidget(self.comboBoxFunction, 0, 1, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(613, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -287,7 +292,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.frameListOriginalImage = []
         self.frameListProcessedImage = []
 
-        # add programmatically a 9x9 grid of frames
+        # add programmatically a x by x grid of frames
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             newRowFrameListOriginalImage = []
             newRowFrameListProcessedImage = []

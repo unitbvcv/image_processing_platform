@@ -38,6 +38,9 @@ class Controller(object):
         self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
         self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
 
+        # add options for the plotter
+        self.plotterWindow.comboBoxFunction.addItems([item.value for item in Application.Settings.PlotterWindowSettings.Functions])
+
         # show the main window
         self.mainWindow.show()
 
@@ -147,7 +150,7 @@ class Controller(object):
                     elif len(self.model.originalImage.shape) == 2:
                         self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(pixelOriginalImage)
                 else:
-                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColor(None)
+                    self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
 
                 if self.model.processedImage is not None:
                     if len(self.model.processedImage.shape) == 3:
