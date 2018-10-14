@@ -24,7 +24,7 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayoutOriginalImage">
          <property name="spacing">
-          <number>0</number>
+          <number>2</number>
          </property>
         </layout>
        </item>
@@ -40,7 +40,7 @@
        <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayoutProcessedImage">
          <property name="spacing">
-          <number>0</number>
+          <number>2</number>
          </property>
         </layout>
        </item>
