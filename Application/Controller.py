@@ -247,13 +247,13 @@ class Controller(QtCore.QObject):
 
         if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
-        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL.value[0]:
+        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL
-        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV.value[0]:
+        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV
-        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK.value[0]:
+        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK
-        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY.value[0]:
+        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY
 
         self.__setMagnifierColorSpace(displayFormat)
