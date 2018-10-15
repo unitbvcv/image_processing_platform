@@ -266,7 +266,7 @@ class Controller(QtCore.QObject):
                     else:
                         pixelProcessedImage = None
 
-                    if self.model.originalImage is not None:
+                    if pixelOriginalImage is not None:
                         if len(self.model.originalImage.shape) == 3:
                             self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorRgb(pixelOriginalImage[2],
                                                                                                       pixelOriginalImage[1],
@@ -277,7 +277,7 @@ class Controller(QtCore.QObject):
                     else:
                         self.magnifierWindow.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
 
-                    if self.model.processedImage is not None:
+                    if pixelProcessedImage is not None:
                         if len(self.model.processedImage.shape) == 3:
                             self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorRgb(
                                 pixelProcessedImage[2], pixelProcessedImage[1], pixelProcessedImage[0])

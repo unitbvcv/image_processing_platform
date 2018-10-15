@@ -430,9 +430,17 @@ class Label(QtWidgets.QLabel):
 
         if self.__image is not None:
             if len(self.__image.shape) == 3:
-                painter.drawImage(0, 0, QtGui.QImage(opencv.cvtColor(self.__image, opencv.COLOR_BGR2RGB), self.__image.shape[1], self.__image.shape[0], QtGui.QImage.Format_RGB888))
+                painter.drawImage(0, 0, QtGui.QImage(opencv.cvtColor(self.__image, opencv.COLOR_BGR2RGB).data,
+                                                     self.__image.shape[1],
+                                                     self.__image.shape[0],
+                                                     3 * self.__image.shape[1],
+                                                     QtGui.QImage.Format_RGB888))
             elif len(self.__image.shape) == 2:
-                painter.drawImage(0, 0, QtGui.QImage(self.__image, self.__image.shape[1], self.__image.shape[0], QtGui.QImage.Format_Grayscale8))
+                painter.drawImage(0, 0, QtGui.QImage(self.__image.data,
+                                                     self.__image.shape[1],
+                                                     self.__image.shape[0],
+                                                     self.__image.shape[1],
+                                                     QtGui.QImage.Format_Grayscale8))
 
         if self.__clickPosition is not None:
             cornerCalcOffset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
