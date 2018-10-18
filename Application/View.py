@@ -9,6 +9,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.__setupUi()
+        self.__setupOverlays()
 
         # synchronize the scrollbars of the scrollAreas
         self.scrollAreaOriginalImage.horizontalScrollBar().valueChanged.connect(
@@ -45,6 +46,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.scrollAreaOriginalImage = QtWidgets.QScrollArea(self.groupBoxOriginalImage)
+        self.scrollAreaOriginalImage.setStyleSheet("")
         self.scrollAreaOriginalImage.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.scrollAreaOriginalImage.setWidgetResizable(True)
         self.scrollAreaOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
@@ -52,17 +54,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaWidgetOriginalImage = QtWidgets.QWidget()
         self.scrollAreaWidgetOriginalImage.setGeometry(QtCore.QRect(0, 0, 471, 568))
         self.scrollAreaWidgetOriginalImage.setObjectName("scrollAreaWidgetOriginalImage")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetOriginalImage)
-        self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
-        self.horizontalLayout_3.setSpacing(6)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.labelOriginalImage = Label(self.scrollAreaWidgetOriginalImage)
-        self.labelOriginalImage.setMouseTracking(True)
-        self.labelOriginalImage.setText("")
-        self.labelOriginalImage.setScaledContents(False)
-        self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.labelOriginalImage.setObjectName("labelOriginalImage")
-        self.horizontalLayout_3.addWidget(self.labelOriginalImage)
         self.scrollAreaOriginalImage.setWidget(self.scrollAreaWidgetOriginalImage)
         self.horizontalLayout.addWidget(self.scrollAreaOriginalImage)
         self.horizontalLayoutImages.addWidget(self.groupBoxOriginalImage)
@@ -85,17 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaWidgetProcessedImage = QtWidgets.QWidget()
         self.scrollAreaWidgetProcessedImage.setGeometry(QtCore.QRect(0, 0, 470, 568))
         self.scrollAreaWidgetProcessedImage.setObjectName("scrollAreaWidgetProcessedImage")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetProcessedImage)
-        self.horizontalLayout_4.setContentsMargins(11, 11, 11, 11)
-        self.horizontalLayout_4.setSpacing(6)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.labelProcessedImage = Label(self.scrollAreaWidgetProcessedImage)
-        self.labelProcessedImage.setMouseTracking(True)
-        self.labelProcessedImage.setText("")
-        self.labelProcessedImage.setScaledContents(False)
-        self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.labelProcessedImage.setObjectName("labelProcessedImage")
-        self.horizontalLayout_4.addWidget(self.labelProcessedImage)
         self.scrollAreaProcessedImage.setWidget(self.scrollAreaWidgetProcessedImage)
         self.horizontalLayout_2.addWidget(self.scrollAreaProcessedImage)
         self.horizontalLayoutImages.addWidget(self.groupBoxProcessedImage)
@@ -241,12 +221,67 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
         self.actionInvert.setText(_translate("MainWindow", "Invert"))
 
+    def __setupOverlays(self):
+        self.stackedLayoutOriginalImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetOriginalImage)
+        self.stackedLayoutProcessedImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetProcessedImage)
+
+        self.stackedLayoutOriginalImage.setStackingMode(QtWidgets.QStackedLayout.StackAll)
+        self.stackedLayoutProcessedImage.setStackingMode(QtWidgets.QStackedLayout.StackAll)
+
+        self.labelOriginalImage = Application.View.ImageLabel(self.scrollAreaWidgetOriginalImage)
+        self.labelOriginalImage.setMouseTracking(False)
+        self.labelOriginalImage.setText("")
+        self.labelOriginalImage.setScaledContents(True)
+        self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelOriginalImage.setObjectName("labelOriginalImage")
+        self.labelOriginalImage.setGeometry(0, 0, 0, 0)
+
+        self.labelOriginalImageOverlay = Application.View.OverlayLabel(self.scrollAreaWidgetOriginalImage)
+        self.labelOriginalImageOverlay.setMouseTracking(True)
+        self.labelOriginalImageOverlay.setText("")
+        self.labelOriginalImageOverlay.setScaledContents(True)
+        self.labelOriginalImageOverlay.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelOriginalImageOverlay.setObjectName("labelOriginalImageOverlay")
+        self.labelOriginalImageOverlay.setAutoFillBackground(False)
+        self.labelOriginalImageOverlay.setGeometry(0, 0, 0, 0)
+
+        self.labelProcessedImage = Application.View.ImageLabel(self.scrollAreaWidgetProcessedImage)
+        self.labelProcessedImage.setMouseTracking(False)
+        self.labelProcessedImage.setText("")
+        self.labelProcessedImage.setScaledContents(True)
+        self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelProcessedImage.setObjectName("labelProcessedImage")
+        self.labelProcessedImage.setGeometry(0, 0, 0, 0)
+
+        self.labelProcessedImageOverlay = Application.View.OverlayLabel(self.scrollAreaWidgetProcessedImage)
+        self.labelProcessedImageOverlay.setMouseTracking(True)
+        self.labelProcessedImageOverlay.setText("")
+        self.labelProcessedImageOverlay.setScaledContents(True)
+        self.labelProcessedImageOverlay.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelProcessedImageOverlay.setObjectName("labelProcessedImageOverlay")
+        self.labelProcessedImageOverlay.setAutoFillBackground(False)
+        self.labelProcessedImageOverlay.setGeometry(0, 0, 0, 0)
+
+        self.stackedLayoutOriginalImage.addWidget(self.labelOriginalImage)
+        self.stackedLayoutOriginalImage.addWidget(self.labelOriginalImageOverlay)
+        self.stackedLayoutProcessedImage.addWidget(self.labelProcessedImage)
+        self.stackedLayoutProcessedImage.addWidget(self.labelProcessedImageOverlay)
+
+        # we want the overlays on top; we don't know if those lines are needed
+        self.labelOriginalImageOverlay.raise_()
+        self.labelProcessedImageOverlay.raise_()
+
     def setImages(self, originalImage, processedImage):
         self.labelOriginalImage.setLabelImage(originalImage)
         self.labelProcessedImage.setLabelImage(processedImage)
+        self.labelOriginalImageOverlay.setImageSize(self.labelOriginalImage.size())
+        self.labelProcessedImageOverlay.setImageSize(self.labelProcessedImage.size())
 
 
 class PlotterWindow(QtWidgets.QMainWindow):
+    closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
+    showing = QtCore.pyqtSignal(QtGui.QShowEvent, name='showing')
+
     def __init__(self, parent):
         super().__init__(parent)
         self.__setupUi()
@@ -305,8 +340,17 @@ class PlotterWindow(QtWidgets.QMainWindow):
 
         self.plotLegendStringList.clear()
 
+    def closeEvent(self, QCloseEvent):
+        self.closing.emit(QCloseEvent)
+
+    def showEvent(self, QShowEvent):
+        self.showing.emit(QShowEvent)
+
 
 class MagnifierWindow(QtWidgets.QMainWindow):
+    closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
+    showing = QtCore.pyqtSignal(QtGui.QShowEvent, name='showing')
+
     def __init__(self, parent):
         super().__init__(parent)
         self.__setupUi()
@@ -319,10 +363,10 @@ class MagnifierWindow(QtWidgets.QMainWindow):
             newRowFrameListProcessedImage = []
 
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-                newRowFrameListOriginalImage.append(Frame())
+                newRowFrameListOriginalImage.append(MagnifierPixelFrame())
                 self.gridLayoutOriginalImage.addWidget(newRowFrameListOriginalImage[-1], row, column)
 
-                newRowFrameListProcessedImage.append(Frame())
+                newRowFrameListProcessedImage.append(MagnifierPixelFrame())
                 self.gridLayoutProcessedImage.addWidget(newRowFrameListProcessedImage[-1], row, column)
 
             self.frameListOriginalImage.append(newRowFrameListOriginalImage)
@@ -397,76 +441,58 @@ class MagnifierWindow(QtWidgets.QMainWindow):
                 self.frameListOriginalImage[row][column].setFrameColorGrayLevel(None)
                 self.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
 
+    def closeEvent(self, QCloseEvent):
+        self.closing.emit(QCloseEvent)
 
-class Label(QtWidgets.QLabel):
+    def showEvent(self, QShowEvent):
+        self.showing.emit(QShowEvent)
+
+
+class ImageLabel(QtWidgets.QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.__clickPosition = None
-        self.__image = None
+        self.__qPixmap = None
         self.__zoom = 1.0
-
-    mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
-    mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
 
     def setZoom(self, zoom):
         self.__zoom = zoom
-        if self.__image is not None:
-            self.setFixedSize(self.__image.shape[0] * zoom, self.__image.shape[1] * zoom)
-
-    def setClickPosition(self, clickPosition : QtCore.QPoint):
-        self.__clickPosition = clickPosition
-        self.update()
+        if self.__qPixmap is not None:
+            self.setFixedSize(self.__qPixmap.size() * zoom)
 
     def setLabelImage(self, image):
-        self.__image = image
         if image is not None:
-            self.setFixedSize(image.shape[1], image.shape[0])
+            if len(image.shape) == 3:
+                self.__qPixmap = QtGui.QPixmap.fromImage(
+                    QtGui.QImage(opencv.cvtColor(image, opencv.COLOR_BGR2RGB).data,
+                                 image.shape[1],
+                                 image.shape[0],
+                                 3 * image.shape[1],
+                                 QtGui.QImage.Format_RGB888))
+            elif len(image.shape) == 2:
+                self.__qPixmap = QtGui.QPixmap.fromImage(
+                    QtGui.QImage(image.data,
+                                 image.shape[1],
+                                 image.shape[0],
+                                 image.shape[1],
+                                 QtGui.QImage.Format_Grayscale8))
+
+            self.setFixedSize(self.__qPixmap.size())
+            self.setPixmap(self.__qPixmap)
         else:
             self.setFixedSize(0, 0)
+            self.__qPixmap = None
+
         self.update()
 
-    def mouseMoveEvent(self, QMouseEvent):
-        self.mouse_moved.emit(QMouseEvent)
 
-    def mousePressEvent(self, QMouseEvent):
-        self.mouse_pressed.emit(QMouseEvent)
-
-    def paintEvent(self, QPaintEvent):
-        painter = QtGui.QPainter(self)
-
-        if self.__image is not None:
-            if len(self.__image.shape) == 3:
-                painter.drawImage(0, 0, QtGui.QImage(opencv.cvtColor(self.__image, opencv.COLOR_BGR2RGB).data,
-                                                     self.__image.shape[1],
-                                                     self.__image.shape[0],
-                                                     3 * self.__image.shape[1],
-                                                     QtGui.QImage.Format_RGB888))
-            elif len(self.__image.shape) == 2:
-                painter.drawImage(0, 0, QtGui.QImage(self.__image.data,
-                                                     self.__image.shape[1],
-                                                     self.__image.shape[0],
-                                                     self.__image.shape[1],
-                                                     QtGui.QImage.Format_Grayscale8))
-
-        if self.__clickPosition is not None:
-            cornerCalcOffset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
-
-            painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
-            painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
-            painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
-                             self.__clickPosition.y() - cornerCalcOffset,
-                             Application.Settings.MagnifierWindowSettings.frameGridSize,
-                             Application.Settings.MagnifierWindowSettings.frameGridSize)
-
-
-class Frame(QtWidgets.QFrame):
+class MagnifierPixelFrame(QtWidgets.QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__isVisible = False
         self.__backgroundColor = QtGui.QColor(255, 255, 255)
         self.__colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
 
-    def setColorDisplayFormat(self, format : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorSpaces):
         self.__colorDisplayFormat = format
         self.update()
 
@@ -551,6 +577,52 @@ class Frame(QtWidgets.QFrame):
 
                 middleTextLine = self.height() / 2 + fontMetrics.height() / 3
 
-                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(), textFirst)
+                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(),
+                                 textFirst)
                 painter.drawText((self.width() - horizontalAdvanceGreen) / 2, middleTextLine, textSecond)
-                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(), textThird)
+                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(),
+                                 textThird)
+
+
+class OverlayLabel(QtWidgets.QLabel):
+    mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
+    mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.__clickPosition = None
+        self.__zoom = 1.0
+        self.__imageSize = None
+
+    def setImageSize(self, imageSize : QtCore.QSize):
+        self.__imageSize = imageSize
+
+    def setZoom(self, zoom):
+        self.__zoom = zoom
+        if self.__imageSize is not None:
+            self.setFixedSize(self.__imageSize * zoom)
+
+    def paintEvent(self, QPaintEvent):
+        # TODO: take zoom into account
+        painter = QtGui.QPainter(self)
+        painter.setPen(QtGui.QPen(QtCore.Qt.red))
+
+        if self.__clickPosition is not None:
+            cornerCalcOffset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
+
+            painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
+            painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
+            painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
+                             self.__clickPosition.y() - cornerCalcOffset,
+                             Application.Settings.MagnifierWindowSettings.frameGridSize,
+                             Application.Settings.MagnifierWindowSettings.frameGridSize)
+
+    def mouseMoveEvent(self, QMouseEvent):
+        self.mouse_moved.emit(QMouseEvent)
+
+    def mousePressEvent(self, QMouseEvent):
+        self.mouse_pressed.emit(QMouseEvent)
+
+    def setClickPosition(self, clickPosition: QtCore.QPoint):
+        self.__clickPosition = clickPosition
+        self.update()

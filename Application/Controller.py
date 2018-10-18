@@ -34,10 +34,10 @@ class Controller(QtCore.QObject):
         self.mainWindow.actionSaveProcessedImage.triggered.connect(self.__actionSaveProcessedImage)
 
         # connect image labels to slots for updating the ui
-        self.mainWindow.labelOriginalImage.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
-        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelOriginalImageOverlay.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelProcessedImageOverlay.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelOriginalImageOverlay.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelProcessedImageOverlay.mouse_pressed.connect(self.__mousePressedEvent)
 
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
@@ -46,6 +46,9 @@ class Controller(QtCore.QObject):
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
         self.magnifierWindow.comboBoxColorSpace.currentIndexChanged.connect(self.__magnifierColorSpaceIndexChanged)
+        self.magnifierWindow.closing.connect(self.__magnifierWindowClosed)
+        self.magnifierWindow.showing.connect(self.__magnifierWindowShowed)
+        self.__isMagnifierWindowShowing = False
 
         # add options for the plotter
         self.plotterWindow.comboBoxFunction.addItems([item.value[1] for item in Application.Settings.PlotterWindowSettings.Functions])
@@ -55,10 +58,15 @@ class Controller(QtCore.QObject):
         plotItemProcessedImage.setMenuEnabled(False)
         plotItemOriginalImage.addLegend()
         plotItemProcessedImage.addLegend()
+        plotItemOriginalImage.showGrid(x=True, y=True, alpha=1.0)
+        plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
         self.plotterWindow.graphicsViewOriginalImage.setXLink(self.plotterWindow.graphicsViewProcessedImage)
         self.plotterWindow.graphicsViewOriginalImage.setYLink(self.plotterWindow.graphicsViewProcessedImage)
         self.plotterWindow.comboBoxFunction.currentIndexChanged.connect(self.__plotterFunctionIndexChanged)
         self.__lastClick = None
+        self.plotterWindow.closing.connect(self.__plotterWindowClosed)
+        self.plotterWindow.showing.connect(self.__plotterWindowShowed)
+        self.__isPlotterWindowShowing = False
 
         # show the main window
         self.mainWindow.show()
@@ -82,11 +90,7 @@ class Controller(QtCore.QObject):
         self.model.processedImage = None
 
         self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
-        self.magnifierWindow.reset()
-        self.plotterWindow.reset()
-        self.mainWindow.labelOriginalImage.setClickPosition(None)
-        self.mainWindow.labelProcessedImage.setClickPosition(None)
-        self.__lastClick = None
+        self.__resetApplicationState()
 
     def __actionLoadGrayscaleImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
@@ -100,11 +104,7 @@ class Controller(QtCore.QObject):
         self.model.processedImage = None
 
         self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
-        self.magnifierWindow.reset()
-        self.plotterWindow.reset()
-        self.mainWindow.labelOriginalImage.setClickPosition(None)
-        self.mainWindow.labelProcessedImage.setClickPosition(None)
-        self.__lastClick = None
+        self.__resetApplicationState()
 
     def __actionMagnifier(self):
         self.magnifierWindow.show()
@@ -116,6 +116,11 @@ class Controller(QtCore.QObject):
         self.model.originalImage = self.model.processedImage
         self.model.processedImage = None
         self.__setImages(originalImage=self.model.originalImage, processedImage=None)
+
+        if self.model.originalImage is None:
+            self.__resetApplicationState()
+
+        self.__setClickPosition()
 
     def __actionSaveProcessedImage(self):
         if self.model.processedImage is not None:
@@ -133,7 +138,7 @@ class Controller(QtCore.QObject):
             opencv.imwrite(filename, self.model.processedImage)
 
     def __mouseMovedEvent(self, QMouseEvent):
-
+        # TODO: take zoom into account
         x = QMouseEvent.x()
         y = QMouseEvent.y()
 
@@ -174,19 +179,18 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
     def __mousePressedEvent(self, QMouseEvent):
-        self.__lastClick = QMouseEvent.pos()
+        if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
+            # TODO: take zoom into account
+            self.__lastClick = QMouseEvent.pos()
 
-        # show the click point on the main window label
-        if self.model.originalImage is not None:
-            self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick)
-        if self.model.processedImage is not None:
-            self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick)
+            # show the click point on the main window label
+            self.__setClickPosition()
 
-        # calculate the parameters for the magnifier window
-        self.__calculateAndSetMagnifierParameters()
+            # calculate the parameters for the magnifier window
+            self.__calculateAndSetMagnifierParameters()
 
-        # calculate the parameters for the plotter window
-        self.__calculateAndSetPlotterParameters()
+            # calculate the parameters for the plotter window
+            self.__calculateAndSetPlotterParameters()
 
     def __plotterFunctionIndexChanged(self, index):
         self.__calculateAndSetPlotterParameters()
@@ -197,33 +201,46 @@ class Controller(QtCore.QObject):
         # TODO: rethink this part to be easily usable and editable by others
         self.plotterWindow.reset()
 
+        plotDataItemOriginalImage = None
+        plotDataItemProcessedImage = None
+        plotDataItems = []
+
         if self.__lastClick is not None:
             if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotItemOriginalImage.plot(range(self.model.originalImage.shape[1]),
+                    plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[1]),
                                   self.model.originalImage[self.__lastClick.y()],
                                   pen=QtGui.QColor(QtCore.Qt.red),
                                   name='Original image')
                     self.plotterWindow.plotLegendStringList.append('Original image')
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotItemProcessedImage.plot(range(self.model.processedImage.shape[1]),
+                    plotDataItemProcessedImage = plotItemProcessedImage.plot(range(self.model.processedImage.shape[1]),
                                   self.model.processedImage[self.__lastClick.y()],
                                   pen=QtGui.QColor(QtCore.Qt.green),
                                   name='Processed image')
                     self.plotterWindow.plotLegendStringList.append('Processed image')
             elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotItemOriginalImage.plot(range(self.model.originalImage.shape[0]),
+                    plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[0]),
                                   self.model.originalImage[:, self.__lastClick.x()],
                                   pen=QtGui.QColor(QtCore.Qt.red),
                                   name='Original image')
                     self.plotterWindow.plotLegendStringList.append('Original image')
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotItemProcessedImage.plot(range(self.model.processedImage.shape[0]),
+                    plotDataItemProcessedImage = plotItemProcessedImage.plot(range(self.model.processedImage.shape[0]),
                                   self.model.processedImage[:, self.__lastClick.x()],
                                   pen=QtGui.QColor(QtCore.Qt.green),
                                   name='Processed image')
                     self.plotterWindow.plotLegendStringList.append('Processed image')
+
+        if plotDataItemOriginalImage is not None:
+            plotDataItems.append(plotDataItemOriginalImage)
+
+        if plotDataItemProcessedImage is not None:
+            plotDataItems.append(plotDataItemProcessedImage)
+
+        plotItemOriginalImage.getViewBox().autoRange(items=plotDataItems)
+        plotItemProcessedImage.getViewBox().autoRange(items=plotDataItems)
 
     def __setMagnifierColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
         self.magnifierWindow.comboBoxColorSpace.setCurrentIndex(colorSpace.value[0])
@@ -294,8 +311,11 @@ class Controller(QtCore.QObject):
     def __setImages(self, originalImage, processedImage):
         self.mainWindow.setImages(processedImage=processedImage, originalImage=originalImage)
 
-        self.__calculateAndSetMagnifierParameters()
-        self.__calculateAndSetPlotterParameters()
+        if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
+            self.__calculateAndSetMagnifierParameters()
+            self.__calculateAndSetPlotterParameters()
+
+        self.__setClickPosition()
 
     def __zoomValueResetEvent(self):
         # TODO: get rid of magic numbers here, use the settings class
@@ -316,3 +336,41 @@ class Controller(QtCore.QObject):
     def __setZoom(self, zoom):
         self.mainWindow.labelOriginalImage.setZoom(zoom)
         self.mainWindow.labelProcessedImage.setZoom(zoom)
+        self.mainWindow.labelOriginalImageOverlay.setZoom(zoom)
+        self.mainWindow.labelProcessedImageOverlay.setZoom(zoom)
+
+    def __resetApplicationState(self):
+        self.magnifierWindow.reset()
+        self.plotterWindow.reset()
+        self.mainWindow.labelOriginalImageOverlay.setClickPosition(None)
+        self.mainWindow.labelProcessedImageOverlay.setClickPosition(None)
+        self.__lastClick = None
+
+    def __magnifierWindowShowed(self):
+        self.__isMagnifierWindowShowing = True
+
+    def __magnifierWindowClosed(self):
+        self.__isMagnifierWindowShowing = False
+
+        if not self.__isPlotterWindowShowing:
+            self.__resetApplicationState()
+
+    def __plotterWindowShowed(self):
+        self.__isPlotterWindowShowing = True
+
+    def __plotterWindowClosed(self):
+        self.__isPlotterWindowShowing = False
+
+        if not self.__isMagnifierWindowShowing:
+            self.__resetApplicationState()
+
+    def __setClickPosition(self):
+        self.mainWindow.labelOriginalImageOverlay.setClickPosition(None)
+        self.mainWindow.labelProcessedImageOverlay.setClickPosition(None)
+
+        if self.__isPlotterWindowShowing or self.__isMagnifierWindowShowing:
+            if self.model.originalImage is not None:
+                self.mainWindow.labelOriginalImageOverlay.setClickPosition(self.__lastClick)
+
+            if self.model.processedImage is not None:
+                self.mainWindow.labelProcessedImageOverlay.setClickPosition(self.__lastClick)
