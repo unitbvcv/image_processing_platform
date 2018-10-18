@@ -39,6 +39,10 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
         self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
 
+        # connect the zoom option
+        self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
+        self.mainWindow.buttonResetZoom.pressed.connect(self.__zoomValueResetEvent)
+
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
         self.magnifierWindow.comboBoxColorSpace.currentIndexChanged.connect(self.__magnifierColorSpaceIndexChanged)
@@ -292,3 +296,23 @@ class Controller(QtCore.QObject):
 
         self.__calculateAndSetMagnifierParameters()
         self.__calculateAndSetPlotterParameters()
+
+    def __zoomValueResetEvent(self):
+        # TODO: get rid of magic numbers here, use the settings class
+        self.mainWindow.horizontalSliderZoom.setValue(18)
+        self.__zoomValueChangedEvent(18)
+
+    def __zoomValueChangedEvent(self, value):
+        zoom = self.__calculateZoomFromSliderValue(value)
+        self.__setZoom(zoom)
+        self.mainWindow.labelZoomFactor.setText(f"{zoom:.2f}x")
+
+    def __calculateZoomFromSliderValue(self, value):
+        # slider goes from 0 to 198, in steps of 1
+        # zoom goes from 0.1x to 10x in steps of 0.1
+        # TODO: get rid of magic numbers here, use the settings class
+        return value * 0.05 + 0.1
+
+    def __setZoom(self, zoom):
+        self.mainWindow.labelOriginalImage.setZoom(zoom)
+        self.mainWindow.labelProcessedImage.setZoom(zoom)

@@ -403,9 +403,15 @@ class Label(QtWidgets.QLabel):
         super().__init__(parent)
         self.__clickPosition = None
         self.__image = None
+        self.__zoom = 1.0
 
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
     mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
+
+    def setZoom(self, zoom):
+        self.__zoom = zoom
+        if self.__image is not None:
+            self.setFixedSize(self.__image.shape[0] * zoom, self.__image.shape[1] * zoom)
 
     def setClickPosition(self, clickPosition : QtCore.QPoint):
         self.__clickPosition = clickPosition
