@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraph import PlotWidget
 import cv2 as opencv
-import numpy
 import Application.Settings
+import Application.Utils.ColorSpaceOperations
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -522,25 +522,25 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             painter.fillRect(self.rect(), self.__backgroundColor)
 
             font = QtGui.QFont("Arial")
-            font.setPointSize(8)
+            font.setPointSize(Application.Settings.MagnifierWindowSettings.fontSize)
             painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
 
-            if self.__backgroundColor.lightness() < 127:
+            if Application.Utils.ColorSpaceOperations.isColorDark(self.__backgroundColor):
                 painter.setPen(QtCore.Qt.white)
             else:
                 painter.setBrush(QtCore.Qt.black)
 
             if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY:
-                text = str((self.__backgroundColor.red() + self.__backgroundColor.green() + self.__backgroundColor.blue()) // 3)
+                text = str((self.__backgroundColor.red() + self.__backgroundColor.green() +
+                            self.__backgroundColor.blue()) // 3)
 
                 horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
 
                 painter.drawText((self.width() - horizontalAdvance) / 2,
-                                 self.height() / 2 + fontMetrics.height() / 2,
+                                 self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
             elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK:
-                # TODO: proper text positions
                 textCyan = str(self.__backgroundColor.cyan())
                 textMagenta = str(self.__backgroundColor.magenta())
                 textYellow = str(self.__backgroundColor.yellow())
@@ -551,12 +551,24 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 horizontalAdvanceYellow = fontMetrics.horizontalAdvance(textYellow, len(textYellow))
                 horizontalAdvanceBlack = fontMetrics.horizontalAdvance(textBlack, len(textBlack))
 
-                textZoneHeight = (self.height() - 5) / 4
+                # the frame is split into equal rectangles called zones
+                # this tries to center the text in one of the 3 zones of the frame
+                # the (usually) visible part of the text is the ascent, not the height
+                # fonts usually have a baseline; the font will have parts of it below the baseline
+                # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
+                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding) / 4
+                halfFontAscent = fontMetrics.ascent() / 2
+                halfZoneHeight = zoneHeight / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding / 2
 
-                painter.drawText((self.width() - horizontalAdvanceCyan) / 2, textZoneHeight, textCyan)
-                painter.drawText((self.width() - horizontalAdvanceMagenta) / 2, textZoneHeight * 2, textMagenta)
-                painter.drawText((self.width() - horizontalAdvanceYellow) / 2, textZoneHeight * 3, textYellow)
-                painter.drawText((self.width() - horizontalAdvanceBlack) / 2, textZoneHeight * 4, textBlack)
+                painter.drawText((self.width() - horizontalAdvanceCyan) / 2, zoneHeight - zoneHeightOffset,
+                                 textCyan)
+                painter.drawText((self.width() - horizontalAdvanceMagenta) / 2, zoneHeight * 2 - zoneHeightOffset,
+                                 textMagenta)
+                painter.drawText((self.width() - horizontalAdvanceYellow) / 2, zoneHeight * 3 - zoneHeightOffset,
+                                 textYellow)
+                painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
+                                 textBlack)
             else:
                 if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB:
                     textFirst = str(self.__backgroundColor.red())
@@ -575,12 +587,21 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textSecond, len(textSecond))
                 horizontalAdvanceBlue = fontMetrics.horizontalAdvance(textThird, len(textThird))
 
-                middleTextLine = self.height() / 2 + fontMetrics.height() / 3
+                # the frame is split into equal rectangles called zones
+                # this tries to center the text in one of the 3 zones of the frame
+                # the (usually) visible part of the text is the ascent, not the height
+                # fonts usually have a baseline; the font will have parts of it below the baseline
+                # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
+                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding) / 3
+                halfFontAscent = fontMetrics.ascent() / 2
+                halfZoneHeight = zoneHeight / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding / 2
 
-                painter.drawText((self.width() - horizontalAdvanceRed) / 2, middleTextLine - fontMetrics.height(),
+                painter.drawText((self.width() - horizontalAdvanceRed) / 2, zoneHeight - zoneHeightOffset,
                                  textFirst)
-                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, middleTextLine, textSecond)
-                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, middleTextLine + fontMetrics.height(),
+                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, zoneHeight * 2 - zoneHeightOffset,
+                                 textSecond)
+                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, zoneHeight * 3 - zoneHeightOffset,
                                  textThird)
 
 
@@ -594,7 +615,7 @@ class OverlayLabel(QtWidgets.QLabel):
         self.__zoom = 1.0
         self.__imageSize = None
 
-    def setImageSize(self, imageSize : QtCore.QSize):
+    def setImageSize(self, imageSize: QtCore.QSize):
         self.__imageSize = imageSize
 
     def setZoom(self, zoom):

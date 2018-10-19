@@ -1,5 +1,4 @@
 import cv2 as opencv
-import numpy
 
 
 class Model(object):

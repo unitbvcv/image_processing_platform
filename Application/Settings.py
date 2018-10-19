@@ -1,7 +1,11 @@
 from enum import Enum
 
+
 class MagnifierWindowSettings:
-    frameGridSize = 9
+    frameGridSize = 9  # positive odd number here
+    threeZoneHeightPadding = 12  # in pixels
+    fourZoneHeightPadding = 6  # in pixels
+    fontSize = 8  # in points
 
     class ColorSpaces(Enum):
         RGB = (0, 'RGB (Red Green Blue)')
@@ -9,6 +13,7 @@ class MagnifierWindowSettings:
         HSV = (2, 'HSV (Hue Saturation Value)')
         CMYK = (3, 'CMYK (Cyan Magenta Yellow Black)')
         GRAY = (4, 'Grayscale')
+
 
 class PlotterWindowSettings:
     class Functions(Enum):

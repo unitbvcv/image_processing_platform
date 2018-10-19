@@ -49,6 +49,10 @@ class Controller(QtCore.QObject):
         self.magnifierWindow.closing.connect(self.__magnifierWindowClosed)
         self.magnifierWindow.showing.connect(self.__magnifierWindowShowed)
         self.__isMagnifierWindowShowing = False
+        # validate magnifier settings
+        assert (Application.Settings.MagnifierWindowSettings.frameGridSize % 2 == 1)
+        assert (Application.Settings.MagnifierWindowSettings.frameGridSize > 0)
+        assert (Application.Settings.MagnifierWindowSettings.fontSize > 0)
 
         # add options for the plotter
         self.plotterWindow.comboBoxFunction.addItems([item.value[1] for item in Application.Settings.PlotterWindowSettings.Functions])
