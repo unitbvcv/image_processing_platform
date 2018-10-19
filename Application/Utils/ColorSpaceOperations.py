@@ -16,6 +16,7 @@ def calculateColorLuminance(QColor):
     # https://en.wikipedia.org/wiki/Luma_%28video%29#Use_of_relative_luminance
     return 0.2126 * componentsList[0] + 0.7152 * componentsList[1] + 0.0722 * componentsList[2]
 
+
 def isColorDark(QColor):
     # returns True if the luminance is low enough
     # 0.179 has been calculated using the equations explained here

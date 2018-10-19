@@ -624,19 +624,18 @@ class OverlayLabel(QtWidgets.QLabel):
             self.setFixedSize(self.__imageSize * zoom)
 
     def paintEvent(self, QPaintEvent):
-        # TODO: take zoom into account
         painter = QtGui.QPainter(self)
         painter.setPen(QtGui.QPen(QtCore.Qt.red))
 
         if self.__clickPosition is not None:
-            cornerCalcOffset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
+            cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2 * self.__zoom)
 
             painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
             painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
             painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
                              self.__clickPosition.y() - cornerCalcOffset,
-                             Application.Settings.MagnifierWindowSettings.frameGridSize,
-                             Application.Settings.MagnifierWindowSettings.frameGridSize)
+                             int(Application.Settings.MagnifierWindowSettings.frameGridSize * self.__zoom),
+                             int(Application.Settings.MagnifierWindowSettings.frameGridSize * self.__zoom))
 
     def mouseMoveEvent(self, QMouseEvent):
         self.mouse_moved.emit(QMouseEvent)

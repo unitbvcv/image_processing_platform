@@ -42,6 +42,7 @@ class Controller(QtCore.QObject):
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
         self.mainWindow.buttonResetZoom.pressed.connect(self.__zoomValueResetEvent)
+        self.__zoom = 1.0
 
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
@@ -76,11 +77,16 @@ class Controller(QtCore.QObject):
         self.mainWindow.show()
 
     def __actionExit(self):
+        """
+        test
+        :return:
+        """
         QtCore.QCoreApplication.quit()
 
     def __actionInvert(self):
-        self.model.processedImage = numpy.invert(self.model.originalImage)
-        self.__setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
+        if self.model.originalImage is not None:
+            self.model.processedImage = numpy.invert(self.model.originalImage)
+            self.__setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
 
     def __actionLoadColorImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open color file',
@@ -142,9 +148,8 @@ class Controller(QtCore.QObject):
             opencv.imwrite(filename, self.model.processedImage)
 
     def __mouseMovedEvent(self, QMouseEvent):
-        # TODO: take zoom into account
-        x = QMouseEvent.x()
-        y = QMouseEvent.y()
+        x = int(QMouseEvent.x() / self.__zoom)
+        y = int(QMouseEvent.y() / self.__zoom)
 
         labelText = ''
 
@@ -184,8 +189,8 @@ class Controller(QtCore.QObject):
 
     def __mousePressedEvent(self, QMouseEvent):
         if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
-            # TODO: take zoom into account
-            self.__lastClick = QMouseEvent.pos()
+
+            self.__lastClick = (QMouseEvent.pos() / self.__zoom)
 
             # show the click point on the main window label
             self.__setClickPosition()
@@ -315,6 +320,10 @@ class Controller(QtCore.QObject):
     def __setImages(self, originalImage, processedImage):
         self.mainWindow.setImages(processedImage=processedImage, originalImage=originalImage)
 
+        # resetting the images will show them with original resolution
+        # they need to be zoomed
+        self.__zoomValueChangedEvent(self.__calculateSliderValueFromZoom(self.__zoom))
+
         if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
             self.__calculateAndSetMagnifierParameters()
             self.__calculateAndSetPlotterParameters()
@@ -327,9 +336,9 @@ class Controller(QtCore.QObject):
         self.__zoomValueChangedEvent(18)
 
     def __zoomValueChangedEvent(self, value):
-        zoom = self.__calculateZoomFromSliderValue(value)
-        self.__setZoom(zoom)
-        self.mainWindow.labelZoomFactor.setText(f"{zoom:.2f}x")
+        self.__zoom = self.__calculateZoomFromSliderValue(value)
+        self.__setZoomInView()
+        self.mainWindow.labelZoomFactor.setText(f"{self.__zoom:.2f}x")
 
     def __calculateZoomFromSliderValue(self, value):
         # slider goes from 0 to 198, in steps of 1
@@ -337,11 +346,17 @@ class Controller(QtCore.QObject):
         # TODO: get rid of magic numbers here, use the settings class
         return value * 0.05 + 0.1
 
-    def __setZoom(self, zoom):
-        self.mainWindow.labelOriginalImage.setZoom(zoom)
-        self.mainWindow.labelProcessedImage.setZoom(zoom)
-        self.mainWindow.labelOriginalImageOverlay.setZoom(zoom)
-        self.mainWindow.labelProcessedImageOverlay.setZoom(zoom)
+    def __calculateSliderValueFromZoom(self, value):
+        # slider goes from 0 to 198, in steps of 1
+        # zoom goes from 0.1x to 10x in steps of 0.1
+        return int((value - 0.1) / 0.05)
+
+    def __setZoomInView(self):
+        self.mainWindow.labelOriginalImage.setZoom(self.__zoom)
+        self.mainWindow.labelProcessedImage.setZoom(self.__zoom)
+        self.mainWindow.labelOriginalImageOverlay.setZoom(self.__zoom)
+        self.mainWindow.labelProcessedImageOverlay.setZoom(self.__zoom)
+        self.__setClickPosition()
 
     def __resetApplicationState(self):
         self.magnifierWindow.reset()
@@ -374,7 +389,9 @@ class Controller(QtCore.QObject):
 
         if self.__isPlotterWindowShowing or self.__isMagnifierWindowShowing:
             if self.model.originalImage is not None:
-                self.mainWindow.labelOriginalImageOverlay.setClickPosition(self.__lastClick)
+                # the lastClick is converted to zoom 1.0 in mousePressedEvent
+                # here it must be converted back to the original position on the label where the click was made
+                self.mainWindow.labelOriginalImageOverlay.setClickPosition(self.__lastClick * self.__zoom)
 
             if self.model.processedImage is not None:
-                self.mainWindow.labelProcessedImageOverlay.setClickPosition(self.__lastClick)
+                self.mainWindow.labelProcessedImageOverlay.setClickPosition(self.__lastClick * self.__zoom)
