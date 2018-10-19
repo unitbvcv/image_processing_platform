@@ -7,7 +7,7 @@ class MagnifierWindowSettings:
     fourZoneHeightPadding = 6  # in pixels
     fontSize = 8  # in points
 
-    class ColorSpaces(Enum):
+    class ColorModels(Enum):
         RGB = (0, 'RGB (Red Green Blue)')
         HSL = (1, 'HSL (Hue Saturation Lightness)')
         HSV = (2, 'HSV (Hue Saturation Value)')

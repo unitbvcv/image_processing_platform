@@ -46,8 +46,8 @@ class Controller(QtCore.QObject):
         self.mainWindow.horizontalSliderZoom.sliderReleased.connect(self.__zoomSliderReleasedEvent)
 
         # add options for the magnifier
-        self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
-        self.magnifierWindow.comboBoxColorSpace.currentIndexChanged.connect(self.__magnifierColorSpaceIndexChanged)
+        self.magnifierWindow.comboBoxColorModel.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorModels])
+        self.magnifierWindow.comboBoxColorModel.currentIndexChanged.connect(self.__magnifierColorModelIndexChanged)
         self.magnifierWindow.closing.connect(self.__magnifierWindowClosed)
         self.magnifierWindow.showing.connect(self.__magnifierWindowShowed)
         self.__isMagnifierWindowShowing = False
@@ -100,7 +100,7 @@ class Controller(QtCore.QObject):
 
         self.model.processedImage = None
 
-        self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
+        self.__setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.RGB)
         self.__resetApplicationState()
 
     def __actionLoadGrayscaleImage(self):
@@ -114,7 +114,7 @@ class Controller(QtCore.QObject):
 
         self.model.processedImage = None
 
-        self.__setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
+        self.__setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.GRAY)
         self.__resetApplicationState()
 
     def __actionMagnifier(self):
@@ -252,29 +252,29 @@ class Controller(QtCore.QObject):
         plotItemOriginalImage.getViewBox().autoRange(items=plotDataItems)
         plotItemProcessedImage.getViewBox().autoRange(items=plotDataItems)
 
-    def __setMagnifierColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
-        self.magnifierWindow.comboBoxColorSpace.setCurrentIndex(colorSpace.value[0])
+    def __setMagnifierColorModel(self, colorModel : Application.Settings.MagnifierWindowSettings.ColorModels):
+        self.magnifierWindow.comboBoxColorModel.setCurrentIndex(colorModel.value[0])
 
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-                self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
-                self.magnifierWindow.frameListProcessedImage[row][column].setColorDisplayFormat(colorSpace)
+                self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorModel)
+                self.magnifierWindow.frameListProcessedImage[row][column].setColorDisplayFormat(colorModel)
 
-    def __magnifierColorSpaceIndexChanged(self, index):
+    def __magnifierColorModelIndexChanged(self, index):
         displayFormat = None
 
-        if index == Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB.value[0]:
-            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
-        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL.value[0]:
-            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL
-        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV.value[0]:
-            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV
-        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK.value[0]:
-            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK
-        elif index == Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY.value[0]:
-            displayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY
+        if index == Application.Settings.MagnifierWindowSettings.ColorModels.RGB.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
+        elif index == Application.Settings.MagnifierWindowSettings.ColorModels.HSL.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.HSL
+        elif index == Application.Settings.MagnifierWindowSettings.ColorModels.HSV.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.HSV
+        elif index == Application.Settings.MagnifierWindowSettings.ColorModels.CMYK.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.CMYK
+        elif index == Application.Settings.MagnifierWindowSettings.ColorModels.GRAY.value[0]:
+            displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.GRAY
 
-        self.__setMagnifierColorSpace(displayFormat)
+        self.__setMagnifierColorModel(displayFormat)
 
     def __calculateAndSetMagnifierParameters(self):
         if self.__lastClick is not None:

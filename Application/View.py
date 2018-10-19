@@ -409,17 +409,17 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout.addWidget(self.groupBoxProcessedImage, 1, 1, 1, 1)
         self.horizontalLayoutColorSpace = QtWidgets.QHBoxLayout()
         self.horizontalLayoutColorSpace.setObjectName("horizontalLayoutColorSpace")
-        self.labelColorSpace = QtWidgets.QLabel(self.centralwidget)
-        self.labelColorSpace.setObjectName("labelColorSpace")
-        self.horizontalLayoutColorSpace.addWidget(self.labelColorSpace)
-        self.comboBoxColorSpace = QtWidgets.QComboBox(self.centralwidget)
+        self.labelColorModel = QtWidgets.QLabel(self.centralwidget)
+        self.labelColorModel.setObjectName("labelColorModel")
+        self.horizontalLayoutColorSpace.addWidget(self.labelColorModel)
+        self.comboBoxColorModel = QtWidgets.QComboBox(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.comboBoxColorSpace.sizePolicy().hasHeightForWidth())
-        self.comboBoxColorSpace.setSizePolicy(sizePolicy)
-        self.comboBoxColorSpace.setObjectName("comboBoxColorSpace")
-        self.horizontalLayoutColorSpace.addWidget(self.comboBoxColorSpace)
+        sizePolicy.setHeightForWidth(self.comboBoxColorModel.sizePolicy().hasHeightForWidth())
+        self.comboBoxColorModel.setSizePolicy(sizePolicy)
+        self.comboBoxColorModel.setObjectName("comboBoxColorModel")
+        self.horizontalLayoutColorSpace.addWidget(self.comboBoxColorModel)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayoutColorSpace.addItem(spacerItem)
         self.gridLayout.addLayout(self.horizontalLayoutColorSpace, 0, 0, 1, 2)
@@ -433,7 +433,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
         self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
         self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
-        self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
+        self.labelColorModel.setText(_translate("MagnifierWindow", "Color model:"))
 
     def reset(self):
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
@@ -490,9 +490,9 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
         super().__init__(parent)
         self.__isVisible = False
         self.__backgroundColor = QtGui.QColor(255, 255, 255)
-        self.__colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
+        self.__colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
 
-    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorSpaces):
+    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorModels):
         self.__colorDisplayFormat = format
         self.update()
 
@@ -531,7 +531,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             else:
                 painter.setBrush(QtCore.Qt.black)
 
-            if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY:
+            if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.GRAY:
                 text = str((self.__backgroundColor.red() + self.__backgroundColor.green() +
                             self.__backgroundColor.blue()) // 3)
 
@@ -540,7 +540,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvance) / 2,
                                  self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
-            elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK:
+            elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.CMYK:
                 textCyan = str(self.__backgroundColor.cyan())
                 textMagenta = str(self.__backgroundColor.magenta())
                 textYellow = str(self.__backgroundColor.yellow())
@@ -570,15 +570,15 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
                                  textBlack)
             else:
-                if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB:
+                if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.RGB:
                     textFirst = str(self.__backgroundColor.red())
                     textSecond = str(self.__backgroundColor.green())
                     textThird = str(self.__backgroundColor.blue())
-                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL:
+                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSL:
                     textFirst = str(self.__backgroundColor.hue())
                     textSecond = str(self.__backgroundColor.saturation())
                     textThird = str(self.__backgroundColor.lightness())
-                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV:
+                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSV:
                     textFirst = str(self.__backgroundColor.hue())
                     textSecond = str(self.__backgroundColor.saturation())
                     textThird = str(self.__backgroundColor.value())

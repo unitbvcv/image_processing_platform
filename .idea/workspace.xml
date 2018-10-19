@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a829f824-c7d6-420f-b976-f03299325dd3" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/Model.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/Utils/ColorSpaceOperations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Utils/ColorSpaceOperations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/QtDesignerUI/MagnifierWindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/Application/QtDesignerUI/MagnifierWindow.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Application/View.py" beforeDir="false" afterPath="$PROJECT_DIR$/Application/View.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -14,8 +15,8 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1539980400024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/ImageProcessingTool$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1538920530631" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/ImageProcessingToolPython$ImageProcessingTool_pyw.coverage" NAME="ImageProcessingTool.pyw Coverage Results" MODIFIED="1539985912966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="FUSProjectUsageTrigger">
     <session id="228403155">
@@ -62,23 +63,23 @@
           <entry key="project.open.time.0" value="3" />
           <entry key="project.open.time.4" value="3" />
           <entry key="project.open.time.5" value="20" />
-          <entry key="project.open.time.6" value="5" />
+          <entry key="project.open.time.6" value="6" />
           <entry key="project.open.time.7" value="1" />
-          <entry key="project.opened" value="32" />
+          <entry key="project.opened" value="33" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="12" />
-          <entry key="dummy" value="267" />
-          <entry key="py" value="26988" />
+          <entry key="dummy" value="307" />
+          <entry key="py" value="27284" />
           <entry key="txt" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="268" />
-          <entry key="Python" value="27000" />
+          <entry key="PLAIN_TEXT" value="308" />
+          <entry key="Python" value="27296" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -141,7 +142,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ImageProcessingTool.pyw">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
+            <state relative-caret-position="96">
               <caret line="6" column="38" selection-start-line="6" selection-start-column="28" selection-end-line="6" selection-end-column="38" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
@@ -153,12 +154,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/View.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="625" column="38" selection-start-line="625" selection-start-column="38" selection-end-line="625" selection-end-column="38" />
+            <state relative-caret-position="131">
+              <caret line="374" column="10" selection-start-line="374" selection-start-column="10" selection-end-line="374" selection-end-column="10" />
               <folding>
                 <element signature="e#0#42#0" expanded="true" />
                 <element signature="e#17379#20632#0" />
-                <element signature="e#20685#26401#0" />
                 <element signature="e#26444#27741#0" />
                 <element signature="e#27793#34834#0" />
               </folding>
@@ -178,12 +178,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Application/Controller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="362" column="34" lean-forward="true" selection-start-line="362" selection-start-column="34" selection-end-line="362" selection-end-column="34" />
+            <state relative-caret-position="397">
+              <caret line="325" column="36" selection-start-line="325" selection-start-column="13" selection-end-line="325" selection-end-column="36" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
-                <marker date="1539981034480" expanded="true" signature="19563:19572" ph="..." />
-                <marker date="1539981034480" expanded="true" signature="19708:19714" ph="..." />
+                <marker date="1539986066652" expanded="true" signature="19180:19308" ph="..." />
               </folding>
             </state>
           </provider>
@@ -192,8 +191,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/Model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+            <state relative-caret-position="120">
+              <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -201,7 +200,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Application/Settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
+            <state relative-caret-position="264">
               <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
             </state>
           </provider>
@@ -233,6 +232,7 @@
       <find>__setZoom</find>
       <find>__setClickPosition</find>
       <find>__setZoomInView</find>
+      <find>colorSpace</find>
     </findStrings>
     <replaceStrings>
       <replace />
@@ -276,6 +276,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -298,7 +299,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -379,15 +379,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2065053" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20939597" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3229508" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.4995005" weight="0.31311476" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32027972" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.4995005" visible="true" weight="0.3104895" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39016393" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -538,7 +538,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ImageProcessingTool.pyw">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
+        <state relative-caret-position="96">
           <caret line="6" column="38" selection-start-line="6" selection-start-column="28" selection-end-line="6" selection-end-column="38" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
@@ -546,21 +546,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Application/Settings.py">
+    <entry file="file://$PROJECT_DIR$/Application/Model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
+        <state relative-caret-position="120">
+          <caret line="5" column="9" selection-start-line="5" selection-start-column="9" selection-end-line="5" selection-end-column="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/View.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="625" column="38" selection-start-line="625" selection-start-column="38" selection-end-line="625" selection-end-column="38" />
+        <state relative-caret-position="131">
+          <caret line="374" column="10" selection-start-line="374" selection-start-column="10" selection-end-line="374" selection-end-column="10" />
           <folding>
             <element signature="e#0#42#0" expanded="true" />
             <element signature="e#17379#20632#0" />
-            <element signature="e#20685#26401#0" />
             <element signature="e#26444#27741#0" />
             <element signature="e#27793#34834#0" />
           </folding>
@@ -574,21 +573,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Application/Model.py">
+    <entry file="file://$PROJECT_DIR$/Application/Settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="9" selection-start-line="3" selection-start-column="9" selection-end-line="3" selection-end-column="9" />
+        <state relative-caret-position="264">
+          <caret line="11" column="29" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Application/Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="362" column="34" lean-forward="true" selection-start-line="362" selection-start-column="34" selection-end-line="362" selection-end-column="34" />
+        <state relative-caret-position="397">
+          <caret line="325" column="36" selection-start-line="325" selection-start-column="13" selection-end-line="325" selection-end-column="36" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
-            <marker date="1539981034480" expanded="true" signature="19563:19572" ph="..." />
-            <marker date="1539981034480" expanded="true" signature="19708:19714" ph="..." />
+            <marker date="1539986066652" expanded="true" signature="19180:19308" ph="..." />
           </folding>
         </state>
       </provider>

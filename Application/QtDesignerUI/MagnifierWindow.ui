@@ -62,14 +62,14 @@
     <item row="0" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayoutColorSpace">
       <item>
-       <widget class="QLabel" name="labelColorSpace">
+       <widget class="QLabel" name="labelColorModel">
         <property name="text">
-         <string>Color space:</string>
+         <string>Color model:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBoxColorSpace">
+       <widget class="QComboBox" name="comboBoxColorModel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
