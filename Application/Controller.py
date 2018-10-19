@@ -216,7 +216,7 @@ class Controller(QtCore.QObject):
         plotDataItems = []
 
         if self.__lastClick is not None:
-            if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
+            if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[1]),
                                   self.model.originalImage[self.__lastClick.y()],
@@ -229,7 +229,7 @@ class Controller(QtCore.QObject):
                                   pen=QtGui.QColor(QtCore.Qt.green),
                                   name='Processed image')
                     self.plotterWindow.plotLegendStringList.append('Processed image')
-            elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
+            elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[0]),
                                   self.model.originalImage[:, self.__lastClick.x()],
