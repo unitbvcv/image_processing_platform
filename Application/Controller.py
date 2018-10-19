@@ -43,6 +43,7 @@ class Controller(QtCore.QObject):
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
         self.mainWindow.buttonResetZoom.pressed.connect(self.__zoomValueResetEvent)
         self.__zoom = 1.0
+        self.mainWindow.horizontalSliderZoom.sliderReleased.connect(self.__zoomSliderReleasedEvent)
 
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorSpace.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
@@ -333,12 +334,11 @@ class Controller(QtCore.QObject):
     def __zoomValueResetEvent(self):
         # TODO: get rid of magic numbers here, use the settings class
         self.mainWindow.horizontalSliderZoom.setValue(18)
-        self.__zoomValueChangedEvent(18)
+        self.__zoomSliderReleasedEvent()
 
     def __zoomValueChangedEvent(self, value):
-        self.__zoom = self.__calculateZoomFromSliderValue(value)
-        self.__setZoomInView()
-        self.mainWindow.labelZoomFactor.setText(f"{self.__zoom:.2f}x")
+        zoom = self.__calculateZoomFromSliderValue(value)
+        self.mainWindow.labelZoomFactor.setText(f"{zoom:.2f}x")
 
     def __calculateZoomFromSliderValue(self, value):
         # slider goes from 0 to 198, in steps of 1
@@ -395,3 +395,7 @@ class Controller(QtCore.QObject):
 
             if self.model.processedImage is not None:
                 self.mainWindow.labelProcessedImageOverlay.setClickPosition(self.__lastClick * self.__zoom)
+
+    def __zoomSliderReleasedEvent(self):
+        self.__zoom = self.__calculateZoomFromSliderValue(self.mainWindow.horizontalSliderZoom.value())
+        self.__setZoomInView()
