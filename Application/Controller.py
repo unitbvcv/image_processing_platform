@@ -150,10 +150,10 @@ class Controller(QtCore.QObject):
 
         # updating pixel position label
         senderImageLabel = self.sender()
-        if senderImageLabel == self.mainWindow.labelOriginalImage:
+        if senderImageLabel == self.mainWindow.labelOriginalImageOverlay:
             if self.model.originalImage is not None:
                 labelText = f'Mouse position: (X, Y) = ({x}, {y})'
-        elif senderImageLabel == self.mainWindow.labelProcessedImage:
+        elif senderImageLabel == self.mainWindow.labelProcessedImageOverlay:
             if self.model.processedImage is not None:
                 labelText = f'Mouse position: (X, Y) = ({x}, {y})'
         self.mainWindow.labelMousePosition.setText(labelText)
