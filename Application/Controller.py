@@ -7,6 +7,8 @@ import Application.Settings
 
 
 class Controller(QtCore.QObject):
+    __isMagnifierWindowShowing = False
+    __isPlotterWindowShowing = False
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -42,16 +44,29 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImage.mouse_leaved.connect(self.__mouseLeavedEvent)
 
         # connect the zoom option
+        self.mainWindow.horizontalSliderZoom.setMinimum(
+            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMinimumValue))
+        self.mainWindow.horizontalSliderZoom.setMaximum(
+            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMaximumValue))
+        self.mainWindow.horizontalSliderZoom.setSingleStep(
+            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomSingleStep))
+        self.mainWindow.horizontalSliderZoom.setPageStep(
+            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomPageStep))
+        self.mainWindow.horizontalSliderZoom.setTickInterval(
+            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.ticksInterval)
+        )
+        defaultZoom = self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
+        self.mainWindow.horizontalSliderZoom.setValue(defaultZoom)
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
         self.mainWindow.buttonResetZoom.pressed.connect(self.__zoomValueResetEvent)
-        self.__zoom = 1.0
+        self.__zoom = self.__calculateSliderValueFromZoom(defaultZoom)
 
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorModel.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorModels])
         self.magnifierWindow.comboBoxColorModel.currentIndexChanged.connect(self.__magnifierColorModelIndexChanged)
         self.magnifierWindow.closing.connect(self.__magnifierWindowClosed)
         self.magnifierWindow.showing.connect(self.__magnifierWindowShowed)
-        self.__isMagnifierWindowShowing = False
+
         # validate magnifier settings
         assert (Application.Settings.MagnifierWindowSettings.frameGridSize % 2 == 1)
         assert (Application.Settings.MagnifierWindowSettings.frameGridSize > 0)
@@ -73,7 +88,6 @@ class Controller(QtCore.QObject):
         self.__lastClick = None
         self.plotterWindow.closing.connect(self.__plotterWindowClosed)
         self.plotterWindow.showing.connect(self.__plotterWindowShowed)
-        self.__isPlotterWindowShowing = False
 
         # show the main window
         self.mainWindow.show()
@@ -150,58 +164,59 @@ class Controller(QtCore.QObject):
             opencv.imwrite(filename, self.model.processedImage)
 
     def __mouseMovedEvent(self, QMouseEvent):
-        x = int(QMouseEvent.x() / self.__zoom)
-        y = int(QMouseEvent.y() / self.__zoom)
+        if self.__zoom != 0:
+            x = int(QMouseEvent.x() / self.__zoom)
+            y = int(QMouseEvent.y() / self.__zoom)
 
-        labelText = ''
+            labelText = ''
 
-        # updating pixel position label
-        senderImageLabel = self.sender()
-        if senderImageLabel == self.mainWindow.labelOriginalImage:
+            # updating pixel position label
+            senderImageLabel = self.sender()
+            if senderImageLabel == self.mainWindow.labelOriginalImage:
+                if self.model.originalImage is not None:
+                    labelText = f'Mouse position: (X, Y) = ({x}, {y})'
+            elif senderImageLabel == self.mainWindow.labelProcessedImage:
+                if self.model.processedImage is not None:
+                    labelText = f'Mouse position: (X, Y) = ({x}, {y})'
+            self.mainWindow.labelMousePosition.setText(labelText)
+
+            labelText = ''
+
+            # updating original image pixel label
             if self.model.originalImage is not None:
-                labelText = f'Mouse position: (X, Y) = ({x}, {y})'
-        elif senderImageLabel == self.mainWindow.labelProcessedImage:
+                if len(self.model.originalImage.shape) == 3:
+                    pixel = self.model.originalImage[y][x]
+                    labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
+                elif len(self.model.originalImage.shape) == 2:
+                    pixel = self.model.originalImage[y][x]
+                    labelText = f'(Gray) = ({pixel})'
+            self.mainWindow.labelOriginalImagePixelValue.setText(labelText)
+
+            labelText = ''
+
+            # updating processed image pixel label
             if self.model.processedImage is not None:
-                labelText = f'Mouse position: (X, Y) = ({x}, {y})'
-        self.mainWindow.labelMousePosition.setText(labelText)
-
-        labelText = ''
-
-        # updating original image pixel label
-        if self.model.originalImage is not None:
-            if len(self.model.originalImage.shape) == 3:
-                pixel = self.model.originalImage[y][x]
-                labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
-            elif len(self.model.originalImage.shape) == 2:
-                pixel = self.model.originalImage[y][x]
-                labelText = f'(Gray) = ({pixel})'
-        self.mainWindow.labelOriginalImagePixelValue.setText(labelText)
-
-        labelText = ''
-
-        # updating processed image pixel label
-        if self.model.processedImage is not None:
-            if len(self.model.processedImage.shape) == 3:
-                pixel = self.model.processedImage[y][x]
-                labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
-            elif len(self.model.processedImage.shape) == 2:
-                pixel = self.model.processedImage[y][x]
-                labelText = f'(Gray) = ({pixel})'
-        self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
+                if len(self.model.processedImage.shape) == 3:
+                    pixel = self.model.processedImage[y][x]
+                    labelText = f'(R, G, B) = ({pixel[2]}, {pixel[1]}, {pixel[0]})'
+                elif len(self.model.processedImage.shape) == 2:
+                    pixel = self.model.processedImage[y][x]
+                    labelText = f'(Gray) = ({pixel})'
+            self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
     def __mousePressedEvent(self, QMouseEvent):
         if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
+            if self.__zoom != 0:
+                self.__lastClick = (QMouseEvent.pos() / self.__zoom)
 
-            self.__lastClick = (QMouseEvent.pos() / self.__zoom)
+                # show the click point on the main window label
+                self.__setClickPosition()
 
-            # show the click point on the main window label
-            self.__setClickPosition()
+                # calculate the parameters for the magnifier window
+                self.__calculateAndSetMagnifierParameters()
 
-            # calculate the parameters for the magnifier window
-            self.__calculateAndSetMagnifierParameters()
-
-            # calculate the parameters for the plotter window
-            self.__calculateAndSetPlotterParameters()
+                # calculate the parameters for the plotter window
+                self.__calculateAndSetPlotterParameters()
 
     def __mouseLeavedEvent(self, QEvent):
         self.mainWindow.labelMousePosition.setText('')
@@ -338,9 +353,9 @@ class Controller(QtCore.QObject):
         self.__setClickPosition()
 
     def __zoomValueResetEvent(self):
-        # TODO: get rid of magic numbers here, use the settings class
-        self.mainWindow.horizontalSliderZoom.setValue(18)
-        self.__zoomValueChangedEvent(18)
+        sliderValue = self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
+        self.mainWindow.horizontalSliderZoom.setValue(sliderValue)
+        self.__zoomValueChangedEvent(sliderValue)
 
     def __zoomValueChangedEvent(self, value):
         self.__zoom = self.__calculateZoomFromSliderValue(value)
@@ -348,15 +363,12 @@ class Controller(QtCore.QObject):
         self.__setZoomInView()
 
     def __calculateZoomFromSliderValue(self, value):
-        # slider goes from 0 to 198, in steps of 1
-        # zoom goes from 0.1x to 10x in steps of 0.1
-        # TODO: get rid of magic numbers here, use the settings class
-        return value * 0.05 + 0.1
+        return value * Application.Settings.MainWindowSettings.zoomSingleStep \
+               + Application.Settings.MainWindowSettings.zoomMinimumValue
 
     def __calculateSliderValueFromZoom(self, value):
-        # slider goes from 0 to 198, in steps of 1
-        # zoom goes from 0.1x to 10x in steps of 0.1
-        return int((value - 0.1) / 0.05)
+        return int((value - Application.Settings.MainWindowSettings.zoomMinimumValue)
+                   / Application.Settings.MainWindowSettings.zoomSingleStep)
 
     def __setZoomInView(self):
         self.mainWindow.labelOriginalImage.setZoom(self.__zoom)
