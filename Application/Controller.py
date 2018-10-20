@@ -38,6 +38,8 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
         self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
         self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelOriginalImage.mouse_leaved.connect(self.__mouseLeavedEvent)
+        self.mainWindow.labelProcessedImage.mouse_leaved.connect(self.__mouseLeavedEvent)
 
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
@@ -200,6 +202,11 @@ class Controller(QtCore.QObject):
 
             # calculate the parameters for the plotter window
             self.__calculateAndSetPlotterParameters()
+
+    def __mouseLeavedEvent(self, QEvent):
+        self.mainWindow.labelMousePosition.setText('')
+        self.mainWindow.labelOriginalImagePixelValue.setText('')
+        self.mainWindow.labelProcessedImagePixelValue.setText('')
 
     def __plotterFunctionIndexChanged(self, index):
         self.__calculateAndSetPlotterParameters()
@@ -389,11 +396,7 @@ class Controller(QtCore.QObject):
 
         if self.__isPlotterWindowShowing or self.__isMagnifierWindowShowing:
             if self.model.originalImage is not None:
-                # the lastClick is converted to zoom 1.0 in mousePressedEvent
-                # here it must be converted back to the original position on the label where the click was made
-                #self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick * self.__zoom)
                 self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick)
 
             if self.model.processedImage is not None:
-                #self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick * self.__zoom)
                 self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick)

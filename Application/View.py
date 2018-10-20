@@ -420,6 +420,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
 class ImageLabel(QtWidgets.QLabel):
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
     mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
+    mouse_leaved = QtCore.pyqtSignal(QtCore.QEvent, name='mouseLeaved')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -437,6 +438,9 @@ class ImageLabel(QtWidgets.QLabel):
 
     def mousePressEvent(self, QMouseEvent):
         self.mouse_pressed.emit(QMouseEvent)
+
+    def leaveEvent(self, QEvent):
+        self.mouse_leaved.emit(QEvent)
 
     def setClickPosition(self, clickPosition: QtCore.QPoint):
         self.__clickPosition = clickPosition
