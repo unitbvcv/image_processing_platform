@@ -48,8 +48,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>471</width>
-              <height>568</height>
+              <width>477</width>
+              <height>587</height>
              </rect>
             </property>
            </widget>
@@ -86,8 +86,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>470</width>
-              <height>568</height>
+              <width>477</width>
+              <height>587</height>
              </rect>
             </property>
            </widget>
@@ -133,8 +133,14 @@
           <height>33</height>
          </size>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="maximum">
          <number>198</number>
+        </property>
+        <property name="pageStep">
+         <number>0</number>
         </property>
         <property name="sliderPosition">
          <number>18</number>
@@ -269,7 +275,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
