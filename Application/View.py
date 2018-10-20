@@ -477,16 +477,19 @@ class ImageLabel(QtWidgets.QLabel):
 
             painter.drawImage(0, 0, self.__qImage)
             painter.setPen(QtGui.QPen(QtCore.Qt.red))
+            painter.pen().setWidth(1)
 
             if self.__clickPosition is not None:
-                cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2)
+                cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
                 painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
                 painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
+                # +2 because we need to take into account the thickness of the rectangle itself
+                # we want its contents inside to be frameGridSize^2
                 painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
                                  self.__clickPosition.y() - cornerCalcOffset,
-                                 int(Application.Settings.MagnifierWindowSettings.frameGridSize),
-                                 int(Application.Settings.MagnifierWindowSettings.frameGridSize))
+                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
+                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
 
 
 class MagnifierPixelFrame(QtWidgets.QFrame):
