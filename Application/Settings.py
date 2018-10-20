@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class MainWindowSettings:
     zoomMinimumValue = 0.0
     zoomMaximumValue = 20.0
@@ -7,6 +8,7 @@ class MainWindowSettings:
     zoomPageStep = 1.0
     zoomDefaultValue = 1.0
     ticksInterval = 1
+
 
 class MagnifierWindowSettings:
     frameGridSize = 9  # positive odd number here
