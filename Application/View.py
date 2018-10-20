@@ -9,6 +9,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self._setupUi()
+        self._setupImageLabels()
 
         # synchronize the scrollbars of the scrollAreas
         self.scrollAreaOriginalImage.horizontalScrollBar().valueChanged.connect(
@@ -53,16 +54,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaWidgetOriginalImage = QtWidgets.QWidget()
         self.scrollAreaWidgetOriginalImage.setGeometry(QtCore.QRect(0, 0, 471, 568))
         self.scrollAreaWidgetOriginalImage.setObjectName("scrollAreaWidgetOriginalImage")
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetOriginalImage)
-        self.horizontalLayout_3.setContentsMargins(11, 11, 11, 11)
-        self.horizontalLayout_3.setSpacing(6)
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.labelOriginalImage = ImageLabel(self.scrollAreaWidgetOriginalImage)
-        self.labelOriginalImage.setMouseTracking(True)
-        self.labelOriginalImage.setText("")
-        self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.labelOriginalImage.setObjectName("labelOriginalImage")
-        self.horizontalLayout_3.addWidget(self.labelOriginalImage)
         self.scrollAreaOriginalImage.setWidget(self.scrollAreaWidgetOriginalImage)
         self.horizontalLayout.addWidget(self.scrollAreaOriginalImage)
         self.horizontalLayoutImages.addWidget(self.groupBoxOriginalImage)
@@ -85,16 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaWidgetProcessedImage = QtWidgets.QWidget()
         self.scrollAreaWidgetProcessedImage.setGeometry(QtCore.QRect(0, 0, 470, 568))
         self.scrollAreaWidgetProcessedImage.setObjectName("scrollAreaWidgetProcessedImage")
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.scrollAreaWidgetProcessedImage)
-        self.horizontalLayout_4.setContentsMargins(11, 11, 11, 11)
-        self.horizontalLayout_4.setSpacing(6)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.labelProcessedImage = ImageLabel(self.scrollAreaWidgetProcessedImage)
-        self.labelProcessedImage.setMouseTracking(True)
-        self.labelProcessedImage.setText("")
-        self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        self.labelProcessedImage.setObjectName("labelProcessedImage")
-        self.horizontalLayout_4.addWidget(self.labelProcessedImage)
         self.scrollAreaProcessedImage.setWidget(self.scrollAreaWidgetProcessedImage)
         self.horizontalLayout_2.addWidget(self.scrollAreaProcessedImage)
         self.horizontalLayoutImages.addWidget(self.groupBoxProcessedImage)
@@ -242,6 +223,29 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actionMagnifier.setText(_translate("MainWindow", "Magnifier"))
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
         self.actionInvert.setText(_translate("MainWindow", "Invert"))
+
+    def _setupImageLabels(self):
+        self.stackedLayoutOriginalImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetOriginalImage)
+        self.stackedLayoutProcessedImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetProcessedImage)
+
+        self.labelOriginalImage = Application.View.ImageLabel(self.scrollAreaWidgetOriginalImage)
+        self.labelOriginalImage.setMouseTracking(True)
+        self.labelOriginalImage.setText("")
+        self.labelOriginalImage.setScaledContents(False)
+        self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelOriginalImage.setObjectName("labelOriginalImage")
+        self.labelOriginalImage.setGeometry(0, 0, 0, 0)
+
+        self.labelProcessedImage = Application.View.ImageLabel(self.scrollAreaWidgetProcessedImage)
+        self.labelProcessedImage.setMouseTracking(True)
+        self.labelProcessedImage.setText("")
+        self.labelProcessedImage.setScaledContents(False)
+        self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.labelProcessedImage.setObjectName("labelProcessedImage")
+        self.labelProcessedImage.setGeometry(0, 0, 0, 0)
+
+        self.stackedLayoutOriginalImage.addWidget(self.labelOriginalImage)
+        self.stackedLayoutProcessedImage.addWidget(self.labelProcessedImage)
 
     def setImages(self, originalImage, processedImage):
         self.labelOriginalImage.setLabelImage(originalImage)

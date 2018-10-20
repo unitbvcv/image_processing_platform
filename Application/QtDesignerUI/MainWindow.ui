@@ -52,21 +52,6 @@
               <height>568</height>
              </rect>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <item>
-              <widget class="ImageLabel" name="labelOriginalImage">
-               <property name="mouseTracking">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
            </widget>
           </widget>
          </item>
@@ -105,21 +90,6 @@
               <height>568</height>
              </rect>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <item>
-              <widget class="ImageLabel" name="labelProcessedImage">
-               <property name="mouseTracking">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
            </widget>
           </widget>
          </item>
@@ -371,13 +341,6 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>ImageLabel</class>
-   <extends>QLabel</extends>
-   <header>Application.View</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
