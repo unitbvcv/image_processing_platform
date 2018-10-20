@@ -34,10 +34,10 @@ class Controller(QtCore.QObject):
         self.mainWindow.actionSaveProcessedImage.triggered.connect(self.__actionSaveProcessedImage)
 
         # connect image labels to slots for updating the ui
-        self.mainWindow.labelOriginalImageOverlay.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelProcessedImageOverlay.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelOriginalImageOverlay.mouse_pressed.connect(self.__mousePressedEvent)
-        self.mainWindow.labelProcessedImageOverlay.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelOriginalImage.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
+        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
+        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
 
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
@@ -155,10 +155,10 @@ class Controller(QtCore.QObject):
 
         # updating pixel position label
         senderImageLabel = self.sender()
-        if senderImageLabel == self.mainWindow.labelOriginalImageOverlay:
+        if senderImageLabel == self.mainWindow.labelOriginalImage:
             if self.model.originalImage is not None:
                 labelText = f'Mouse position: (X, Y) = ({x}, {y})'
-        elif senderImageLabel == self.mainWindow.labelProcessedImageOverlay:
+        elif senderImageLabel == self.mainWindow.labelProcessedImage:
             if self.model.processedImage is not None:
                 labelText = f'Mouse position: (X, Y) = ({x}, {y})'
         self.mainWindow.labelMousePosition.setText(labelText)
@@ -354,15 +354,13 @@ class Controller(QtCore.QObject):
     def __setZoomInView(self):
         self.mainWindow.labelOriginalImage.setZoom(self.__zoom)
         self.mainWindow.labelProcessedImage.setZoom(self.__zoom)
-        self.mainWindow.labelOriginalImageOverlay.setZoom(self.__zoom)
-        self.mainWindow.labelProcessedImageOverlay.setZoom(self.__zoom)
         self.__setClickPosition()
 
     def __resetApplicationState(self):
         self.magnifierWindow.reset()
         self.plotterWindow.reset()
-        self.mainWindow.labelOriginalImageOverlay.setClickPosition(None)
-        self.mainWindow.labelProcessedImageOverlay.setClickPosition(None)
+        self.mainWindow.labelOriginalImage.setClickPosition(None)
+        self.mainWindow.labelProcessedImage.setClickPosition(None)
         self.__lastClick = None
         self.__zoomValueResetEvent()
         self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().setValue(0)
@@ -386,14 +384,16 @@ class Controller(QtCore.QObject):
             self.__resetApplicationState()
 
     def __setClickPosition(self):
-        self.mainWindow.labelOriginalImageOverlay.setClickPosition(None)
-        self.mainWindow.labelProcessedImageOverlay.setClickPosition(None)
+        self.mainWindow.labelOriginalImage.setClickPosition(None)
+        self.mainWindow.labelProcessedImage.setClickPosition(None)
 
         if self.__isPlotterWindowShowing or self.__isMagnifierWindowShowing:
             if self.model.originalImage is not None:
                 # the lastClick is converted to zoom 1.0 in mousePressedEvent
                 # here it must be converted back to the original position on the label where the click was made
-                self.mainWindow.labelOriginalImageOverlay.setClickPosition(self.__lastClick * self.__zoom)
+                #self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick * self.__zoom)
+                self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick)
 
             if self.model.processedImage is not None:
-                self.mainWindow.labelProcessedImageOverlay.setClickPosition(self.__lastClick * self.__zoom)
+                #self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick * self.__zoom)
+                self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick)
