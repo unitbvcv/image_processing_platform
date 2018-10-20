@@ -8,7 +8,7 @@ import Application.Utils.ColorSpaceOperations
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
-        self.__setupUi()
+        self._setupUi()
 
         # synchronize the scrollbars of the scrollAreas
         self.scrollAreaOriginalImage.horizontalScrollBar().valueChanged.connect(
@@ -21,7 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
             self.scrollAreaOriginalImage.verticalScrollBar().setValue)
 
-    def __setupUi(self):
+    def _setupUi(self):
         self.setObjectName("MainWindow")
         self.resize(1024, 768)
         self.centralWidget = QtWidgets.QWidget(self)
@@ -223,10 +223,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
 
-        self.__retranslateUi()
+        self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def __retranslateUi(self):
+    def _retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Image Processing Tool"))
         self.groupBoxOriginalImage.setTitle(_translate("MainWindow", "Original image"))
@@ -254,11 +254,11 @@ class PlotterWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.__setupUi()
+        self._setupUi()
 
         self.plotLegendStringList = []
 
-    def __setupUi(self):
+    def _setupUi(self):
         self.setObjectName("PlotterWindow")
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
@@ -292,10 +292,10 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.setCentralWidget(self.centralwidget)
 
-        self.__retranslateUi()
+        self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def __retranslateUi(self):
+    def _retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("PlotterWindow", "Plotter"))
         self.labelFunction.setText(_translate("PlotterWindow", "Plot function:"))
@@ -323,7 +323,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.__setupUi()
+        self._setupUi()
         self.frameListOriginalImage = []
         self.frameListProcessedImage = []
 
@@ -342,7 +342,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
             self.frameListOriginalImage.append(newRowFrameListOriginalImage)
             self.frameListProcessedImage.append(newRowFrameListProcessedImage)
 
-    def __setupUi(self):
+    def _setupUi(self):
         self.setObjectName("MagnifierWindow")
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
@@ -395,10 +395,10 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.gridLayout.addLayout(self.horizontalLayoutColorSpace, 0, 0, 1, 2)
         self.setCentralWidget(self.centralwidget)
 
-        self.__retranslateUi()
+        self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
-    def __retranslateUi(self):
+    def _retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
         self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
@@ -425,14 +425,14 @@ class ImageLabel(QtWidgets.QLabel):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.__qImage = None
-        self.__zoom = 1.0
-        self.__clickPosition = None
+        self._qImage = None
+        self._zoom = 1.0
+        self._clickPosition = None
 
     def setZoom(self, zoom):
-        self.__zoom = zoom
-        if self.__qImage is not None:
-            self.setFixedSize(self.__qImage.size() * zoom)
+        self._zoom = zoom
+        if self._qImage is not None:
+            self.setFixedSize(self._qImage.size() * zoom)
 
     def mouseMoveEvent(self, QMouseEvent):
         self.mouse_moved.emit(QMouseEvent)
@@ -444,51 +444,51 @@ class ImageLabel(QtWidgets.QLabel):
         self.mouse_leaved.emit(QEvent)
 
     def setClickPosition(self, clickPosition: QtCore.QPoint):
-        self.__clickPosition = clickPosition
+        self._clickPosition = clickPosition
         self.update()
 
     def setLabelImage(self, image):
         if image is not None:
             if len(image.shape) == 3:
-                self.__qImage = QtGui.QImage(opencv.cvtColor(image, opencv.COLOR_BGR2RGB).data,
+                self._qImage = QtGui.QImage(opencv.cvtColor(image, opencv.COLOR_BGR2RGB).data,
                                              image.shape[1],
                                              image.shape[0],
                                              3 * image.shape[1],
                                              QtGui.QImage.Format_RGB888)
             elif len(image.shape) == 2:
-                self.__qImage = QtGui.QImage(image.data,
+                self._qImage = QtGui.QImage(image.data,
                                              image.shape[1],
                                              image.shape[0],
                                              image.shape[1],
                                              QtGui.QImage.Format_Grayscale8)
 
-            self.setFixedSize(self.__qImage.size())
+            self.setFixedSize(self._qImage.size())
         else:
             self.setFixedSize(0, 0)
-            self.__qPixmap = None
+            self._qPixmap = None
 
         self.update()
 
     def paintEvent(self, QPaintEvent):
-        if self.__qImage is not None:
+        if self._qImage is not None:
             painter = QtGui.QPainter(self)
             transform = QtGui.QTransform()
-            transform.scale(self.__zoom, self.__zoom)
+            transform.scale(self._zoom, self._zoom)
             painter.setTransform(transform, False)
 
-            painter.drawImage(0, 0, self.__qImage)
+            painter.drawImage(0, 0, self._qImage)
             painter.setPen(QtGui.QPen(QtCore.Qt.red))
             painter.pen().setWidth(1)
 
-            if self.__clickPosition is not None:
+            if self._clickPosition is not None:
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
-                painter.drawLine(self.__clickPosition.x(), 0, self.__clickPosition.x(), self.height() - 1)
-                painter.drawLine(0, self.__clickPosition.y(), self.width() - 1, self.__clickPosition.y())
+                painter.drawLine(self._clickPosition.x(), 0, self._clickPosition.x(), self.height() - 1)
+                painter.drawLine(0, self._clickPosition.y(), self.width() - 1, self._clickPosition.y())
                 # +2 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
-                painter.drawRect(self.__clickPosition.x() - cornerCalcOffset,
-                                 self.__clickPosition.y() - cornerCalcOffset,
+                painter.drawRect(self._clickPosition.x() - cornerCalcOffset,
+                                 self._clickPosition.y() - cornerCalcOffset,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
 
@@ -496,63 +496,63 @@ class ImageLabel(QtWidgets.QLabel):
 class MagnifierPixelFrame(QtWidgets.QFrame):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.__isVisible = False
-        self.__backgroundColor = QtGui.QColor(255, 255, 255)
-        self.__colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
+        self._isVisible = False
+        self._backgroundColor = QtGui.QColor(255, 255, 255)
+        self._colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
 
     def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorModels):
-        self.__colorDisplayFormat = format
+        self._colorDisplayFormat = format
         self.update()
 
     def setFrameColorRgb(self, red, green, blue):
         if red is not None and green is not None and blue is not None:
-            self.__backgroundColor = QtGui.QColor(red, green, blue)
-            self.__isVisible = True
+            self._backgroundColor = QtGui.QColor(red, green, blue)
+            self._isVisible = True
         else:
-            self.__isVisible = False
-            self.__backgroundColor = QtGui.QColor(255, 255, 255)
+            self._isVisible = False
+            self._backgroundColor = QtGui.QColor(255, 255, 255)
 
         self.update()
 
     def setFrameColorGrayLevel(self, grayLevel):
         if grayLevel is not None:
-            self.__backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
-            self.__isVisible = True
+            self._backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
+            self._isVisible = True
         else:
-            self.__isVisible = False
-            self.__backgroundColor = QtGui.QColor(255, 255, 255)
+            self._isVisible = False
+            self._backgroundColor = QtGui.QColor(255, 255, 255)
 
         self.update()
 
     def paintEvent(self, QPaintEvent):
-        if self.__isVisible:
+        if self._isVisible:
             painter = QtGui.QPainter(self)
-            painter.fillRect(self.rect(), self.__backgroundColor)
+            painter.fillRect(self.rect(), self._backgroundColor)
 
             font = QtGui.QFont("Arial")
             font.setPointSize(Application.Settings.MagnifierWindowSettings.fontSize)
             painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
 
-            if Application.Utils.ColorSpaceOperations.isColorDark(self.__backgroundColor):
+            if Application.Utils.ColorSpaceOperations.isColorDark(self._backgroundColor):
                 painter.setPen(QtCore.Qt.white)
             else:
                 painter.setBrush(QtCore.Qt.black)
 
-            if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.GRAY:
-                text = str((self.__backgroundColor.red() + self.__backgroundColor.green() +
-                            self.__backgroundColor.blue()) // 3)
+            if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.GRAY:
+                text = str((self._backgroundColor.red() + self._backgroundColor.green() +
+                            self._backgroundColor.blue()) // 3)
 
                 horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
 
                 painter.drawText((self.width() - horizontalAdvance) / 2,
                                  self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
-            elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.CMYK:
-                textCyan = str(self.__backgroundColor.cyan())
-                textMagenta = str(self.__backgroundColor.magenta())
-                textYellow = str(self.__backgroundColor.yellow())
-                textBlack = str(self.__backgroundColor.black())
+            elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.CMYK:
+                textCyan = str(self._backgroundColor.cyan())
+                textMagenta = str(self._backgroundColor.magenta())
+                textYellow = str(self._backgroundColor.yellow())
+                textBlack = str(self._backgroundColor.black())
 
                 horizontalAdvanceCyan = fontMetrics.horizontalAdvance(textCyan, len(textCyan))
                 horizontalAdvanceMagenta = fontMetrics.horizontalAdvance(textMagenta, len(textMagenta))
@@ -578,18 +578,18 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
                                  textBlack)
             else:
-                if self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.RGB:
-                    textFirst = str(self.__backgroundColor.red())
-                    textSecond = str(self.__backgroundColor.green())
-                    textThird = str(self.__backgroundColor.blue())
-                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSL:
-                    textFirst = str(self.__backgroundColor.hue())
-                    textSecond = str(self.__backgroundColor.saturation())
-                    textThird = str(self.__backgroundColor.lightness())
-                elif self.__colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSV:
-                    textFirst = str(self.__backgroundColor.hue())
-                    textSecond = str(self.__backgroundColor.saturation())
-                    textThird = str(self.__backgroundColor.value())
+                if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.RGB:
+                    textFirst = str(self._backgroundColor.red())
+                    textSecond = str(self._backgroundColor.green())
+                    textThird = str(self._backgroundColor.blue())
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSL:
+                    textFirst = str(self._backgroundColor.hue())
+                    textSecond = str(self._backgroundColor.saturation())
+                    textThird = str(self._backgroundColor.lightness())
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSV:
+                    textFirst = str(self._backgroundColor.hue())
+                    textSecond = str(self._backgroundColor.saturation())
+                    textThird = str(self._backgroundColor.value())
 
                 horizontalAdvanceRed = fontMetrics.horizontalAdvance(textFirst, len(textFirst))
                 horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textSecond, len(textSecond))

@@ -7,8 +7,8 @@ import Application.Settings
 
 
 class Controller(QtCore.QObject):
-    __isMagnifierWindowShowing = False
-    __isPlotterWindowShowing = False
+    _isMagnifierWindowShowing = False
+    _isPlotterWindowShowing = False
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -24,48 +24,48 @@ class Controller(QtCore.QObject):
         # it can't be put in the UI init class because rightMenuBar's addAction method doesn't take a QAction object
         self.mainWindow.rightMenuBar = QtWidgets.QMenuBar()
         self.mainWindow.menuBar.setCornerWidget(self.mainWindow.rightMenuBar)
-        self.mainWindow.rightMenuBar.addAction('Save as original image', self.__actionSaveAsOriginalImage)
+        self.mainWindow.rightMenuBar.addAction('Save as original image', self._actionSaveAsOriginalImage)
 
         # connect the actions to methods
-        self.mainWindow.actionExit.triggered.connect(self.__actionExit)
-        self.mainWindow.actionInvert.triggered.connect(self.__actionInvert)
-        self.mainWindow.actionLoadColorImage.triggered.connect(self.__actionLoadColorImage)
-        self.mainWindow.actionLoadGrayscaleImage.triggered.connect(self.__actionLoadGrayscaleImage)
-        self.mainWindow.actionMagnifier.triggered.connect(self.__actionMagnifier)
-        self.mainWindow.actionPlotter.triggered.connect(self.__actionPlotter)
-        self.mainWindow.actionSaveProcessedImage.triggered.connect(self.__actionSaveProcessedImage)
+        self.mainWindow.actionExit.triggered.connect(self._actionExit)
+        self.mainWindow.actionInvert.triggered.connect(self._actionInvert)
+        self.mainWindow.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
+        self.mainWindow.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
+        self.mainWindow.actionMagnifier.triggered.connect(self._actionMagnifier)
+        self.mainWindow.actionPlotter.triggered.connect(self._actionPlotter)
+        self.mainWindow.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
 
         # connect image labels to slots for updating the ui
-        self.mainWindow.labelOriginalImage.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelProcessedImage.mouse_moved.connect(self.__mouseMovedEvent)
-        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self.__mousePressedEvent)
-        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self.__mousePressedEvent)
-        self.mainWindow.labelOriginalImage.mouse_leaved.connect(self.__mouseLeavedEvent)
-        self.mainWindow.labelProcessedImage.mouse_leaved.connect(self.__mouseLeavedEvent)
+        self.mainWindow.labelOriginalImage.mouse_moved.connect(self._mouseMovedEvent)
+        self.mainWindow.labelProcessedImage.mouse_moved.connect(self._mouseMovedEvent)
+        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self._mousePressedEvent)
+        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self._mousePressedEvent)
+        self.mainWindow.labelOriginalImage.mouse_leaved.connect(self._mouseLeavedEvent)
+        self.mainWindow.labelProcessedImage.mouse_leaved.connect(self._mouseLeavedEvent)
 
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.setMinimum(
-            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMinimumValue))
+            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMinimumValue))
         self.mainWindow.horizontalSliderZoom.setMaximum(
-            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMaximumValue))
+            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMaximumValue))
         self.mainWindow.horizontalSliderZoom.setSingleStep(
-            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomSingleStep))
+            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomSingleStep))
         self.mainWindow.horizontalSliderZoom.setPageStep(
-            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomPageStep))
+            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomPageStep))
         self.mainWindow.horizontalSliderZoom.setTickInterval(
-            self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.ticksInterval)
+            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.ticksInterval)
         )
-        defaultZoom = self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
+        defaultZoom = self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
         self.mainWindow.horizontalSliderZoom.setValue(defaultZoom)
-        self.mainWindow.horizontalSliderZoom.valueChanged.connect(self.__zoomValueChangedEvent)
-        self.mainWindow.buttonResetZoom.pressed.connect(self.__zoomValueResetEvent)
-        self.__zoom = self.__calculateSliderValueFromZoom(defaultZoom)
+        self.mainWindow.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
+        self.mainWindow.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
+        self._zoom = self._calculateSliderValueFromZoom(defaultZoom)
 
         # add options for the magnifier
         self.magnifierWindow.comboBoxColorModel.addItems([item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorModels])
-        self.magnifierWindow.comboBoxColorModel.currentIndexChanged.connect(self.__magnifierColorModelIndexChanged)
-        self.magnifierWindow.closing.connect(self.__magnifierWindowClosed)
-        self.magnifierWindow.showing.connect(self.__magnifierWindowShowed)
+        self.magnifierWindow.comboBoxColorModel.currentIndexChanged.connect(self._magnifierColorModelIndexChanged)
+        self.magnifierWindow.closing.connect(self._magnifierWindowClosed)
+        self.magnifierWindow.showing.connect(self._magnifierWindowShowed)
 
         # validate magnifier settings
         assert (Application.Settings.MagnifierWindowSettings.frameGridSize % 2 == 1)
@@ -84,27 +84,27 @@ class Controller(QtCore.QObject):
         plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
         self.plotterWindow.graphicsViewOriginalImage.setXLink(self.plotterWindow.graphicsViewProcessedImage)
         self.plotterWindow.graphicsViewOriginalImage.setYLink(self.plotterWindow.graphicsViewProcessedImage)
-        self.plotterWindow.comboBoxFunction.currentIndexChanged.connect(self.__plotterFunctionIndexChanged)
-        self.__lastClick = None
-        self.plotterWindow.closing.connect(self.__plotterWindowClosed)
-        self.plotterWindow.showing.connect(self.__plotterWindowShowed)
+        self.plotterWindow.comboBoxFunction.currentIndexChanged.connect(self._plotterFunctionIndexChanged)
+        self._lastClick = None
+        self.plotterWindow.closing.connect(self._plotterWindowClosed)
+        self.plotterWindow.showing.connect(self._plotterWindowShowed)
 
         # show the main window
         self.mainWindow.show()
 
-    def __actionExit(self):
+    def _actionExit(self):
         """
         test
         :return:
         """
         QtCore.QCoreApplication.quit()
 
-    def __actionInvert(self):
+    def _actionInvert(self):
         if self.model.originalImage is not None:
             self.model.processedImage = numpy.invert(self.model.originalImage)
-            self.__setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
+            self._setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
 
-    def __actionLoadColorImage(self):
+    def _actionLoadColorImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open color file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
@@ -115,10 +115,10 @@ class Controller(QtCore.QObject):
 
         self.model.processedImage = None
 
-        self.__setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.RGB)
-        self.__resetApplicationState()
+        self._setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.RGB)
+        self._resetApplicationState()
 
-    def __actionLoadGrayscaleImage(self):
+    def _actionLoadGrayscaleImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
@@ -129,26 +129,26 @@ class Controller(QtCore.QObject):
 
         self.model.processedImage = None
 
-        self.__setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.GRAY)
-        self.__resetApplicationState()
+        self._setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.GRAY)
+        self._resetApplicationState()
 
-    def __actionMagnifier(self):
+    def _actionMagnifier(self):
         self.magnifierWindow.show()
 
-    def __actionPlotter(self):
+    def _actionPlotter(self):
         self.plotterWindow.show()
 
-    def __actionSaveAsOriginalImage(self):
+    def _actionSaveAsOriginalImage(self):
         self.model.originalImage = self.model.processedImage
         self.model.processedImage = None
-        self.__setImages(originalImage=self.model.originalImage, processedImage=None)
+        self._setImages(originalImage=self.model.originalImage, processedImage=None)
 
         if self.model.originalImage is None:
-            self.__resetApplicationState()
+            self._resetApplicationState()
 
-        self.__setClickPosition()
+        self._setClickPosition()
 
-    def __actionSaveProcessedImage(self):
+    def _actionSaveProcessedImage(self):
         if self.model.processedImage is not None:
             filename, _ = QtWidgets.QFileDialog.getSaveFileName(parent=self.mainWindow, caption='Save processed image',
                                                                 filter='Bitmap file (*.bmp *.dib);;'
@@ -163,10 +163,10 @@ class Controller(QtCore.QObject):
 
             opencv.imwrite(filename, self.model.processedImage)
 
-    def __mouseMovedEvent(self, QMouseEvent):
-        if self.__zoom != 0:
-            x = int(QMouseEvent.x() / self.__zoom)
-            y = int(QMouseEvent.y() / self.__zoom)
+    def _mouseMovedEvent(self, QMouseEvent):
+        if self._zoom != 0:
+            x = int(QMouseEvent.x() / self._zoom)
+            y = int(QMouseEvent.y() / self._zoom)
 
             labelText = ''
 
@@ -204,29 +204,29 @@ class Controller(QtCore.QObject):
                     labelText = f'(Gray) = ({pixel})'
             self.mainWindow.labelProcessedImagePixelValue.setText(labelText)
 
-    def __mousePressedEvent(self, QMouseEvent):
-        if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
-            if self.__zoom != 0:
-                self.__lastClick = (QMouseEvent.pos() / self.__zoom)
+    def _mousePressedEvent(self, QMouseEvent):
+        if self._isMagnifierWindowShowing or self._isPlotterWindowShowing:
+            if self._zoom != 0:
+                self._lastClick = (QMouseEvent.pos() / self._zoom)
 
                 # show the click point on the main window label
-                self.__setClickPosition()
+                self._setClickPosition()
 
                 # calculate the parameters for the magnifier window
-                self.__calculateAndSetMagnifierParameters()
+                self._calculateAndSetMagnifierParameters()
 
                 # calculate the parameters for the plotter window
-                self.__calculateAndSetPlotterParameters()
+                self._calculateAndSetPlotterParameters()
 
-    def __mouseLeavedEvent(self, QEvent):
+    def _mouseLeavedEvent(self, QEvent):
         self.mainWindow.labelMousePosition.setText('')
         self.mainWindow.labelOriginalImagePixelValue.setText('')
         self.mainWindow.labelProcessedImagePixelValue.setText('')
 
-    def __plotterFunctionIndexChanged(self, index):
-        self.__calculateAndSetPlotterParameters()
+    def _plotterFunctionIndexChanged(self, index):
+        self._calculateAndSetPlotterParameters()
 
-    def __calculateAndSetPlotterParameters(self):
+    def _calculateAndSetPlotterParameters(self):
         plotItemOriginalImage = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
         plotItemProcessedImage = self.plotterWindow.graphicsViewProcessedImage.getPlotItem()
         # TODO: rethink this part to be easily usable and editable by others
@@ -236,30 +236,30 @@ class Controller(QtCore.QObject):
         plotDataItemProcessedImage = None
         plotDataItems = []
 
-        if self.__lastClick is not None:
+        if self._lastClick is not None:
             if self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[1]),
-                                  self.model.originalImage[self.__lastClick.y()],
+                                  self.model.originalImage[self._lastClick.y()],
                                   pen=QtGui.QColor(QtCore.Qt.red),
                                   name='Original image')
                     self.plotterWindow.plotLegendStringList.append('Original image')
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(range(self.model.processedImage.shape[1]),
-                                  self.model.processedImage[self.__lastClick.y()],
+                                  self.model.processedImage[self._lastClick.y()],
                                   pen=QtGui.QColor(QtCore.Qt.green),
                                   name='Processed image')
                     self.plotterWindow.plotLegendStringList.append('Processed image')
             elif self.plotterWindow.comboBoxFunction.currentIndex() == Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(range(self.model.originalImage.shape[0]),
-                                  self.model.originalImage[:, self.__lastClick.x()],
+                                  self.model.originalImage[:, self._lastClick.x()],
                                   pen=QtGui.QColor(QtCore.Qt.red),
                                   name='Original image')
                     self.plotterWindow.plotLegendStringList.append('Original image')
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(range(self.model.processedImage.shape[0]),
-                                  self.model.processedImage[:, self.__lastClick.x()],
+                                  self.model.processedImage[:, self._lastClick.x()],
                                   pen=QtGui.QColor(QtCore.Qt.green),
                                   name='Processed image')
                     self.plotterWindow.plotLegendStringList.append('Processed image')
@@ -273,7 +273,7 @@ class Controller(QtCore.QObject):
         plotItemOriginalImage.getViewBox().autoRange(items=plotDataItems)
         plotItemProcessedImage.getViewBox().autoRange(items=plotDataItems)
 
-    def __setMagnifierColorModel(self, colorModel : Application.Settings.MagnifierWindowSettings.ColorModels):
+    def _setMagnifierColorModel(self, colorModel : Application.Settings.MagnifierWindowSettings.ColorModels):
         self.magnifierWindow.comboBoxColorModel.setCurrentIndex(colorModel.value[0])
 
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
@@ -281,7 +281,7 @@ class Controller(QtCore.QObject):
                 self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorModel)
                 self.magnifierWindow.frameListProcessedImage[row][column].setColorDisplayFormat(colorModel)
 
-    def __magnifierColorModelIndexChanged(self, index):
+    def _magnifierColorModelIndexChanged(self, index):
         displayFormat = None
 
         if index == Application.Settings.MagnifierWindowSettings.ColorModels.RGB.value[0]:
@@ -295,16 +295,16 @@ class Controller(QtCore.QObject):
         elif index == Application.Settings.MagnifierWindowSettings.ColorModels.GRAY.value[0]:
             displayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.GRAY
 
-        self.__setMagnifierColorModel(displayFormat)
+        self._setMagnifierColorModel(displayFormat)
 
-    def __calculateAndSetMagnifierParameters(self):
-        if self.__lastClick is not None:
+    def _calculateAndSetMagnifierParameters(self):
+        if self._lastClick is not None:
             offset = Application.Settings.MagnifierWindowSettings.frameGridSize // 2
 
             for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-                    yPos = self.__lastClick.y() - offset + row
-                    xPos = self.__lastClick.x() - offset + column
+                    yPos = self._lastClick.y() - offset + row
+                    xPos = self._lastClick.x() - offset + column
 
                     if self.model.originalImage is not None and yPos >= 0 and xPos >= 0 and \
                             yPos < self.model.originalImage.shape[0] and xPos < self.model.originalImage.shape[1]:
@@ -339,76 +339,76 @@ class Controller(QtCore.QObject):
                     else:
                         self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
 
-    def __setImages(self, originalImage, processedImage):
+    def _setImages(self, originalImage, processedImage):
         self.mainWindow.setImages(processedImage=processedImage, originalImage=originalImage)
 
         # resetting the images will show them with original resolution
         # they need to be zoomed
-        self.__zoomValueChangedEvent(self.__calculateSliderValueFromZoom(self.__zoom))
+        self._zoomValueChangedEvent(self._calculateSliderValueFromZoom(self._zoom))
 
-        if self.__isMagnifierWindowShowing or self.__isPlotterWindowShowing:
-            self.__calculateAndSetMagnifierParameters()
-            self.__calculateAndSetPlotterParameters()
+        if self._isMagnifierWindowShowing or self._isPlotterWindowShowing:
+            self._calculateAndSetMagnifierParameters()
+            self._calculateAndSetPlotterParameters()
 
-        self.__setClickPosition()
+        self._setClickPosition()
 
-    def __zoomValueResetEvent(self):
-        sliderValue = self.__calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
+    def _zoomValueResetEvent(self):
+        sliderValue = self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
         self.mainWindow.horizontalSliderZoom.setValue(sliderValue)
-        self.__zoomValueChangedEvent(sliderValue)
+        self._zoomValueChangedEvent(sliderValue)
 
-    def __zoomValueChangedEvent(self, value):
-        self.__zoom = self.__calculateZoomFromSliderValue(value)
-        self.mainWindow.labelZoomFactor.setText(f"{self.__zoom:.2f}x")
-        self.__setZoomInView()
+    def _zoomValueChangedEvent(self, value):
+        self._zoom = self._calculateZoomFromSliderValue(value)
+        self.mainWindow.labelZoomFactor.setText(f"{self._zoom:.2f}x")
+        self._setZoomInView()
 
-    def __calculateZoomFromSliderValue(self, value):
+    def _calculateZoomFromSliderValue(self, value):
         return value * Application.Settings.MainWindowSettings.zoomSingleStep \
                + Application.Settings.MainWindowSettings.zoomMinimumValue
 
-    def __calculateSliderValueFromZoom(self, value):
+    def _calculateSliderValueFromZoom(self, value):
         return int((value - Application.Settings.MainWindowSettings.zoomMinimumValue)
                    / Application.Settings.MainWindowSettings.zoomSingleStep)
 
-    def __setZoomInView(self):
-        self.mainWindow.labelOriginalImage.setZoom(self.__zoom)
-        self.mainWindow.labelProcessedImage.setZoom(self.__zoom)
-        self.__setClickPosition()
+    def _setZoomInView(self):
+        self.mainWindow.labelOriginalImage.setZoom(self._zoom)
+        self.mainWindow.labelProcessedImage.setZoom(self._zoom)
+        self._setClickPosition()
 
-    def __resetApplicationState(self):
+    def _resetApplicationState(self):
         self.magnifierWindow.reset()
         self.plotterWindow.reset()
         self.mainWindow.labelOriginalImage.setClickPosition(None)
         self.mainWindow.labelProcessedImage.setClickPosition(None)
-        self.__lastClick = None
-        self.__zoomValueResetEvent()
+        self._lastClick = None
+        self._zoomValueResetEvent()
         self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().setValue(0)
 
-    def __magnifierWindowShowed(self):
-        self.__isMagnifierWindowShowing = True
+    def _magnifierWindowShowed(self):
+        self._isMagnifierWindowShowing = True
 
-    def __magnifierWindowClosed(self):
-        self.__isMagnifierWindowShowing = False
+    def _magnifierWindowClosed(self):
+        self._isMagnifierWindowShowing = False
 
-        if not self.__isPlotterWindowShowing:
-            self.__resetApplicationState()
+        if not self._isPlotterWindowShowing:
+            self._resetApplicationState()
 
-    def __plotterWindowShowed(self):
-        self.__isPlotterWindowShowing = True
+    def _plotterWindowShowed(self):
+        self._isPlotterWindowShowing = True
 
-    def __plotterWindowClosed(self):
-        self.__isPlotterWindowShowing = False
+    def _plotterWindowClosed(self):
+        self._isPlotterWindowShowing = False
 
-        if not self.__isMagnifierWindowShowing:
-            self.__resetApplicationState()
+        if not self._isMagnifierWindowShowing:
+            self._resetApplicationState()
 
-    def __setClickPosition(self):
+    def _setClickPosition(self):
         self.mainWindow.labelOriginalImage.setClickPosition(None)
         self.mainWindow.labelProcessedImage.setClickPosition(None)
 
-        if self.__isPlotterWindowShowing or self.__isMagnifierWindowShowing:
+        if self._isPlotterWindowShowing or self._isMagnifierWindowShowing:
             if self.model.originalImage is not None:
-                self.mainWindow.labelOriginalImage.setClickPosition(self.__lastClick)
+                self.mainWindow.labelOriginalImage.setClickPosition(self._lastClick)
 
             if self.model.processedImage is not None:
-                self.mainWindow.labelProcessedImage.setClickPosition(self.__lastClick)
+                self.mainWindow.labelProcessedImage.setClickPosition(self._lastClick)
