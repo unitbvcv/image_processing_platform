@@ -49,7 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaOriginalImage.setStyleSheet("")
         self.scrollAreaOriginalImage.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.scrollAreaOriginalImage.setWidgetResizable(True)
-        self.scrollAreaOriginalImage.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.scrollAreaOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.scrollAreaOriginalImage.setObjectName("scrollAreaOriginalImage")
         self.scrollAreaWidgetOriginalImage = QtWidgets.QWidget()
         self.scrollAreaWidgetOriginalImage.setGeometry(QtCore.QRect(0, 0, 477, 587))
@@ -71,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage = QtWidgets.QScrollArea(self.groupBoxProcessedImage)
         self.scrollAreaProcessedImage.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.scrollAreaProcessedImage.setWidgetResizable(True)
-        self.scrollAreaProcessedImage.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.scrollAreaProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.scrollAreaProcessedImage.setObjectName("scrollAreaProcessedImage")
         self.scrollAreaWidgetProcessedImage = QtWidgets.QWidget()
         self.scrollAreaWidgetProcessedImage.setGeometry(QtCore.QRect(0, 0, 477, 587))
@@ -233,7 +233,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelOriginalImage = Application.View.ImageLabel(self.scrollAreaWidgetOriginalImage)
         self.labelOriginalImage.setMouseTracking(False)
         self.labelOriginalImage.setText("")
-        self.labelOriginalImage.setScaledContents(True)
+        self.labelOriginalImage.setScaledContents(False)
         self.labelOriginalImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.labelOriginalImage.setObjectName("labelOriginalImage")
         self.labelOriginalImage.setGeometry(0, 0, 0, 0)
@@ -250,7 +250,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelProcessedImage = Application.View.ImageLabel(self.scrollAreaWidgetProcessedImage)
         self.labelProcessedImage.setMouseTracking(False)
         self.labelProcessedImage.setText("")
-        self.labelProcessedImage.setScaledContents(True)
+        self.labelProcessedImage.setScaledContents(False)
         self.labelProcessedImage.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self.labelProcessedImage.setObjectName("labelProcessedImage")
         self.labelProcessedImage.setGeometry(0, 0, 0, 0)
@@ -455,13 +455,39 @@ class ImageLabel(QtWidgets.QLabel):
         super().__init__(parent)
         self.__qPixmap = None
         self.__zoom = 1.0
+        self.__image = None
 
     def setZoom(self, zoom):
         self.__zoom = zoom
-        if self.__qPixmap is not None:
-            self.setFixedSize(self.__qPixmap.size() * zoom)
+        if self.__image is not None:
+            zoomedSizeY = int(self.__image.shape[1] * zoom)
+            zoomedSizeX = int(self.__image.shape[0] * zoom)
+
+            if len(self.__image.shape) == 3:
+                self.__qPixmap = QtGui.QPixmap.fromImage(
+                    QtGui.QImage(opencv.cvtColor(
+                        opencv.resize(self.__image, (zoomedSizeY, zoomedSizeX),
+                                      interpolation=opencv.INTER_NEAREST),
+                        opencv.COLOR_BGR2RGB).data,
+                                 zoomedSizeY,
+                                 zoomedSizeX,
+                                 3 * zoomedSizeY,
+                                 QtGui.QImage.Format_RGB888))
+            elif len(self.__image.shape) == 2:
+                self.__qPixmap = QtGui.QPixmap.fromImage(
+                    QtGui.QImage(opencv.resize(self.__image, (zoomedSizeY, zoomedSizeX),
+                                               interpolation=opencv.INTER_NEAREST).data,
+                                 zoomedSizeY,
+                                 zoomedSizeX,
+                                 zoomedSizeY,
+                                 QtGui.QImage.Format_Grayscale8))
+
+            self.setFixedSize(zoomedSizeY, zoomedSizeX)
+            self.setPixmap(self.__qPixmap)
 
     def setLabelImage(self, image):
+        self.__image = image
+
         if image is not None:
             if len(image.shape) == 3:
                 self.__qPixmap = QtGui.QPixmap.fromImage(
@@ -478,7 +504,7 @@ class ImageLabel(QtWidgets.QLabel):
                                  image.shape[1],
                                  QtGui.QImage.Format_Grayscale8))
 
-            self.setFixedSize(self.__qPixmap.size())
+            self.setFixedSize(self.__image.shape[1], self.__image.shape[0])
             self.setPixmap(self.__qPixmap)
         else:
             self.setFixedSize(0, 0)
