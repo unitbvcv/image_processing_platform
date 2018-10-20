@@ -365,6 +365,7 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImageOverlay.setClickPosition(None)
         self.__lastClick = None
         self.__zoomValueResetEvent()
+        self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().setValue(0)
 
     def __magnifierWindowShowed(self):
         self.__isMagnifierWindowShowing = True
