@@ -477,6 +477,7 @@ class ImageLabel(QtWidgets.QLabel):
     def paintEvent(self, QPaintEvent):
         if self._qImage is not None:
             painter = QtGui.QPainter(self)
+
             transform = QtGui.QTransform()
             transform.scale(self._zoom, self._zoom)
             painter.setTransform(transform, False)
@@ -488,14 +489,20 @@ class ImageLabel(QtWidgets.QLabel):
             if self._clickPosition is not None:
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
-                painter.drawLine(self._clickPosition.x(), 0, self._clickPosition.x(), self.height() - 1)
-                painter.drawLine(0, self._clickPosition.y(), self.width() - 1, self._clickPosition.y())
+                # vertical line
+                painter.drawLine(self._clickPosition.x(), 0, self._clickPosition.x(), (self.height() - 1) // self._zoom )
+
+                # horizontal line
+                painter.drawLine(0, self._clickPosition.y(), (self.width() - 1) // self._zoom, self._clickPosition.y())
+
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
                 painter.drawRect(self._clickPosition.x() - cornerCalcOffset,
                                  self._clickPosition.y() - cornerCalcOffset,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
+
+
         self.finished_painting.emit()
 
 
