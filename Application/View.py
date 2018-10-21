@@ -426,6 +426,7 @@ class ImageLabel(QtWidgets.QLabel):
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
     mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
     mouse_leaved = QtCore.pyqtSignal(QtCore.QEvent, name='mouseLeaved')
+    finished_painting = QtCore.pyqtSignal(name='finishedPainting')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -469,7 +470,7 @@ class ImageLabel(QtWidgets.QLabel):
             self.setFixedSize(self._qImage.size())
         else:
             self.setFixedSize(0, 0)
-            self._qPixmap = None
+            self._qImage = None
 
         self.update()
 
@@ -489,12 +490,13 @@ class ImageLabel(QtWidgets.QLabel):
 
                 painter.drawLine(self._clickPosition.x(), 0, self._clickPosition.x(), self.height() - 1)
                 painter.drawLine(0, self._clickPosition.y(), self.width() - 1, self._clickPosition.y())
-                # +2 because we need to take into account the thickness of the rectangle itself
+                # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
                 painter.drawRect(self._clickPosition.x() - cornerCalcOffset,
                                  self._clickPosition.y() - cornerCalcOffset,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
+        self.finished_painting.emit()
 
 
 class MagnifierPixelFrame(QtWidgets.QFrame):

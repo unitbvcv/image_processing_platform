@@ -42,6 +42,8 @@ class Controller(QtCore.QObject):
         self.mainWindow.labelProcessedImage.mouse_pressed.connect(self._mousePressedEvent)
         self.mainWindow.labelOriginalImage.mouse_leaved.connect(self._mouseLeavedEvent)
         self.mainWindow.labelProcessedImage.mouse_leaved.connect(self._mouseLeavedEvent)
+        self.mainWindow.labelOriginalImage.finished_painting.connect(self._labelFinishedPaintingEvent)
+        self.mainWindow.labelProcessedImage.finished_painting.connect(self._labelFinishedPaintingEvent)
 
         # connect the zoom option
         self.mainWindow.horizontalSliderZoom.setMinimum(
@@ -102,6 +104,8 @@ class Controller(QtCore.QObject):
     def _actionInvert(self):
         if self.model.originalImage is not None:
             self.model.processedImage = numpy.invert(self.model.originalImage)
+
+            # UI code, independent of algorithm
             self._setImages(processedImage=self.model.processedImage, originalImage=self.model.originalImage)
 
     def _actionLoadColorImage(self):
@@ -412,3 +416,12 @@ class Controller(QtCore.QObject):
 
             if self.model.processedImage is not None:
                 self.mainWindow.labelProcessedImage.setClickPosition(self._lastClick)
+
+    def _labelFinishedPaintingEvent(self):
+        # here we can synchronize scrollbars, after the paint event has finished
+        # before paint event, the scrollbars don't exist
+        self.mainWindow.scrollAreaProcessedImage.horizontalScrollBar().setValue(
+            self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().value())
+
+        self.mainWindow.scrollAreaProcessedImage.verticalScrollBar().setValue(
+            self.mainWindow.scrollAreaOriginalImage.verticalScrollBar().value())
