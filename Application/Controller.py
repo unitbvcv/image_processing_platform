@@ -272,9 +272,6 @@ class Controller(QtCore.QObject):
         self._calculateAndSetPlotterParameters()
 
     def _calculateAndSetPlotterParameters(self):
-        plotItemOriginalImage = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
-        plotItemProcessedImage = self.plotterWindow.graphicsViewProcessedImage.getPlotItem()
-        # TODO: rethink this part to be easily usable and editable by others
         self.plotterWindow.reset()
 
         if self._lastClick is not None:
