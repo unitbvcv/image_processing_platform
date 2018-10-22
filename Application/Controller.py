@@ -90,6 +90,7 @@ class Controller(QtCore.QObject):
         self._lastClick = None
         self.plotterWindow.closing.connect(self._plotterWindowClosed)
         self.plotterWindow.showing.connect(self._plotterWindowShowed)
+        self.plotterWindow.pushButtonAutoScalePlots.pressed.connect(self.plotterWindow.autoScalePlots)
 
         # show the main window
         self.mainWindow.show()
@@ -236,179 +237,190 @@ class Controller(QtCore.QObject):
         # TODO: rethink this part to be easily usable and editable by others
         self.plotterWindow.reset()
 
-        plotDataItemOriginalImage = None
-        plotDataItemProcessedImage = None
-        plotDataItems = []
-
         if self._lastClick is not None:
             if self.plotterWindow.comboBoxFunction.currentIndex() == \
                     Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_VALUES.value[0]:
 
                 # Original grayscale image
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotName = 'Original Image Gray'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[1]),
                         self.model.originalImage[self._lastClick.y()],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Original image')
-                    self.plotterWindow.plotLegendStringList.append('Original image')
+                        name=plotName)
+
                     if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
 
                 # Original color image
-                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
+                elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
+                    plotName = 'Original Image Red'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[1]),
                         self.model.originalImage[self._lastClick.y(), :, 2],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Original image red')
-                    self.plotterWindow.plotLegendStringList.append('Original image red')
-                    if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        name=plotName)
 
+                    if plotDataItemOriginalImage is not None:
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                    plotName = 'Original Image Green'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[1]),
                         self.model.originalImage[self._lastClick.y(), :, 1],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Original image green')
-                    self.plotterWindow.plotLegendStringList.append('Original image green')
-                    if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        name=plotName)
 
+                    if plotDataItemOriginalImage is not None:
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                    plotName = 'Original Image Blue'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[1]),
                         self.model.originalImage[self._lastClick.y(), :, 0],
                         pen=QtGui.QColor(QtCore.Qt.blue),
-                        name='Original image blue')
-                    self.plotterWindow.plotLegendStringList.append('Original image blue')
+                        name=plotName)
+
                     if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                 # Processed grayscale image
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotName = 'Processed Image Gray'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[1]),
                         self.model.processedImage[self._lastClick.y()],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Processed image')
-                    self.plotterWindow.plotLegendStringList.append('Processed image')
+                        name=plotName)
+
                     if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
                 # Processed color image
-                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
+                elif self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
+                    plotName = 'Processed Image Red'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[1]),
                         self.model.processedImage[self._lastClick.y(), :, 2],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Processed image red')
-                    self.plotterWindow.plotLegendStringList.append('Processed image red')
-                    if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        name=plotName)
 
+                    if plotDataItemProcessedImage is not None:
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                    plotName = 'Processed Image Green'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[1]),
                         self.model.processedImage[self._lastClick.y(), :, 1],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Processed image green')
-                    self.plotterWindow.plotLegendStringList.append('Processed image green')
-                    if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        name=plotName)
 
+                    if plotDataItemProcessedImage is not None:
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                    plotName = 'Processed Image Blue'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[1]),
                         self.model.processedImage[self._lastClick.y(), :, 0],
                         pen=QtGui.QColor(QtCore.Qt.blue),
-                        name='Processed image blue')
-                    self.plotterWindow.plotLegendStringList.append('Processed image blue')
+                        name=plotName)
+
                     if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
             elif self.plotterWindow.comboBoxFunction.currentIndex() == \
                     Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_VALUES.value[0]:
 
                 # Original grayscale image
                 if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotName = 'Original Image Gray'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[0]),
                         self.model.originalImage[:, self._lastClick.x()],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Original image')
-                    self.plotterWindow.plotLegendStringList.append('Original image')
+                        name=plotName)
+
                     if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
 
                 # Original color image
-                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
+                elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
+                    plotName = 'Original Image Red'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[0]),
                         self.model.originalImage[:, self._lastClick.x(), 2],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Original image red')
-                    self.plotterWindow.plotLegendStringList.append('Original image red')
-                    if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        name=plotName)
 
+                    if plotDataItemOriginalImage is not None:
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+
+                    plotName = 'Original Image Green'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[0]),
                         self.model.originalImage[:, self._lastClick.x(), 1],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Original image green')
-                    self.plotterWindow.plotLegendStringList.append('Original image green')
-                    if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        name=plotName)
 
+                    if plotDataItemOriginalImage is not None:
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+
+                    plotName = 'Original Image Blue'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
                         range(self.model.originalImage.shape[0]),
                         self.model.originalImage[:, self._lastClick.y(), 0],
                         pen=QtGui.QColor(QtCore.Qt.blue),
-                        name='Original image blue')
-                    self.plotterWindow.plotLegendStringList.append('Original image blue')
+                        name=plotName)
+
                     if plotDataItemOriginalImage is not None:
-                        plotDataItems.append(plotDataItemOriginalImage)
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
 
                 # Processed grayscale image
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
+                    plotName = 'Processed Image Gray'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[0]),
                         self.model.processedImage[:, self._lastClick.x()],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Processed image')
-                    self.plotterWindow.plotLegendStringList.append('Processed image')
+                        name=plotName)
+
                     if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
                 # Processed color image
-                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
+                elif self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
+                    plotName = 'Processed Image Red'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[0]),
                         self.model.processedImage[:, self._lastClick.y(), 2],
                         pen=QtGui.QColor(QtCore.Qt.red),
-                        name='Processed image red')
-                    self.plotterWindow.plotLegendStringList.append('Processed image red')
-                    if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        name=plotName)
 
+                    if plotDataItemProcessedImage is not None:
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                    plotName = 'Processed Image Green'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[0]),
                         self.model.processedImage[:, self._lastClick.y(), 1],
                         pen=QtGui.QColor(QtCore.Qt.green),
-                        name='Processed image green')
-                    self.plotterWindow.plotLegendStringList.append('Processed image green')
-                    if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        name=plotName)
 
+                    if plotDataItemProcessedImage is not None:
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                    plotName = 'Processed Image Blue'
                     plotDataItemProcessedImage = plotItemProcessedImage.plot(
                         range(self.model.processedImage.shape[0]),
                         self.model.processedImage[:, self._lastClick.y(), 0],
                         pen=QtGui.QColor(QtCore.Qt.blue),
-                        name='Processed image blue')
-                    self.plotterWindow.plotLegendStringList.append('Processed image blue')
-                    if plotDataItemProcessedImage is not None:
-                        plotDataItems.append(plotDataItemProcessedImage)
+                        name=plotName)
 
-        plotItemOriginalImage.getViewBox().autoRange(items=plotDataItems)
-        plotItemProcessedImage.getViewBox().autoRange(items=plotDataItems)
+                    if plotDataItemProcessedImage is not None:
+                        self.plotterWindow.plotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+        self.plotterWindow.autoScalePlots()
 
     def _setMagnifierColorModel(self, colorModel : Application.Settings.MagnifierWindowSettings.ColorModels):
         self.magnifierWindow.comboBoxColorModel.setCurrentIndex(colorModel.value[0])
