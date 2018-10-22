@@ -404,6 +404,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.visiblePlotDataItemsProcessedImage.clear()
         self.availablePlotDataItemsOriginalImage.clear()
         self.availablePlotDataItemsProcessedImage.clear()
+        self.listWidgetVisibleOriginalImage.clear()
+        self.listWidgetVisibleProcessedImage.clear()
 
     def closeEvent(self, QCloseEvent):
         self.closing.emit(QCloseEvent)
