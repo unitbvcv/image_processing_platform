@@ -251,7 +251,7 @@ class Controller(QtCore.QObject):
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                 # Original color image
                 elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
@@ -342,7 +342,7 @@ class Controller(QtCore.QObject):
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                 # Original color image
                 elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
@@ -354,7 +354,7 @@ class Controller(QtCore.QObject):
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                     plotName = 'Original Image Green'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
@@ -364,7 +364,7 @@ class Controller(QtCore.QObject):
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                     plotName = 'Original Image Blue'
                     plotDataItemOriginalImage = plotItemOriginalImage.plot(
@@ -374,7 +374,7 @@ class Controller(QtCore.QObject):
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotItemOriginalImage
+                        self.plotterWindow.plotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
                 # Processed grayscale image
                 if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
