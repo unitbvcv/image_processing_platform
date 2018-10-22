@@ -260,8 +260,11 @@ class PlotterWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self._setupUi()
 
-        self.plotDataItemsOriginalImage = {}
-        self.plotDataItemsProcessedImage = {}
+        self.availablePlotDataItemsOriginalImage = {}
+        self.availablePlotDataItemsProcessedImage = {}
+
+        self.visiblePlotDataItemsOriginalImage = {}
+        self.visiblePlotDataItemsProcessedImage = {}
 
     def _setupUi(self):
         self.setObjectName("PlotterWindow")
@@ -344,6 +347,10 @@ class PlotterWindow(QtWidgets.QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.listWidgetVisibleProcessedImage.sizePolicy().hasHeightForWidth())
         self.listWidgetVisibleProcessedImage.setSizePolicy(sizePolicy)
+        self.listWidgetVisibleProcessedImage.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.listWidgetVisibleProcessedImage.setProperty("showDropIndicator", False)
+        self.listWidgetVisibleProcessedImage.setDefaultDropAction(QtCore.Qt.IgnoreAction)
+        self.listWidgetVisibleProcessedImage.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.listWidgetVisibleProcessedImage.setObjectName("listWidgetVisibleProcessedImage")
         self.verticalLayout_5.addWidget(self.listWidgetVisibleProcessedImage)
         self.pushButtonAutoScale = QtWidgets.QPushButton(self.groupBoxSettings)
@@ -387,14 +394,16 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.graphicsViewOriginalImage.plotItem.clear()
         self.graphicsViewProcessedImage.plotItem.clear()
 
-        for legendString in list(self.plotDataItemsOriginalImage.keys()):
+        for legendString in list(self.visiblePlotDataItemsOriginalImage.keys()):
             self.graphicsViewOriginalImage.plotItem.legend.removeItem(legendString)
 
-        for legendString in list(self.plotDataItemsProcessedImage.keys()):
+        for legendString in list(self.visiblePlotDataItemsProcessedImage.keys()):
             self.graphicsViewProcessedImage.plotItem.legend.removeItem(legendString)
 
-        self.plotDataItemsOriginalImage.clear()
-        self.plotDataItemsProcessedImage.clear()
+        self.visiblePlotDataItemsOriginalImage.clear()
+        self.visiblePlotDataItemsProcessedImage.clear()
+        self.availablePlotDataItemsOriginalImage.clear()
+        self.availablePlotDataItemsProcessedImage.clear()
 
     def closeEvent(self, QCloseEvent):
         self.closing.emit(QCloseEvent)
@@ -403,9 +412,15 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.showing.emit(QShowEvent)
 
     def autoScalePlots(self):
-        plots = list(self.plotDataItemsOriginalImage.values()) + list(self.plotDataItemsProcessedImage.values())
+        plots = list(self.visiblePlotDataItemsOriginalImage.values()) + list(self.visiblePlotDataItemsProcessedImage.values())
         self.graphicsViewOriginalImage.getPlotItem().getViewBox().autoRange(items=plots)
         self.graphicsViewProcessedImage.getPlotItem().getViewBox().autoRange(items=plots)
+
+    def clearAndPopulateVisibleListWidgets(self):
+        self.listWidgetVisibleOriginalImage.clear()
+        self.listWidgetVisibleProcessedImage.clear()
+        self.listWidgetVisibleOriginalImage.addItems(list(self.availablePlotDataItemsOriginalImage.keys()))
+        self.listWidgetVisibleProcessedImage.addItems(list(self.availablePlotDataItemsProcessedImage.keys()))
 
 
 class MagnifierWindow(QtWidgets.QMainWindow):
