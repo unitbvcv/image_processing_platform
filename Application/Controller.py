@@ -91,7 +91,7 @@ class Controller(QtCore.QObject):
         self._lastClick = None
         self.plotterWindow.closing.connect(self._plotterWindowClosed)
         self.plotterWindow.showing.connect(self._plotterWindowShowed)
-        self.plotterWindow.pushButtonAutoScale.pressed.connect(self.plotterWindow.autoScalePlots)
+        self.plotterWindow.pushButtonScaleAndCenter.pressed.connect(self.plotterWindow.scaleAndCenterPlots)
         self.plotterWindow.listWidgetVisibleOriginalImage.itemSelectionChanged.connect(self._visiblePlotsOriginalImageSelectionChangedEvent)
         self.plotterWindow.listWidgetVisibleProcessedImage.itemSelectionChanged.connect(self._visiblePlotsProcessedImageSelectionChangedEvent)
 
@@ -113,7 +113,8 @@ class Controller(QtCore.QObject):
             plotItem.addItem(self.plotterWindow.availablePlotDataItemsOriginalImage[selectedPlotName])
             self.plotterWindow.visiblePlotDataItemsOriginalImage[selectedPlotName] = self.plotterWindow.availablePlotDataItemsOriginalImage[selectedPlotName]
 
-        self.plotterWindow.autoScalePlots()
+        if self.plotterWindow.checkBoxAutoScaleAndCenterOnChange.isChecked():
+            self.plotterWindow.scaleAndCenterPlots()
 
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
         plotItem = self.plotterWindow.graphicsViewProcessedImage.getPlotItem()
@@ -131,7 +132,8 @@ class Controller(QtCore.QObject):
             self.plotterWindow.visiblePlotDataItemsProcessedImage[selectedPlotName] = \
             self.plotterWindow.availablePlotDataItemsProcessedImage[selectedPlotName]
 
-        self.plotterWindow.autoScalePlots()
+        if self.plotterWindow.checkBoxAutoScaleAndCenterOnChange.isChecked():
+            self.plotterWindow.scaleAndCenterPlots()
 
     def _actionExit(self):
         """
