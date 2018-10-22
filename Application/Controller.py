@@ -90,7 +90,7 @@ class Controller(QtCore.QObject):
         self._lastClick = None
         self.plotterWindow.closing.connect(self._plotterWindowClosed)
         self.plotterWindow.showing.connect(self._plotterWindowShowed)
-        self.plotterWindow.pushButtonAutoScalePlots.pressed.connect(self.plotterWindow.autoScalePlots)
+        self.plotterWindow.pushButtonAutoScale.pressed.connect(self.plotterWindow.autoScalePlots)
 
         # show the main window
         self.mainWindow.show()
