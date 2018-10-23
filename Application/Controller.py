@@ -155,13 +155,9 @@ class Controller(QtCore.QObject):
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
                                                             )
 
-        self.model.loadOriginalImage(filename, opencv.IMREAD_COLOR)
-        self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
-
-        self.model.processedImage = None
-
         self._setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.RGB)
         self._resetApplicationState()
+        self._setImages(originalImage=opencv.imread(filename, opencv.IMREAD_COLOR), processedImage=None)
 
     def _actionLoadGrayscaleImage(self):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
@@ -169,13 +165,9 @@ class Controller(QtCore.QObject):
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
                                                             )
 
-        self.model.loadOriginalImage(filename, opencv.IMREAD_GRAYSCALE)
-        self.mainWindow.setImages(originalImage=self.model.originalImage, processedImage=None)
-
-        self.model.processedImage = None
-
         self._setMagnifierColorModel(Application.Settings.MagnifierWindowSettings.ColorModels.GRAY)
         self._resetApplicationState()
+        self._setImages(originalImage=opencv.imread(filename, opencv.IMREAD_GRAYSCALE), processedImage=None)
 
     def _actionMagnifier(self):
         self.magnifierWindow.show()
@@ -274,183 +266,319 @@ class Controller(QtCore.QObject):
     def _calculateAndSetPlotterParameters(self):
         self.plotterWindow.reset()
 
-        if self._lastClick is not None:
-            if self.plotterWindow.comboBoxFunction.currentIndex() == \
-                    Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_VALUES.value[0]:
+        if self.plotterWindow.comboBoxFunction.currentIndex() == \
+                Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
 
-                # Original grayscale image
-                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotName = 'Gray level'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(range(self.model.originalImage.shape[1]),
-                        self.model.originalImage[self._lastClick.y()],
+            if self._lastClick is not None:
+                if self.model.originalImage is not None:
+                    # Original grayscale image
+                    if len(self.model.originalImage.shape) == 2:
+                        plotName = 'Gray level'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(range(self.model.originalImage.shape[1]),
+                            self.model.originalImage[self._lastClick.y()],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+                    # Original color image
+                    elif len(self.model.originalImage.shape) == 3:
+                        plotName = 'Red channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[1]),
+                            self.model.originalImage[self._lastClick.y(), :, 2],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                        plotName = 'Green channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[1]),
+                            self.model.originalImage[self._lastClick.y(), :, 1],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                        plotName = 'Blue channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[1]),
+                            self.model.originalImage[self._lastClick.y(), :, 0],
+                            pen=QtGui.QColor(QtCore.Qt.blue),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                if self.model.processedImage is not None:
+                    # Processed grayscale image
+                    if len(self.model.originalImage.shape) == 2:
+                        plotName = 'Gray level'
+
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[1]),
+                            self.model.processedImage[self._lastClick.y()],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+                    # Processed color image
+                    elif len(self.model.originalImage.shape) == 3:
+                        plotName = 'Red channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[1]),
+                            self.model.processedImage[self._lastClick.y(), :, 2],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                        plotName = 'Green channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[1]),
+                            self.model.processedImage[self._lastClick.y(), :, 1],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                        plotName = 'Blue channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[1]),
+                            self.model.processedImage[self._lastClick.y(), :, 0],
+                            pen=QtGui.QColor(QtCore.Qt.blue),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+        elif self.plotterWindow.comboBoxFunction.currentIndex() == \
+                Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
+
+            if self._lastClick is not None:
+                if self.model.originalImage is not None:
+                    # Original grayscale image
+                    if len(self.model.originalImage.shape) == 2:
+                        plotName = 'Gray level'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[0]),
+                            self.model.originalImage[:, self._lastClick.x()],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+                    # Original color image
+                    elif len(self.model.originalImage.shape) == 3:
+                        plotName = 'Red channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[0]),
+                            self.model.originalImage[:, self._lastClick.x(), 2],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                        plotName = 'Green channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[0]),
+                            self.model.originalImage[:, self._lastClick.x(), 1],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                        plotName = 'Blue channel'
+                        plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                            range(self.model.originalImage.shape[0]),
+                            self.model.originalImage[:, self._lastClick.y(), 0],
+                            pen=QtGui.QColor(QtCore.Qt.blue),
+                            name=plotName)
+
+                        if plotDataItemOriginalImage is not None:
+                            self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+
+                if self.model.processedImage is not None:
+                    # Processed grayscale image
+                    if len(self.model.originalImage.shape) == 2:
+                        plotName = 'Gray level'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[0]),
+                            self.model.processedImage[:, self._lastClick.x()],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+                    # Processed color image
+                    elif len(self.model.originalImage.shape) == 3:
+                        plotName = 'Red channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[0]),
+                            self.model.processedImage[:, self._lastClick.y(), 2],
+                            pen=QtGui.QColor(QtCore.Qt.red),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                        plotName = 'Green channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[0]),
+                            self.model.processedImage[:, self._lastClick.y(), 1],
+                            pen=QtGui.QColor(QtCore.Qt.green),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+                        plotName = 'Blue channel'
+                        plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
+                            range(self.model.processedImage.shape[0]),
+                            self.model.processedImage[:, self._lastClick.y(), 0],
+                            pen=QtGui.QColor(QtCore.Qt.blue),
+                            name=plotName)
+
+                        if plotDataItemProcessedImage is not None:
+                            self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
+
+        elif self.plotterWindow.comboBoxFunction.currentIndex() == \
+            Application.Settings.PlotterWindowSettings.Functions.PLOT_HISTOGRAM.value[0]:
+
+            if self.model.originalImage is not None:
+                # Original Grayscale image
+                if len(self.model.originalImage.shape) == 2:
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    histogram = numpy.histogram(self.model.originalImage, bins=range(257), range=(-1, 255))[0]
+                    plotName = 'Gray histogram'
+                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                        range(256),
+                        histogram,
+                        pen=QtGui.QColor(QtCore.Qt.red),
+                        name=plotName)
+
+                    if plotDataItemOriginalImage is not None:
+                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
+                # Original Color image
+                elif len(self.model.originalImage.shape) == 3:
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    redHistogram = numpy.histogram(self.model.originalImage[:, :, 2], bins=range(257), range=(-1, 255))[0]
+                    plotName = 'Red histogram'
+                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
+                        range(256),
+                        redHistogram,
                         pen=QtGui.QColor(QtCore.Qt.red),
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
                         self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
-                # Original color image
-                elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
-                    plotName = 'Red channel'
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    greenHistogram = numpy.histogram(self.model.originalImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                        0]
+                    plotName = 'Green histogram'
                     plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[1]),
-                        self.model.originalImage[self._lastClick.y(), :, 2],
-                        pen=QtGui.QColor(QtCore.Qt.red),
-                        name=plotName)
-
-                    if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
-
-                    plotName = 'Green channel'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[1]),
-                        self.model.originalImage[self._lastClick.y(), :, 1],
+                        range(256),
+                        greenHistogram,
                         pen=QtGui.QColor(QtCore.Qt.green),
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
                         self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
-                    plotName = 'Blue channel'
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    blueHistogram = numpy.histogram(self.model.originalImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                        0]
+                    plotName = 'Blue histogram'
                     plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[1]),
-                        self.model.originalImage[self._lastClick.y(), :, 0],
+                        range(256),
+                        blueHistogram,
                         pen=QtGui.QColor(QtCore.Qt.blue),
                         name=plotName)
 
                     if plotDataItemOriginalImage is not None:
                         self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
 
-                # Processed grayscale image
-                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotName = 'Gray level'
-
+            if self.model.processedImage is not None:
+                # Processed Grayscale image
+                if len(self.model.originalImage.shape) == 2:
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    histogram = numpy.histogram(self.model.processedImage, bins=range(257), range=(-1, 255))[0]
+                    plotName = 'Gray histogram'
                     plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[1]),
-                        self.model.processedImage[self._lastClick.y()],
-                        pen=QtGui.QColor(QtCore.Qt.green),
+                        range(256),
+                        histogram,
+                        pen=QtGui.QColor(QtCore.Qt.red),
                         name=plotName)
 
                     if plotDataItemProcessedImage is not None:
                         self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
-
-                # Processed color image
-                elif self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
-                    plotName = 'Red channel'
+                # Processed Color image
+                elif len(self.model.originalImage.shape) == 3:
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    redHistogram = numpy.histogram(self.model.processedImage[:, :, 2], bins=range(257), range=(-1, 255))[0]
+                    plotName = 'Red histogram'
                     plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[1]),
-                        self.model.processedImage[self._lastClick.y(), :, 2],
+                        range(256),
+                        redHistogram,
                         pen=QtGui.QColor(QtCore.Qt.red),
                         name=plotName)
 
                     if plotDataItemProcessedImage is not None:
                         self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
-                    plotName = 'Green channel'
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    greenHistogram = numpy.histogram(self.model.processedImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                        0]
+                    plotName = 'Green histogram'
                     plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[1]),
-                        self.model.processedImage[self._lastClick.y(), :, 1],
+                        range(256),
+                        greenHistogram,
                         pen=QtGui.QColor(QtCore.Qt.green),
                         name=plotName)
 
                     if plotDataItemProcessedImage is not None:
                         self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
-                    plotName = 'Blue channel'
+                    # numpy.histogram returns the histogram first and the buckets second
+                    # the last bin is shared between the last two elements, so we need one more
+                    # range(256) gives us [0, ..., 255], so we need range(257)
+                    # the first element in the range parameter needs to be lower than the first needed element
+                    blueHistogram = numpy.histogram(self.model.processedImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                        0]
+                    plotName = 'Blue histogram'
                     plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[1]),
-                        self.model.processedImage[self._lastClick.y(), :, 0],
-                        pen=QtGui.QColor(QtCore.Qt.blue),
-                        name=plotName)
-
-                    if plotDataItemProcessedImage is not None:
-                        self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
-
-            elif self.plotterWindow.comboBoxFunction.currentIndex() == \
-                    Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_VALUES.value[0]:
-
-                # Original grayscale image
-                if self.model.originalImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotName = 'Gray level'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[0]),
-                        self.model.originalImage[:, self._lastClick.x()],
-                        pen=QtGui.QColor(QtCore.Qt.red),
-                        name=plotName)
-
-                    if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
-
-                # Original color image
-                elif self.model.originalImage is not None and len(self.model.originalImage.shape) == 3:
-                    plotName = 'Red channel'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[0]),
-                        self.model.originalImage[:, self._lastClick.x(), 2],
-                        pen=QtGui.QColor(QtCore.Qt.red),
-                        name=plotName)
-
-                    if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
-
-                    plotName = 'Green channel'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[0]),
-                        self.model.originalImage[:, self._lastClick.x(), 1],
-                        pen=QtGui.QColor(QtCore.Qt.green),
-                        name=plotName)
-
-                    if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
-
-                    plotName = 'Blue channel'
-                    plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
-                        range(self.model.originalImage.shape[0]),
-                        self.model.originalImage[:, self._lastClick.y(), 0],
-                        pen=QtGui.QColor(QtCore.Qt.blue),
-                        name=plotName)
-
-                    if plotDataItemOriginalImage is not None:
-                        self.plotterWindow.availablePlotDataItemsOriginalImage[plotName] = plotDataItemOriginalImage
-
-                # Processed grayscale image
-                if self.model.processedImage is not None and len(self.model.originalImage.shape) == 2:
-                    plotName = 'Gray level'
-                    plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[0]),
-                        self.model.processedImage[:, self._lastClick.x()],
-                        pen=QtGui.QColor(QtCore.Qt.green),
-                        name=plotName)
-
-                    if plotDataItemProcessedImage is not None:
-                        self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
-
-                # Processed color image
-                elif self.model.processedImage is not None and len(self.model.originalImage.shape) == 3:
-                    plotName = 'Red channel'
-                    plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[0]),
-                        self.model.processedImage[:, self._lastClick.y(), 2],
-                        pen=QtGui.QColor(QtCore.Qt.red),
-                        name=plotName)
-
-                    if plotDataItemProcessedImage is not None:
-                        self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
-
-                    plotName = 'Green channel'
-                    plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[0]),
-                        self.model.processedImage[:, self._lastClick.y(), 1],
-                        pen=QtGui.QColor(QtCore.Qt.green),
-                        name=plotName)
-
-                    if plotDataItemProcessedImage is not None:
-                        self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
-
-                    plotName = 'Blue channel'
-                    plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
-                        range(self.model.processedImage.shape[0]),
-                        self.model.processedImage[:, self._lastClick.y(), 0],
+                        range(256),
+                        blueHistogram,
                         pen=QtGui.QColor(QtCore.Qt.blue),
                         name=plotName)
 
@@ -528,6 +656,8 @@ class Controller(QtCore.QObject):
                         self.magnifierWindow.frameListProcessedImage[row][column].setFrameColorGrayLevel(None)
 
     def _setImages(self, originalImage, processedImage):
+        self.model.originalImage = originalImage
+        self.model.processedImage = processedImage
         self.mainWindow.setImages(processedImage=processedImage, originalImage=originalImage)
 
         # resetting the images will show them with original resolution
@@ -574,6 +704,7 @@ class Controller(QtCore.QObject):
 
     def _magnifierWindowShowed(self):
         self._isMagnifierWindowShowing = True
+        self._calculateAndSetMagnifierParameters()
 
     def _magnifierWindowClosed(self):
         self._isMagnifierWindowShowing = False
@@ -583,6 +714,7 @@ class Controller(QtCore.QObject):
 
     def _plotterWindowShowed(self):
         self._isPlotterWindowShowing = True
+        self._calculateAndSetPlotterParameters()
 
     def _plotterWindowClosed(self):
         self._isPlotterWindowShowing = False
