@@ -1,5 +1,5 @@
-from Application.Model import Model
-from Application.View import MagnifierWindow, MainWindow, PlotterWindow
+from Application.Models.Model import Model
+from Application.Views.View import MagnifierWindow, MainWindow, PlotterWindow
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2 as opencv
 import numpy
