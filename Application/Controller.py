@@ -507,7 +507,7 @@ class Controller(QtCore.QObject):
                     # the last bin is shared between the last two elements, so we need one more
                     # range(256) gives us [0, ..., 255], so we need range(257)
                     # the first element in the range parameter needs to be lower than the first needed element
-                    blueHistogram = numpy.histogram(self.model.originalImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                    blueHistogram = numpy.histogram(self.model.originalImage[:, :, 0], bins=range(257), range=(-1, 255))[
                         0]
                     plotName = 'Blue histogram'
                     plotDataItemOriginalImage = pyqtgraph.PlotDataItem(
@@ -573,7 +573,7 @@ class Controller(QtCore.QObject):
                     # the last bin is shared between the last two elements, so we need one more
                     # range(256) gives us [0, ..., 255], so we need range(257)
                     # the first element in the range parameter needs to be lower than the first needed element
-                    blueHistogram = numpy.histogram(self.model.processedImage[:, :, 1], bins=range(257), range=(-1, 255))[
+                    blueHistogram = numpy.histogram(self.model.processedImage[:, :, 0], bins=range(257), range=(-1, 255))[
                         0]
                     plotName = 'Blue histogram'
                     plotDataItemProcessedImage = pyqtgraph.PlotDataItem(
