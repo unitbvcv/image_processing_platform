@@ -26,6 +26,6 @@ class MagnifierWindowSettings:
 
 class PlotterWindowSettings:
     class Functions(Enum):
-        PLOT_ROW_GRAY_VALUES = (0, 'Plot row values')
-        PLOT_COL_GRAY_VALUES = (1, 'Plot column values')
+        PLOT_ROW_VALUES = (0, 'Plot row values')
+        PLOT_COL_VALUES = (1, 'Plot column values')
         PLOT_HISTOGRAM = (2, 'Plot histogram')

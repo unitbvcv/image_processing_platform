@@ -267,7 +267,7 @@ class Controller(QtCore.QObject):
         self.plotterWindow.reset()
 
         if self.plotterWindow.comboBoxFunction.currentIndex() == \
-                Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_GRAY_VALUES.value[0]:
+                Application.Settings.PlotterWindowSettings.Functions.PLOT_ROW_VALUES.value[0]:
 
             if self._lastClick is not None:
                 if self.model.originalImage is not None:
@@ -359,7 +359,7 @@ class Controller(QtCore.QObject):
                             self.plotterWindow.availablePlotDataItemsProcessedImage[plotName] = plotDataItemProcessedImage
 
         elif self.plotterWindow.comboBoxFunction.currentIndex() == \
-                Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_GRAY_VALUES.value[0]:
+                Application.Settings.PlotterWindowSettings.Functions.PLOT_COL_VALUES.value[0]:
 
             if self._lastClick is not None:
                 if self.model.originalImage is not None:
