@@ -879,8 +879,14 @@ class SmartDialog(QtWidgets.QDialog):
 
     def showDialog(self, **kwargs):
         # designing dialog
-        row = 0
-        for labelText in kwargs.keys():
+        for paramName, value in kwargs.items():
+            if isinstance(value, tuple):
+                assert len(value) == 2
+                labelText = value[0]
+            else:
+                labelText = paramName
+
+            row = self.gridLayout.rowCount()
             label = QtWidgets.QLabel(self.scrollAreaWidget)
             label.setText(labelText)
             font = label.font()
@@ -892,9 +898,7 @@ class SmartDialog(QtWidgets.QDialog):
             textBox = QtWidgets.QLineEdit(self.scrollAreaWidget)
             textBox.setFont(font)
             self.gridLayout.addWidget(textBox, row, 1)
-            self._textBoxDictionary[labelText] = textBox
-
-            row += 1
+            self._textBoxDictionary[paramName] = textBox
 
         # showing dialog
         if self.exec() == QtWidgets.QDialog.Rejected:
@@ -903,11 +907,16 @@ class SmartDialog(QtWidgets.QDialog):
         # the dialog was accepted
         readData = {}
 
-        for labelText, typeRequested in kwargs.items():
+        for paramName, value in kwargs.items():
+            if isinstance(value, tuple):
+                typeRequested = value[1]
+            else:
+                typeRequested = value
+
             try:
-                convertedValue = typeRequested(self._textBoxDictionary[labelText].text())
+                convertedValue = typeRequested(self._textBoxDictionary[paramName].text())
             except:
                 convertedValue = None
-            readData[labelText] = convertedValue
+            readData[paramName] = convertedValue
 
         return readData
