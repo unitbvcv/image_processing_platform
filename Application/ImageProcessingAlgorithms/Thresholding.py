@@ -1,0 +1,1 @@
+# TODO: binarization with threshold read from smartdialog; example

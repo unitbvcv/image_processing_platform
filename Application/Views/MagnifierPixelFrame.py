@@ -1,0 +1,123 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import Application.Settings
+import Application.Utils
+
+
+class MagnifierPixelFrame(QtWidgets.QFrame):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._isVisible = False
+        self._backgroundColor = QtGui.QColor(255, 255, 255)
+        self._colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
+
+    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorModels):
+        self._colorDisplayFormat = format
+        self.update()
+
+    def setFrameColorRgb(self, red, green, blue):
+        if red is not None and green is not None and blue is not None:
+            self._backgroundColor = QtGui.QColor(red, green, blue)
+            self._isVisible = True
+        else:
+            self._isVisible = False
+            self._backgroundColor = QtGui.QColor(255, 255, 255)
+
+        self.update()
+
+    def setFrameColorGrayLevel(self, grayLevel):
+        if grayLevel is not None:
+            self._backgroundColor = QtGui.QColor(grayLevel, grayLevel, grayLevel)
+            self._isVisible = True
+        else:
+            self._isVisible = False
+            self._backgroundColor = QtGui.QColor(255, 255, 255)
+
+        self.update()
+
+    def paintEvent(self, QPaintEvent):
+        if self._isVisible:
+            painter = QtGui.QPainter(self)
+            painter.fillRect(self.rect(), self._backgroundColor)
+
+            font = QtGui.QFont("Arial")
+            font.setPointSize(Application.Settings.MagnifierWindowSettings.fontSize)
+            painter.setFont(font)
+            fontMetrics = QtGui.QFontMetrics(font)
+
+            if Application.Utils.ColorSpaceOperations.isColorDark(self._backgroundColor):
+                painter.setPen(QtCore.Qt.white)
+            else:
+                painter.setBrush(QtCore.Qt.black)
+
+            if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.GRAY:
+                text = str((self._backgroundColor.red() + self._backgroundColor.green() +
+                            self._backgroundColor.blue()) // 3)
+
+                horizontalAdvance = fontMetrics.horizontalAdvance(text, len(text))
+
+                painter.drawText((self.width() - horizontalAdvance) / 2,
+                                 self.height() / 2 + fontMetrics.ascent() / 2,
+                                 text)
+            elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.CMYK:
+                textCyan = str(self._backgroundColor.cyan())
+                textMagenta = str(self._backgroundColor.magenta())
+                textYellow = str(self._backgroundColor.yellow())
+                textBlack = str(self._backgroundColor.black())
+
+                horizontalAdvanceCyan = fontMetrics.horizontalAdvance(textCyan, len(textCyan))
+                horizontalAdvanceMagenta = fontMetrics.horizontalAdvance(textMagenta, len(textMagenta))
+                horizontalAdvanceYellow = fontMetrics.horizontalAdvance(textYellow, len(textYellow))
+                horizontalAdvanceBlack = fontMetrics.horizontalAdvance(textBlack, len(textBlack))
+
+                # the frame is split into equal rectangles called zones
+                # this tries to center the text in one of the 3 zones of the frame
+                # the (usually) visible part of the text is the ascent, not the height
+                # fonts usually have a baseline; the font will have parts of it below the baseline
+                # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
+                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding) / 4
+                halfFontAscent = fontMetrics.ascent() / 2
+                halfZoneHeight = zoneHeight / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding / 2
+
+                painter.drawText((self.width() - horizontalAdvanceCyan) / 2, zoneHeight - zoneHeightOffset,
+                                 textCyan)
+                painter.drawText((self.width() - horizontalAdvanceMagenta) / 2, zoneHeight * 2 - zoneHeightOffset,
+                                 textMagenta)
+                painter.drawText((self.width() - horizontalAdvanceYellow) / 2, zoneHeight * 3 - zoneHeightOffset,
+                                 textYellow)
+                painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
+                                 textBlack)
+            else:
+                if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.RGB:
+                    textFirst = str(self._backgroundColor.red())
+                    textSecond = str(self._backgroundColor.green())
+                    textThird = str(self._backgroundColor.blue())
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSL:
+                    textFirst = str(self._backgroundColor.hue())
+                    textSecond = str(self._backgroundColor.saturation())
+                    textThird = str(self._backgroundColor.lightness())
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSV:
+                    textFirst = str(self._backgroundColor.hue())
+                    textSecond = str(self._backgroundColor.saturation())
+                    textThird = str(self._backgroundColor.value())
+
+                horizontalAdvanceRed = fontMetrics.horizontalAdvance(textFirst, len(textFirst))
+                horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textSecond, len(textSecond))
+                horizontalAdvanceBlue = fontMetrics.horizontalAdvance(textThird, len(textThird))
+
+                # the frame is split into equal rectangles called zones
+                # this tries to center the text in one of the 3 zones of the frame
+                # the (usually) visible part of the text is the ascent, not the height
+                # fonts usually have a baseline; the font will have parts of it below the baseline
+                # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
+                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding) / 3
+                halfFontAscent = fontMetrics.ascent() / 2
+                halfZoneHeight = zoneHeight / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding / 2
+
+                painter.drawText((self.width() - horizontalAdvanceRed) / 2, zoneHeight - zoneHeightOffset,
+                                 textFirst)
+                painter.drawText((self.width() - horizontalAdvanceGreen) / 2, zoneHeight * 2 - zoneHeightOffset,
+                                 textSecond)
+                painter.drawText((self.width() - horizontalAdvanceBlue) / 2, zoneHeight * 3 - zoneHeightOffset,
+                                 textThird)

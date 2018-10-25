@@ -244,7 +244,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.stackedLayoutOriginalImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetOriginalImage)
         self.stackedLayoutProcessedImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetProcessedImage)
 
-        self.labelOriginalImage = Application.Views.View.ImageLabel(self.scrollAreaWidgetOriginalImage)
+        self.labelOriginalImage = Application.Views.View.MainWindowImageLabel(self.scrollAreaWidgetOriginalImage)
         self.labelOriginalImage.setMouseTracking(True)
         self.labelOriginalImage.setText("")
         self.labelOriginalImage.setScaledContents(False)
@@ -252,7 +252,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelOriginalImage.setObjectName("labelOriginalImage")
         self.labelOriginalImage.setGeometry(0, 0, 0, 0)
 
-        self.labelProcessedImage = Application.Views.View.ImageLabel(self.scrollAreaWidgetProcessedImage)
+        self.labelProcessedImage = Application.Views.View.MainWindowImageLabel(self.scrollAreaWidgetProcessedImage)
         self.labelProcessedImage.setMouseTracking(True)
         self.labelProcessedImage.setText("")
         self.labelProcessedImage.setScaledContents(False)
@@ -619,7 +619,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.showing.emit(QShowEvent)
 
 
-class ImageLabel(QtWidgets.QLabel):
+class MainWindowImageLabel(QtWidgets.QLabel):
     mouse_moved = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
     mouse_pressed = QtCore.pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
     mouse_leaved = QtCore.pyqtSignal(QtCore.QEvent, name='mouseLeaved')
