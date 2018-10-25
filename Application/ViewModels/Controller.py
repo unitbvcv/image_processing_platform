@@ -77,6 +77,7 @@ class Controller(QtCore.QObject):
 
         # add options for the plotter
         self.plotterWindow.comboBoxFunction.addItems([item.value[1] for item in Application.Settings.PlotterWindowSettings.Functions])
+        # TODO: some of the code here has to be moved in the view
         plotItemOriginalImage = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
         plotItemProcessedImage = self.plotterWindow.graphicsViewProcessedImage.getPlotItem()
         plotItemOriginalImage.setMenuEnabled(False)
@@ -127,6 +128,7 @@ class Controller(QtCore.QObject):
         print(dictionar)
 
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
+        # TODO: make difference of sets, instead of deleting everything and then reshowing them
         plotItem = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
 
         for visiblePlotDataItemKey in list(self.plotterWindow.visiblePlotDataItemsOriginalImage.keys()):
@@ -145,6 +147,7 @@ class Controller(QtCore.QObject):
             self.plotterWindow.scaleAndCenterPlots()
 
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
+        # TODO: make difference of sets, instead of deleting everything and then reshowing them
         plotItem = self.plotterWindow.graphicsViewProcessedImage.getPlotItem()
 
         for visiblePlotDataItemKey in list(self.plotterWindow.visiblePlotDataItemsProcessedImage.keys()):
@@ -620,6 +623,7 @@ class Controller(QtCore.QObject):
     def _setMagnifierColorModel(self, colorModel : Application.Settings.MagnifierWindowSettings.ColorModels):
         self.magnifierWindow.comboBoxColorModel.setCurrentIndex(colorModel.value[0])
 
+        # TODO: this part can be done in the view, no need to do it here
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 self.magnifierWindow.frameListOriginalImage[row][column].setColorDisplayFormat(colorModel)

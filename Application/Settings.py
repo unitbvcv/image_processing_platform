@@ -1,6 +1,6 @@
 from enum import Enum
 
-
+# TODO: try to make those readonly
 class MainWindowSettings:
     zoomMinimumValue = 0.0
     zoomMaximumValue = 20.0
