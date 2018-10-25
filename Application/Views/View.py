@@ -22,6 +22,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
             self.scrollAreaOriginalImage.verticalScrollBar().setValue)
 
+        # define dictionary for runtime
+        self._menusDictionary = {
+            "menuFile"  : self.menuFile,
+            "menuTools" : self.menuTools
+        }
+
+        self._menuActionsDictionary = {
+            "actionLoadGrayscaleImage" : self.actionLoadGrayscaleImage,
+            "actionLoadColorImage"     : self.actionLoadColorImage,
+            "actionSaveProcessedImage" : self.actionSaveProcessedImage,
+            "actionExit"               : self.actionExit,
+            "actionMagnifier"          : self.actionMagnifier,
+            "actionPlotter"            : self.actionPlotter,
+            "actionInvert"             : self.actionInvert
+        }
+
     def _setupUi(self):
         self.setObjectName("MainWindow")
         self.resize(1024, 768)
@@ -250,6 +266,61 @@ class MainWindow(QtWidgets.QMainWindow):
     def setImages(self, originalImage, processedImage):
         self.labelOriginalImage.setLabelImage(originalImage)
         self.labelProcessedImage.setLabelImage(processedImage)
+
+    def addMenu(self, menuName, beforeMenuName=None):
+        """
+        Adds a QMenu to the top menu bar with the name and objectName menuName [before beforeMenuName].
+        If it already exists, it does nothing.
+        :param menuName: string
+        :param beforeMenuName: string; default value: None
+        :return: None
+        """
+        if menuName not in self._menusDictionary:
+            beforeMenuAction = None
+            if beforeMenuName is not None\
+                    and beforeMenuName in self._menusDictionary:
+                beforeMenuAction = self._menusDictionary[beforeMenuName].menuAction()
+            menu = QtWidgets.QMenu(self.menuBar)
+            menu.setObjectName(menuName)
+            menu.setTitle(QtCore.QCoreApplication.translate("MainWindow", menuName))
+            self.menuBar.insertAction(beforeMenuAction, menu.menuAction())
+            self._menusDictionary[menuName] = menu
+
+    def addMenuAction(self, menuName, actionName, beforeActionName=None):
+        """
+        Adds a QAction to the top menuName with the name and objectName actionName [before beforeActionName].
+        If it already exists or the menuName doesn't exist, it does nothing.
+        If beforeActionName is not found, it appends the new action.
+        :param menuName: string
+        :param actionName: string
+        :param beforeActionName: string; default value: None
+        :return: None
+        """
+        if menuName in self._menusDictionary\
+                and actionName not in self._menuActionsDictionary:
+            beforeAction = None
+            if beforeActionName in self._menuActionsDictionary:
+                beforeAction = self._menuActionsDictionary[beforeActionName]
+            action = QtWidgets.QAction(self)
+            action.setObjectName(actionName)
+            action.setText(QtCore.QCoreApplication.translate("MainWindow", actionName))
+            self._menusDictionary[menuName].insertAction(beforeAction, action)
+            self._menuActionsDictionary[actionName] = action
+
+    def addMenuSeparator(self, menuName, beforeActionName=None):
+        """
+        Adds a separator in the menuName [before beforeActionName].
+        It does nothing if the menuName is not found.
+        If beforeActionName is not found, it appends the new action.
+        :param menuName: string
+        :param beforeActionName: string; default value: None
+        :return: None
+        """
+        if menuName in self._menusDictionary:
+            beforeAction = None
+            if beforeActionName is not None:
+                beforeAction = self._menuActionsDictionary[beforeActionName]
+            self._menusDictionary[menuName].insertSeparator(beforeAction)
 
 
 class PlotterWindow(QtWidgets.QMainWindow):

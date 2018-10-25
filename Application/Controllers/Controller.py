@@ -95,8 +95,19 @@ class Controller(QtCore.QObject):
         self.plotterWindow.listWidgetVisibleOriginalImage.itemSelectionChanged.connect(self._visiblePlotsOriginalImageSelectionChangedEvent)
         self.plotterWindow.listWidgetVisibleProcessedImage.itemSelectionChanged.connect(self._visiblePlotsProcessedImageSelectionChangedEvent)
 
+
         # show the main window
         self.mainWindow.show()
+
+        # add after show?
+        self.mainWindow.addMenu("Test")
+        self.mainWindow.addMenuAction("Test", "Test action")
+        self.mainWindow.addMenuSeparator("Test")
+        self.mainWindow.addMenuAction("Test", "Test action 2")
+        self.mainWindow.addMenu("Test before", "Test")
+        self.mainWindow.addMenuAction("Test", "Test action before", "Test action")
+        self.mainWindow.addMenuAction("Test", "Test action before 2")
+        self.mainWindow.addMenuSeparator("Test", "Test action before 2")
 
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
         plotItem = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
