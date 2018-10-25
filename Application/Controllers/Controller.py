@@ -1,5 +1,5 @@
 from Application.Models.Model import Model
-from Application.Views.View import MagnifierWindow, MainWindow, PlotterWindow
+from Application.Views.View import MagnifierWindow, MainWindow, PlotterWindow, SmartDialog
 from PyQt5 import QtCore, QtGui, QtWidgets
 import cv2 as opencv
 import numpy
@@ -99,15 +99,29 @@ class Controller(QtCore.QObject):
         # show the main window
         self.mainWindow.show()
 
-        # add after show?
-        self.mainWindow.addMenu("Test")
-        self.mainWindow.addMenuAction("Test", "Test action")
-        self.mainWindow.addMenuSeparator("Test")
-        self.mainWindow.addMenuAction("Test", "Test action 2")
-        self.mainWindow.addMenu("Test before", "Test")
-        self.mainWindow.addMenuAction("Test", "Test action before", "Test action")
-        self.mainWindow.addMenuAction("Test", "Test action before 2")
-        self.mainWindow.addMenuSeparator("Test", "Test action before 2")
+        smartDialog = SmartDialog()
+        dictionar = smartDialog.showDialog(threshold=int,
+                                           threshold2=int,
+                                           threshold3=int,
+                                           threshold4=int,
+                                           threshold5=int,
+                                           threshold6=int,
+                                           threshold7=int,
+                                           threshold8=int,
+                                           threshold9=int,
+                                           threshold10=int,
+                                           threshold12=int,
+                                           threshold13=int,
+                                           threshold14=int,
+                                           threshold15=int,
+                                           threshold16=int,
+                                           threshold17=int,
+                                           threshold18=int,
+                                           threshold19=int,
+                                           threshold11=int,
+                                           threshold20=int
+                                           )
+        print(dictionar)
 
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
         plotItem = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
