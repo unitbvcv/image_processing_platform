@@ -60,10 +60,6 @@ class MagnifierWindowSettings:
 
     @property
     def frameGridSize(self):
-        return 9
-
-    @frameGridSize.getter
-    def frameGridSize(self):
         """
         TODO document MagnifierWindowSettings.frameGridSize
         :return:
