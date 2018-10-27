@@ -708,9 +708,9 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
         super().__init__(parent)
         self._isVisible = False
         self._backgroundColor = QtGui.QColor(255, 255, 255)
-        self._colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorModels.RGB
+        self._colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
 
-    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorModels):
+    def setColorDisplayFormat(self, format: Application.Settings.MagnifierWindowSettings.ColorSpaces):
         self._colorDisplayFormat = format
         self.update()
 
@@ -749,7 +749,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             else:
                 painter.setBrush(QtCore.Qt.black)
 
-            if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.GRAY:
+            if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY:
                 text = str((self._backgroundColor.red() + self._backgroundColor.green() +
                             self._backgroundColor.blue()) // 3)
 
@@ -758,7 +758,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvance) / 2,
                                  self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
-            elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.CMYK:
+            elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK:
                 textCyan = str(self._backgroundColor.cyan())
                 textMagenta = str(self._backgroundColor.magenta())
                 textYellow = str(self._backgroundColor.yellow())
@@ -788,15 +788,15 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
                                  textBlack)
             else:
-                if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.RGB:
+                if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB:
                     textFirst = str(self._backgroundColor.red())
                     textSecond = str(self._backgroundColor.green())
                     textThird = str(self._backgroundColor.blue())
-                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSL:
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL:
                     textFirst = str(self._backgroundColor.hue())
                     textSecond = str(self._backgroundColor.saturation())
                     textThird = str(self._backgroundColor.lightness())
-                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorModels.HSV:
+                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV:
                     textFirst = str(self._backgroundColor.hue())
                     textSecond = str(self._backgroundColor.saturation())
                     textThird = str(self._backgroundColor.value())
