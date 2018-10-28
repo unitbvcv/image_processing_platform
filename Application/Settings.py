@@ -98,6 +98,17 @@ class MagnifierWindowSettings:
         GRAY = (4, 'Grayscale')
 
 
+    _colorSpacesDictionary = {index: colorSpace for (index, colorSpace) in enumerate(ColorSpaces)}
+
+    @property
+    def ColorSpacesDictionary(self):
+        """
+        TODO: document MagnifierWindowSettings.ColorSpacesDictionary
+        :return:
+        """
+        return self._colorSpacesDictionary
+
+
 # had to make it singleton so that the properties might call themselves correctly
 MagnifierWindowSettings = MagnifierWindowSettings()
 
