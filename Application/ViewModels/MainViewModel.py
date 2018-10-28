@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from Application.Models import Model
-from Application.ViewModels import MagnifierWindowViewModel
+from Application.ViewModels import MagnifierWindowViewModel, PlotterWindowViewModel
+# from Application.ViewModels.PlotterWindowViewModel import
 import Application.Settings
 import numpy as np
 import cv2 as opencv
@@ -24,8 +25,13 @@ class MainViewModel(QtWidgets.QWidget):
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowViewModel(self)
 
+        # Instantiate PlotterViewModel
+        self._plotterVM = PlotterWindowViewModel(self)
+
         # testing TODO: to remove testing code
         self._magnifierVM.showWindow()
+
+        self._plotterVM.showWindow()
 
         self._model.originalImage = opencv.imread('C:/Users/vladv/OneDrive/Imagini/WhatsApp Image '
                                                   '2016-10-30 at 20.51.19.jpeg', opencv.IMREAD_GRAYSCALE)

@@ -1,4 +1,9 @@
 def calculateColorLuminance(QColor):
+    """
+    TODO: document calculateColorLuminance
+    :param QColor:
+    :return:
+    """
     componentsList = [QColor.red(), QColor.green(), QColor.blue()]
 
     # sRGB to linear RGB conversion
@@ -18,6 +23,11 @@ def calculateColorLuminance(QColor):
 
 
 def isColorDark(QColor):
+    """
+    TODO: document isColorDark
+    :param QColor:
+    :return:
+    """
     # returns True if the luminance is low enough
     # 0.179 has been calculated using the equations explained here
     # https://stackoverflow.com/a/3943023

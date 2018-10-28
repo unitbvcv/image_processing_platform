@@ -1,14 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSlot
 from pyqtgraph import PlotWidget
+import Application.Settings
 
 
 class PlotterWindow(QtWidgets.QMainWindow):
+
     closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
-    showing = QtCore.pyqtSignal(QtGui.QShowEvent, name='showing')
 
     def __init__(self, parent):
         super().__init__(parent)
         self._setupUi()
+        self.pushButtonScaleAndCenter.pressed.connect(self._scaleAndCenterPlots)
 
         self.availablePlotDataItemsOriginalImage = {}
         self.availablePlotDataItemsProcessedImage = {}
@@ -56,6 +59,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.comboBoxFunction.sizePolicy().hasHeightForWidth())
         self.comboBoxFunction.setSizePolicy(sizePolicy)
+        self.comboBoxFunction.addItems(
+            [item.value[1] for item in Application.Settings.PlotterWindowSettings.Functions])
         self.comboBoxFunction.setObjectName("comboBoxFunction")
         self.verticalLayout_5.addWidget(self.comboBoxFunction)
         self.labelVisibleOriginalImage = QtWidgets.QLabel(self.groupBoxSettings)
@@ -142,6 +147,18 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.setCentralWidget(self.centralwidget)
 
+        # Setting plotter
+        plotItemOriginalImage = self.graphicsViewOriginalImage.getPlotItem()
+        plotItemProcessedImage = self.graphicsViewProcessedImage.getPlotItem()
+        plotItemOriginalImage.setMenuEnabled(False)
+        plotItemProcessedImage.setMenuEnabled(False)
+        plotItemOriginalImage.addLegend()
+        plotItemProcessedImage.addLegend()
+        plotItemOriginalImage.showGrid(x=True, y=True, alpha=1.0)
+        plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
+        self.graphicsViewOriginalImage.setXLink(self.plotterWindow.graphicsViewProcessedImage)
+        self.graphicsViewOriginalImage.setYLink(self.plotterWindow.graphicsViewProcessedImage)
+
         self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -178,10 +195,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
     def closeEvent(self, QCloseEvent):
         self.closing.emit(QCloseEvent)
 
-    def showEvent(self, QShowEvent):
-        self.showing.emit(QShowEvent)
-
-    def scaleAndCenterPlots(self):
+    @pyqtSlot()
+    def _scaleAndCenterPlots(self):
         plots = list(self.visiblePlotDataItemsOriginalImage.values()) + list(self.visiblePlotDataItemsProcessedImage.values())
 
         # if the list of dataitems the plotitem will autorange based off is empty
