@@ -60,3 +60,14 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
     @pyqtSlot()
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
         pass
+
+# de scos dictionarele din view si puse in model
+# resetul din view adus in mare parte in VM
+# de facut selectia pe list widget cu diferenta de seturi - se poate face intern
+#
+# pentru plotare e nevoie de poze; sugestie:
+# cand se schimba functia din combo box, ploterul emite un semnal si mainVM apeleaza refreshPlotter
+# si ii da ca parametrii cele 2 poze si last clickul (asemanator cu calculateAndSetParam..)
+#
+# la ckick event se apeleaza tot refreshPlotter
+#
