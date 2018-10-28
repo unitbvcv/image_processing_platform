@@ -3,6 +3,7 @@ from Application.Models import Model
 from Application.ViewModels import MagnifierWindowViewModel
 import Application.Settings
 import numpy as np
+import cv2 as opencv
 
 
 class MainViewModel(QtWidgets.QWidget):
@@ -22,6 +23,15 @@ class MainViewModel(QtWidgets.QWidget):
 
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowViewModel(self)
+
+        # testing TODO: to remove testing code
+        self._magnifierVM.showWindow()
+
+        self._model.originalImage = opencv.imread('C:/Users/vladv/OneDrive/Imagini/WhatsApp Image '
+                                                  '2016-10-30 at 20.51.19.jpeg', opencv.IMREAD_GRAYSCALE)
+        self.imageClickedEvent(QtCore.QPoint(897, 1590))
+        self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK)
+        # self._magnifierVM.resetMagnifier()
 
     def imageClickedEvent(self, clickPosition):
         """
@@ -43,31 +53,39 @@ class MainViewModel(QtWidgets.QWidget):
         :param clickPosition: QPoint
         :return:
         """
-        frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
-        offset = frameGridSize // 2
-
-        yPos = clickPosition.y()
-        xPos = clickPosition.x()
-
-        rowStartIndex = yPos - offset if yPos - offset >= 0 else 0
-        columnStartIndex = xPos - offset if xPos - offset >= 0 else 0
-
-        originalImagePixels = np.full((frameGridSize, frameGridSize), None)
-
-        if self._model.originalImage is not None:
-            rowEndIndex = yPos + offset + 1 if yPos + offset + 1 <= self._model.originalImage.shape[0] else self._model.originalImage.shape[0]
-            columnEndIndex = xPos + offset + 1 if xPos + offset + 1 <= self._model.originalImage.shape[1] else self._model.originalImage.shape[1]
-
-            originalImagePixels[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex] = \
-                self._model.originalImage[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
-
-        processedImagePixels = np.full((frameGridSize, frameGridSize), None)
-
-        if self._model.processedImage is not None:
-            rowEndIndex = yPos + offset + 1 if yPos + offset + 1 <= self._model.processedImage.shape[0] else self._model.processedImage.shape[0]
-            columnEndIndex = xPos + offset + 1 if xPos + offset + 1 <= self._model.processedImage.shape[1] else self._model.processedImage.shape[1]
-
-            processedImagePixels[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex] = \
-                self._model.processedImage[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
-
+        originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, clickPosition)
+        processedImagePixels = self._getMagnifiedRegion(self._model.processedImage, clickPosition)
         return originalImagePixels, processedImagePixels
+
+    def _getMagnifiedRegion(self, image, clickPosition):
+        """
+        # TODO: document MainViewModel._getMagnifiedRegions
+        Should explain what the function does here.
+        :param clickPosition: QPoint
+        :return:
+        """
+        frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
+
+        imagePixels = np.full((frameGridSize, frameGridSize), None)
+
+        if image is not None:
+            if len(image.shape) == 3:
+                imagePixels = np.full((frameGridSize, frameGridSize, image.shape[2]), None)
+
+            frameOffset = frameGridSize // 2
+            yPos = clickPosition.y()
+            xPos = clickPosition.x()
+
+            startIndexes = lambda pos, offset: (pos - offset, 0) if pos - offset >= 0 else (0, offset - pos)
+            rowStartIndex, startEmptyRows = startIndexes(yPos, frameOffset)
+            columnStartIndex, startEmptyColumns = startIndexes(xPos, frameOffset)
+
+            endIndexes = lambda pos, offset, gridSize, imageSize: \
+                (pos + offset + 1, gridSize) if pos + offset + 1 <= imageSize else (imageSize, offset + imageSize - pos)
+            rowEndIndex, endFullRows = endIndexes(yPos, frameOffset, frameGridSize, image.shape[0])
+            columnEndIndex, endFullColumns = endIndexes(xPos, frameOffset, frameGridSize, image.shape[1])
+
+            imagePixels[startEmptyRows:endFullRows, startEmptyColumns: endFullColumns] = \
+                image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
+
+        return imagePixels

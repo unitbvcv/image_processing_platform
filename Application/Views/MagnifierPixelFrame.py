@@ -53,6 +53,8 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
         """
         TODO: document MagnifierPixelFrame.paintEvent
         """
+
+        # TODO: spart in functii maybe? pt a fi mai lizibil
         if self._isVisible:
             painter = QtGui.QPainter(self)
             painter.fillRect(self.rect(), self._backgroundColor)

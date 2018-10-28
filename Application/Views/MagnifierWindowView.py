@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from Application.Views import MagnifierPixelFrame
 import Application.Settings
+import numpy as np
 
 
 class MagnifierWindow(QtWidgets.QMainWindow):
@@ -8,7 +9,13 @@ class MagnifierWindow(QtWidgets.QMainWindow):
     TODO: MagnifierWindow documentation
     """
 
+    closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
+
     def __init__(self, parent):
+        """
+        TODO: document MagnifierWindow constructor
+        :param parent:
+        """
         super().__init__(parent)
         self._setupUi()
 
@@ -26,6 +33,9 @@ class MagnifierWindow(QtWidgets.QMainWindow):
                 self.gridLayoutProcessedImage.addWidget(self.frameListProcessedImage[row][column], row, column)
 
     def _setupUi(self):
+        """
+        TODO: document MagnifierWindow _setupUi
+        """
         self.setObjectName("MagnifierWindow")
         self.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(self)
@@ -84,6 +94,10 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def _retranslateUi(self):
+        """
+        TODO: document MagnifierWindow _retranslateUi
+        :return:
+        """
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MagnifierWindow", "Magnifier"))
         self.groupBoxOriginalImage.setTitle(_translate("MagnifierWindow", "Original image"))
@@ -91,13 +105,62 @@ class MagnifierWindow(QtWidgets.QMainWindow):
         self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
 
     def setColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+        """
+        TODO: document MagnifierWindow setColorSpace
+        :return:
+        """
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 self.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
                 self.frameListProcessedImage[row][column].setColorDisplayFormat(colorSpace)
 
+    def setOriginalPixelFrameColor(self, row, column, color):
+        """
+        TODO: document MagnifierWindow setOriginalPixelFrameColor
+        :return:
+        """
+        pixelFrame = self.frameListOriginalImage[row][column]
+        self._setPixelFrameColor(pixelFrame, color)
+
+    def setProcessedPixelFrameColor(self, row, column, color):
+        """
+        TODO: document MagnifierWindow setProcessedPixelFrameColor
+        :return:
+        """
+        pixelFrame = self.frameListProcessedImage[row][column]
+        self._setPixelFrameColor(pixelFrame, color)
+
+    def _setPixelFrameColor(self, pixelFrame, color):
+        """
+        TODO: document MagnifierWindow _setPixelFrameColor
+        :return:
+        """
+        if isinstance(color, int):
+            pixelFrame.setFrameColorGrayLevel(color)
+        elif isinstance(color, np.ndarray):
+            pixelFrame.setFrameColorRgb(red=color[2], green=color[1], blue=color[0])
+        else:
+            pixelFrame.setFrameColorGrayLevel(None)
+
     def reset(self):
+        """
+        Clears the settings of every pixel frame (not the color space) and then sets the color space from the combo box.
+        Updating the combo box may or may not call the slot in the VM (depending on whether RGB was already set or not).
+        If it calls the slot, every pixel frame will redraw itself when the color space is set.
+        If it doesn't call the slot, an update must be called from the window.
+        TODO: document MagnifierWindow reset
+        :return: None
+        """
         for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
             for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
                 self.frameListOriginalImage[row][column].clear()
                 self.frameListProcessedImage[row][column].clear()
+        self.comboBoxColorSpace.setCurrentIndex(0)
+        self.update()
+
+    def closeEvent(self, QCloseEvent):
+        """
+        TODO: document MagnifierWindow closeEvent
+        :return:
+        """
+        self.closing.emit(QCloseEvent)

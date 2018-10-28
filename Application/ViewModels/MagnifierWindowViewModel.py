@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot
 from Application.Models import MagnifierWindowModel
 from Application.Views import MagnifierWindow
@@ -8,6 +8,8 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
     """
     TODO: document MagnifierWindowViewModel
     """
+
+    windowClosing = QtCore.pyqtSignal(QtGui.QCloseEvent, name="windowClosing")
 
     def __init__(self, parent=None):
         """
@@ -30,6 +32,7 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
 
         # Connect the view
         self._view.comboBoxColorSpace.currentIndexChanged[int].connect(self._magnifierColorSpaceIndexChanged)
+        self._view.closing.connect(self.windowClosing)
 
     def showWindow(self):
         """Shows the magnifier window.
@@ -64,9 +67,33 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
         :param index:
         :return:
         """
+        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.ColorSpacesDictionary[index]
         self._view.setColorSpace(self._model.colorSpace)
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):
-        pass
+        """
+        TODO: document MagnifierWindowViewModel.setMagnifiedPixels
+        :param originalImagePixels:
+        :param processedImagePixels:
+        :return:
+        """
+        frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
 
-    # TODO: a reset function
+        for row in range(frameGridSize):
+            for column in range(frameGridSize):
+                pixelOriginalImageColor = originalImagePixels[row, column]
+                self._view.setOriginalPixelFrameColor(row, column, pixelOriginalImageColor)
+
+                pixelProcessedImageColor = processedImagePixels[row, column]
+                self._view.setProcessedPixelFrameColor(row, column, pixelProcessedImageColor)
+
+    def resetMagnifier(self):
+        """Clears the magnifier window.
+
+        Resetting the model isn't necessary as the view will reset it indirectly through the VM.
+
+        Returns:
+            None
+
+        """
+        self._view.reset()

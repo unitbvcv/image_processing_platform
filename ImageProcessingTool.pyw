@@ -9,8 +9,8 @@ if __name__ == "__main__":
     controller = Controller.Controller()
 
     # test code
-    a = MagnifierWindowViewModel()
-    a.showWindow()
+    # a = MagnifierWindowViewModel()
+    # a.showWindow()
 
     b = MainViewModel()
 
