@@ -1,10 +1,10 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
 from Application.Models import PlotterWindowModel
 from Application.Views import PlotterWindow
 
 
-class PlotterWindowViewModel(QtWidgets.QWidget):
+class PlotterWindowViewModel(QtCore.QObject):
     """
     TODO: document PlotterWindowViewModel
     """
@@ -22,11 +22,11 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
         self._model = PlotterWindowModel()
 
         # Instantiate the view
-        self._view = PlotterWindow(self)
+        self._view = PlotterWindow()
 
         # Connect the view
         self._view.closing.connect(self.closingWindow)
-        self._view.comboBoxFunction.currentIndexChanged[int](self._functionComboBoxIndexChanged())
+        self._view.comboBoxFunction.currentIndexChanged[int].connect(self._functionComboBoxIndexChanged)
         self._view.listWidgetVisibleOriginalImage.itemSelectionChanged.connect(
             self._visiblePlotsOriginalImageSelectionChangedEvent)
         self._view.listWidgetVisibleProcessedImage.itemSelectionChanged.connect(

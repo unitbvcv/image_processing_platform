@@ -1,10 +1,10 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
 from Application.Models import MagnifierWindowModel
 from Application.Views import MagnifierWindow
 import Application.Settings
 
-class MagnifierWindowViewModel(QtWidgets.QWidget):
+class MagnifierWindowViewModel(QtCore.QObject):
     """
     TODO: document MagnifierWindowViewModel
     """
@@ -28,7 +28,7 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
         self._model = MagnifierWindowModel()
 
         # Instantiate the view
-        self._view = MagnifierWindow(self)
+        self._view = MagnifierWindow()
 
         # Connect the view
         self._view.comboBoxColorSpace.currentIndexChanged[int].connect(self._magnifierColorSpaceIndexChanged)

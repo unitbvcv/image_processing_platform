@@ -11,7 +11,7 @@ class MagnifierWindow(QtWidgets.QMainWindow):
 
     closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         """
         TODO: document MagnifierWindow constructor
         :param parent:

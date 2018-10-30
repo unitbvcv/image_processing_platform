@@ -157,8 +157,8 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.plotItemProcessedImage.addLegend()
         self.plotItemOriginalImage.showGrid(x=True, y=True, alpha=1.0)
         self.plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
-        self.graphicsViewOriginalImage.setXLink(self.plotterWindow.graphicsViewProcessedImage)
-        self.graphicsViewOriginalImage.setYLink(self.plotterWindow.graphicsViewProcessedImage)
+        self.graphicsViewOriginalImage.setXLink(self.graphicsViewProcessedImage)
+        self.graphicsViewOriginalImage.setYLink(self.graphicsViewProcessedImage)
 
         self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
