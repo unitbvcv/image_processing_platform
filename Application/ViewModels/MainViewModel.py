@@ -46,7 +46,7 @@ class MainViewModel(QtWidgets.QWidget):
         :return:
         """
         if self._magnifierVM.isVisible: # sau plotterul
-            # mainWindow.highlightPosition(clickPosition)
+            # mainWindowVM.highlightPosition(clickPosition)
 
             magnifiedRegions = self._getMagnifiedRegions(clickPosition)
             self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)

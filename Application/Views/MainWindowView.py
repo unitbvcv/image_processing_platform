@@ -19,6 +19,12 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
             self.scrollAreaOriginalImage.verticalScrollBar().setValue)
 
+        #
+        self.labelOriginalImage.mouse_leaved.connect(self._mouseLeavedEvent)
+        self.labelProcessedImage.mouse_leaved.connect(self._mouseLeavedEvent)
+        self.labelOriginalImage.finished_painting.connect(self._labelFinishedPaintingEvent)
+        self.labelProcessedImage.finished_painting.connect(self._labelFinishedPaintingEvent)
+
         # define dictionary for runtime
         self._menusDictionary = {
             "menuFile"  : self.menuFile,
@@ -31,8 +37,7 @@ class MainWindowView(QtWidgets.QMainWindow):
             "actionSaveProcessedImage" : self.actionSaveProcessedImage,
             "actionExit"               : self.actionExit,
             "actionMagnifier"          : self.actionMagnifier,
-            "actionPlotter"            : self.actionPlotter,
-            "actionInvert"             : self.actionInvert
+            "actionPlotter"            : self.actionPlotter
         }
 
     def _setupUi(self):
@@ -212,10 +217,12 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.menuFile.addAction(self.actionExit)
         self.menuTools.addAction(self.actionMagnifier)
         self.menuTools.addAction(self.actionPlotter)
-        self.menuTools.addSeparator()
-        self.menuTools.addAction(self.actionInvert)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
+
+        self.mainWindow.rightMenuBar = QtWidgets.QMenuBar()
+        self.mainWindow.menuBar.setCornerWidget(self.mainWindow.rightMenuBar)
+        self.mainWindow.rightMenuBar.addAction('Save as original image', self._actionSaveAsOriginalImage)
 
         self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -235,7 +242,6 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionMagnifier.setText(_translate("MainWindow", "Magnifier"))
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
-        self.actionInvert.setText(_translate("MainWindow", "Invert"))
 
     def _setupImageLabels(self):
         self.stackedLayoutOriginalImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetOriginalImage)
@@ -318,3 +324,21 @@ class MainWindowView(QtWidgets.QMainWindow):
             if beforeActionName is not None:
                 beforeAction = self._menuActionsDictionary[beforeActionName]
             self._menusDictionary[menuName].insertSeparator(beforeAction)
+
+    def _labelMousePressEvent(self, QMouseEvent):
+        # TODO: emit a signal coming from labels
+        pass
+
+    def _mouseLeavedEvent(self, QEvent):
+        self.labelMousePosition.setText('')
+        self.labelOriginalImagePixelValue.setText('')
+        self.labelProcessedImagePixelValue.setText('')
+
+    def _labelFinishedPaintingEvent(self):
+        # here we can synchronize scrollbars, after the paint event has finished
+        # before paint event, the scrollbars don't exist
+        self.mainWindow.scrollAreaProcessedImage.horizontalScrollBar().setValue(
+            self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().value())
+
+        self.mainWindow.scrollAreaProcessedImage.verticalScrollBar().setValue(
+            self.mainWindow.scrollAreaOriginalImage.verticalScrollBar().value())
