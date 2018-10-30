@@ -1,25 +1,28 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
 from pyqtgraph import PlotWidget
 import Application.Settings
 
 
 class PlotterWindow(QtWidgets.QMainWindow):
+    """
+    TODO: document PlotterWindow
+    """
 
     closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
+        """
+        TODO: document PlotterWindow constructor
+        :param parent:
+        """
         super().__init__(parent)
         self._setupUi()
-        self.pushButtonScaleAndCenter.pressed.connect(self._scaleAndCenterPlots)
-
-        self.availablePlotDataItemsOriginalImage = {}
-        self.availablePlotDataItemsProcessedImage = {}
-
-        self.visiblePlotDataItemsOriginalImage = {}
-        self.visiblePlotDataItemsProcessedImage = {}
 
     def _setupUi(self):
+        """
+        TODO: document PlotterWindow _setupUi
+        :return:
+        """
         self.setObjectName("PlotterWindow")
         self.resize(1200, 604)
         self.centralwidget = QtWidgets.QWidget(self)
@@ -148,14 +151,12 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralwidget)
 
         # Setting plotter
-        plotItemOriginalImage = self.graphicsViewOriginalImage.getPlotItem()
-        plotItemProcessedImage = self.graphicsViewProcessedImage.getPlotItem()
-        plotItemOriginalImage.setMenuEnabled(False)
-        plotItemProcessedImage.setMenuEnabled(False)
-        plotItemOriginalImage.addLegend()
-        plotItemProcessedImage.addLegend()
-        plotItemOriginalImage.showGrid(x=True, y=True, alpha=1.0)
-        plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
+        self.plotItemOriginalImage.setMenuEnabled(False)
+        self.plotItemProcessedImage.setMenuEnabled(False)
+        self.plotItemOriginalImage.addLegend()
+        self.plotItemProcessedImage.addLegend()
+        self.plotItemOriginalImage.showGrid(x=True, y=True, alpha=1.0)
+        self.plotItemProcessedImage.showGrid(x=True, y=True, alpha=1.0)
         self.graphicsViewOriginalImage.setXLink(self.plotterWindow.graphicsViewProcessedImage)
         self.graphicsViewOriginalImage.setYLink(self.plotterWindow.graphicsViewProcessedImage)
 
@@ -163,6 +164,10 @@ class PlotterWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def _retranslateUi(self):
+        """
+        TODO: document PlotterWindow _retranslateUi
+        :return:
+        """
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("PlotterWindow", "Plotter"))
         self.groupBoxOriginalImage.setTitle(_translate("PlotterWindow", "Original image"))
@@ -175,38 +180,81 @@ class PlotterWindow(QtWidgets.QMainWindow):
         self.pushButtonScaleAndCenter.setText(_translate("PlotterWindow", "Scale and center plots to view"))
         self.groupBoxProcessedImage.setTitle(_translate("PlotterWindow", "Processed image"))
 
-    def reset(self):
-        self.graphicsViewOriginalImage.plotItem.clear()
-        self.graphicsViewProcessedImage.plotItem.clear()
-
-        for legendString in list(self.visiblePlotDataItemsOriginalImage.keys()):
-            self.graphicsViewOriginalImage.plotItem.legend.removeItem(legendString)
-
-        for legendString in list(self.visiblePlotDataItemsProcessedImage.keys()):
-            self.graphicsViewProcessedImage.plotItem.legend.removeItem(legendString)
-
-        self.visiblePlotDataItemsOriginalImage.clear()
-        self.visiblePlotDataItemsProcessedImage.clear()
-        self.availablePlotDataItemsOriginalImage.clear()
-        self.availablePlotDataItemsProcessedImage.clear()
-        self.listWidgetVisibleOriginalImage.clear()
-        self.listWidgetVisibleProcessedImage.clear()
-
     def closeEvent(self, QCloseEvent):
+        """
+        TODO: document PlotterWindow closeEvent
+        :param QCloseEvent:
+        :return:
+        """
         self.closing.emit(QCloseEvent)
 
-    @pyqtSlot()
-    def _scaleAndCenterPlots(self):
-        plots = list(self.visiblePlotDataItemsOriginalImage.values()) + list(self.visiblePlotDataItemsProcessedImage.values())
+    @property
+    def plotItemOriginalImage(self):
+        """
+        TODO: document PlotterWindow originalPlotItem
+        :return:
+        """
+        return self.graphicsViewOriginalImage.plotItem
 
+    @property
+    def plotItemProcessedImage(self):
+        """
+        TODO: document PlotterWindow processedPlotItem
+        :return:
+        """
+        return self.graphicsViewProcessedImage.plotItem
+
+    def scaleAndCenterToPlots(self, plots):
+        """
+        TODO document PlotterWindow _scaleAndCenterPlots
+        :param plots:
+        :return:
+        """
         # if the list of dataitems the plotitem will autorange based off is empty
         # the plot will behave weirdly on autorange
         if len(plots) > 0:
-            self.graphicsViewOriginalImage.getPlotItem().getViewBox().autoRange(items=plots)
-            self.graphicsViewProcessedImage.getPlotItem().getViewBox().autoRange(items=plots)
+            self.plotItemOriginalImage.getViewBox().autoRange(items=plots)
+            self.plotItemProcessedImage.getViewBox().autoRange(items=plots)
 
-    def clearAndPopulateVisibleListWidgets(self):
+    def removePlotDataItemsFromOriginalImage(self, plotDataItems):
+        for plotDataItem in plotDataItems:
+            pass # de parametrizat
+
+    def clearPlotItems(self):
+        """
+        TODO: document PlotterWindow clearPlotItems
+        :return:
+        """
+        self.plotItemOriginalImage.clear()
+        self.plotItemProcessedImage.clear()
+
+    def clearPlotItemsLegends(self, originalImageKeys, processedImageKeys):
+        """
+        TODO: document PlotterWindow clearPlotItemsLegends
+        :param originalImageKeys:
+        :param processedImageKeys:
+        :return:
+        """
+        for legendString in originalImageKeys:
+            self.plotItemOriginalImage.legend.removeItem(legendString)
+
+        for legendString in processedImageKeys:
+            self.plotItemProcessedImage.legend.removeItem(legendString)
+
+    def clearListWidgets(self):
+        """
+        TODO: document PlotterWindow clearListWidgets
+        :return:
+        """
         self.listWidgetVisibleOriginalImage.clear()
         self.listWidgetVisibleProcessedImage.clear()
-        self.listWidgetVisibleOriginalImage.addItems(list(self.availablePlotDataItemsOriginalImage.keys()))
-        self.listWidgetVisibleProcessedImage.addItems(list(self.availablePlotDataItemsProcessedImage.keys()))
+
+    def populateListWidgets(self, originalImageItems, processedImageItems):
+        """
+        TODO: document PlotterWindow populateListWidgets
+        :param originalImageItems:
+        :param processedImageItems:
+        :return:
+        """
+        self.listWidgetVisibleOriginalImage.addItems(originalImageItems)
+        self.listWidgetVisibleProcessedImage.addItems(processedImageItems)

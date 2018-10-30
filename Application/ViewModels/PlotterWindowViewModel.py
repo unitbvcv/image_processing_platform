@@ -31,6 +31,7 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
             self._visiblePlotsOriginalImageSelectionChangedEvent)
         self._view.listWidgetVisibleProcessedImage.itemSelectionChanged.connect(
             self._visiblePlotsProcessedImageSelectionChangedEvent)
+        self._view.pushButtonScaleAndCenter.pressed.connect(self._scaleAndCenterButtonPressed)
 
     def showWindow(self):
         """Shows the plotter window.
@@ -49,20 +50,66 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
         """
         return self._view.isVisible()
 
+    @pyqtSlot()
+    def _scaleAndCenterButtonPressed(self):
+        """
+        TODO: document PlotterWindowViewModel _scaleAndCenterButtonPressed
+        :return:
+        """
+        plots = list(self._model.visiblePlotDataItemsOriginalImage.values()) + \
+            list(self._model.visiblePlotDataItemsProcessedImage.values())
+
+        self._view.scaleAndCenterToPlots(plots)
+
     @pyqtSlot(int)
     def _functionComboBoxIndexChanged(self, index):
         pass
 
     @pyqtSlot()
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
-        pass
+        selectedPlotsNames = set([item.text() for item in self._view.listWidgetVisibleOriginalImage.selectedItems()])
+        visiblePlotsNames = set(self._model.visiblePlotDataItemsOriginalImage.keys())
+
+        if selectedPlotsNames > visiblePlotsNames:
+            # aici s-au activat plot-uri
+            plotsToAdd = selectedPlotsNames - visiblePlotsNames
+
+        elif visiblePlotsNames > selectedPlotsNames:
+            # here one or more plots have been deselected
+            plotsToRemove = visiblePlotsNames - selectedPlotsNames
+
+            # removing them from the visible plots in the model
+            for plotName in plotsToRemove:
+                del self._model.visiblePlotDataItemsOriginalImage[plotName]
+
+            # removing them from view
+            self._view.removePlotDataItemsFromOriginalImage(self._model.visiblePlotDataItemsOriginalImage.values())
+
+
 
     @pyqtSlot()
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
         pass
 
-# de scos dictionarele din view si puse in model
-# resetul din view adus in mare parte in VM
+    def resetPlotter(self):
+        """
+        TODO: document PlotterWindowViewModel resetPlotter
+        :return:
+        """
+        # Clearing the view
+        self._view.clearPlotItems()
+        self._view.clearPlotItemsLegends(self._model.visiblePlotDataItemsOriginalImage.keys(),
+                                         self._model.visiblePlotDataItemsProcessedImage.keys())
+        self._view.clearListWidgets()
+
+        # Clearing the model
+        self._model.visiblePlotDataItemsOriginalImage.clear()
+        self._model.visiblePlotDataItemsProcessedImage.clear()
+
+        self._model.availablePlotDataItemsOriginalImage.clear()
+        self._model.availablePlotDataItemsProcessedImage.clear()
+
+
 # de facut selectia pe list widget cu diferenta de seturi - se poate face intern
 #
 # pentru plotare e nevoie de poze; sugestie:
