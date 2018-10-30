@@ -216,9 +216,25 @@ class PlotterWindow(QtWidgets.QMainWindow):
             self.plotItemOriginalImage.getViewBox().autoRange(items=plots)
             self.plotItemProcessedImage.getViewBox().autoRange(items=plots)
 
-    def removePlotDataItemsFromOriginalImage(self, plotDataItems):
+    def addPlotDataItems(self, plotItem, plotDataItems):
+        """
+        TODO: document PlotterWindow _addPlotDataItems
+        :param plotItem:
+        :param plotDataItems:
+        :return:
+        """
         for plotDataItem in plotDataItems:
-            pass # de parametrizat
+            plotItem.addItem(plotDataItem)
+
+    def removePlotDataItems(self, plotItem, plotDataItems):
+        """
+        TODO: document PlotterWindow _removePlotDataItems
+        :param plotItem:
+        :param plotDataItems:
+        :return:
+        """
+        for plotDataItem in plotDataItems:
+            plotItem.removeItem(plotDataItem)
 
     def clearPlotItems(self):
         """

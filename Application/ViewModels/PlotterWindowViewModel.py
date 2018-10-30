@@ -65,31 +65,71 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
     def _functionComboBoxIndexChanged(self, index):
         pass
 
-    @pyqtSlot()
-    def _visiblePlotsOriginalImageSelectionChangedEvent(self):
-        selectedPlotsNames = set([item.text() for item in self._view.listWidgetVisibleOriginalImage.selectedItems()])
-        visiblePlotsNames = set(self._model.visiblePlotDataItemsOriginalImage.keys())
+    def _visiblePlotsSelectionChanged(self, plotItem, availablePlotDataItems, visiblePlotDataItems, listWidget):
+        """
+        TODO: document PlotterWindowViewModel _visiblePlotsSelectionChanged
+        :param plotItem:
+        :param availablePlotDataItems:
+        :param visiblePlotDataItems:
+        :param listWidget:
+        :return:
+        """
+        selectedPlotsNames = set([item.text() for item in listWidget.selectedItems()])
+        visiblePlotsNames = set(visiblePlotDataItems.keys())
 
         if selectedPlotsNames > visiblePlotsNames:
-            # aici s-au activat plot-uri
-            plotsToAdd = selectedPlotsNames - visiblePlotsNames
+            # here one or more plots have been selected
+            plotDataItemsNamesToAdd = selectedPlotsNames - visiblePlotsNames
+
+            plotDataItemsToAdd = []
+
+            # adding the plots in model from available to visible
+            for plotDataItemName in plotDataItemsNamesToAdd:
+                plotDataItem = availablePlotDataItems[plotDataItemName]
+                visiblePlotDataItems[plotDataItemName] = plotDataItem
+                plotDataItemsToAdd.append(plotDataItem)
+
+            # updating the view
+            self._view.addPlotDataItems(plotItem, plotDataItemsToAdd)
 
         elif visiblePlotsNames > selectedPlotsNames:
             # here one or more plots have been deselected
-            plotsToRemove = visiblePlotsNames - selectedPlotsNames
+            plotDataItemsNamesToRemove = visiblePlotsNames - selectedPlotsNames
 
-            # removing them from the visible plots in the model
-            for plotName in plotsToRemove:
-                del self._model.visiblePlotDataItemsOriginalImage[plotName]
+            plotDataItemsToRemove = [plotDataItem for (plotDataItemName, plotDataItem)
+                                     in visiblePlotDataItems.items()
+                                     if plotDataItemName in plotDataItemsNamesToRemove]
 
             # removing them from view
-            self._view.removePlotDataItemsFromOriginalImage(self._model.visiblePlotDataItemsOriginalImage.values())
+            self._view.removePlotDataItems(plotItem, plotDataItemsToRemove)
 
+            # removing them from the visible plots in the model
+            for plotDataItemName in plotDataItemsNamesToRemove:
+                del visiblePlotDataItems[plotDataItemName]
 
+    @pyqtSlot()
+    def _visiblePlotsOriginalImageSelectionChangedEvent(self):
+        """
+        TODO document PlotterWindowViewModel _visiblePlotsOriginalImageSelectionChangedEvent
+        :return:
+        """
+        self._visiblePlotsSelectionChanged(
+            self._view.plotItemOriginalImage,
+            self._model.availablePlotDataItemsOriginalImage,
+            self._model.visiblePlotDataItemsOriginalImage,
+            self._view.listWidgetVisibleOriginalImage)
 
     @pyqtSlot()
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
-        pass
+        """
+        TODO: document PlotterWindowViewModel _visiblePlotsProcessedImageSelectionChangedEvent
+        :return:
+        """
+        self._visiblePlotsSelectionChanged(
+            self._view.plotItemProcessedImage,
+            self._model.availablePlotDataItemsProcessedImage,
+            self._model.visiblePlotDataItemsProcessedImage,
+            self._view.listWidgetVisibleProcessedImage)
 
     def resetPlotter(self):
         """
@@ -98,6 +138,7 @@ class PlotterWindowViewModel(QtWidgets.QWidget):
         """
         # Clearing the view
         self._view.clearPlotItems()
+        #TODO: verifica daca mai e necesar clear pe legend
         self._view.clearPlotItemsLegends(self._model.visiblePlotDataItemsOriginalImage.keys(),
                                          self._model.visiblePlotDataItemsProcessedImage.keys())
         self._view.clearListWidgets()
