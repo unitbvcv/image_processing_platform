@@ -1,94 +1,32 @@
 from enum import Enum
+from dataclasses import dataclass, field
+from typing import Dict, Any
 
 
+@dataclass(frozen=True)
 class MainWindowSettings:
+    """
+    TODO: document MainWindowSettings and members
+    """
 
-    @property
-    def zoomMinimumValue(self):
-        """
-        TODO: document MainWindowSettings.zoomMinimumValue
-        :return:
-        """
-        return 0.0
+    zoomMinimumValue: float = field(default=0.0, init=False)
+    zoomMaximumValue: float = field(default=20.0, init=False)
+    zoomSingleStep: float = field(default=0.05, init=False)
+    zoomPageStep: float = field(default=1.0, init=False)
+    zoomDefaultValue: float = field(default=1.0, init=False)
+    ticksInterval: int = field(default=1, init=False)
 
-    @property
-    def zoomMaximumValue(self):
-        """
-        TODO: document MainWindowSettings.zoomMaximumValue
-        :return:
-        """
-        return 20.0
-
-    @property
-    def zoomSingleStep(self):
-        """
-        TODO: document MainWindowSettings.zoomSingleStep
-        :return:
-        """
-        return 0.05
-
-    @property
-    def zoomPageStep(self):
-        """
-        TODO: document MainWindowSettings.zoomPageStep
-        :return:
-        """
-        return 1.0
-
-    @property
-    def zoomDefaultValue(self):
-        """
-        TODO: document MainWindowSettings.zoomDefaultValue
-        :return:
-        """
-        return 1.0
-
-    @property
-    def ticksInterval(self):
-        """
-        TODO: document MainWindowSettings.ticksInterval
-        :return:
-        """
-        return 1
+    def __post_init__(self):
+        # TODO: think if more tests are needed
+        assert self.zoomMinimumValue < self.zoomMaximumValue
+        assert self.zoomMinimumValue < self.zoomDefaultValue < self.zoomMaximumValue
 
 
-# had to make it singleton so that the properties might call themselves correctly
-MainWindowSettings = MainWindowSettings()
-
-
+@dataclass()
 class MagnifierWindowSettings:
-
-    @property
-    def frameGridSize(self):
-        """
-        TODO document MagnifierWindowSettings.frameGridSize
-        :return:
-        """
-        return 9  # positive odd number here
-
-    @property
-    def threeZoneHeightPadding(self):
-        """
-        TODO document MagnifierWindowSettings.threeZoneHeightPadding
-        :return:
-        """
-        return 12  # in pixels
-
-    @property
-    def fourZoneHeightPadding(self):
-        """
-        TODO document MagnifierWindowSettings.fourZoneHeightPadding
-        :return:
-        """
-        return 6  # in pixels
-
-    @property
-    def fontSize(self):
-        """
-        TODO document MagnifierWindowSettings.fontSize
-        :return:
-        """
-        return 8  # in points
+    """
+    TODO: document MagnifierWindowSettings
+    """
 
     class ColorSpaces(Enum):
         RGB = (0, 'RGB (Red Green Blue)')
@@ -97,22 +35,21 @@ class MagnifierWindowSettings:
         CMYK = (3, 'CMYK (Cyan Magenta Yellow Black)')
         GRAY = (4, 'Grayscale')
 
+    aa: Any
 
-    _colorSpacesDictionary = {index: colorSpace for (index, colorSpace) in enumerate(ColorSpaces)}
+    frameGridSize: int = field(default=9, init=False)  # positive odd number here
+    threeZoneHeightPadding: int = field(default=12, init=False)  # in pixels
+    fourZoneHeightPadding: int = field(default=6, init=False)  # in pixels
+    fontSize: int = field(default=8, init=False)  # in points
 
-    @property
-    def ColorSpacesDictionary(self):
-        """
-        TODO: document MagnifierWindowSettings.ColorSpacesDictionary
-        :return:
-        """
-        return self._colorSpacesDictionary
-
-
-# had to make it singleton so that the properties might call themselves correctly
-MagnifierWindowSettings = MagnifierWindowSettings()
+    def __post_init__(self):
+        # TODO: think if more tests are needed
+        assert self.frameGridSize % 2 == 1
+        assert self.frameGridSize > 0
+        assert self.fontSize > 0
 
 
+# TODO: to be removed and replaced by functions defined in PlotterAlgorithms folder
 class PlotterWindowSettings:
     class Functions(Enum):
         PLOT_ROW_VALUES = (0, 'Plot row values')

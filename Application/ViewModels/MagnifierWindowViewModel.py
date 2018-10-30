@@ -16,12 +16,6 @@ class MagnifierWindowViewModel(QtCore.QObject):
         TODO: document MagnifierWindowViewModel constructor
         :param parent:
         """
-
-        # aici sau in mainVM? sau in Settings? se pot pune in implementarea proprietatilor, dar e ineficient
-        assert (Application.Settings.MagnifierWindowSettings.frameGridSize % 2 == 1)
-        assert (Application.Settings.MagnifierWindowSettings.frameGridSize > 0)
-        assert (Application.Settings.MagnifierWindowSettings.fontSize > 0)
-
         super().__init__(parent)
 
         # Instantiate the model
@@ -67,7 +61,8 @@ class MagnifierWindowViewModel(QtCore.QObject):
         :param index:
         :return:
         """
-        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.ColorSpacesDictionary[index]
+        Application.Settings.MagnifierWindowSettings.fontSize = 2
+        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.aa
         self._view.setColorSpace(self._model.colorSpace)
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):

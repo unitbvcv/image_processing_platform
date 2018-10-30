@@ -1,25 +1,11 @@
-import Application.Settings
+from dataclasses import dataclass, field
+from Application.Settings import MagnifierWindowSettings
 
 
+@dataclass
 class MagnifierWindowModel:
     """
     TODO: document MagnifierWindowModel
     """
 
-    def __init__(self):
-        """
-        TODO: document MagnifierWindowModel constructor
-        """
-        self._colorSpace = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
-
-    @property
-    def colorSpace(self):
-        """
-        TODO: MagnifierWindowModel colorSpace documentation
-        :return:
-        """
-        return self._colorSpace
-
-    @colorSpace.setter
-    def colorSpace(self, value):
-        self._colorSpace = value
+    colorSpace: MagnifierWindowSettings.ColorSpaces = field(default=MagnifierWindowSettings.ColorSpaces.RGB)
