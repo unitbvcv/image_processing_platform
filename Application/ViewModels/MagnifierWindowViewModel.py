@@ -1,8 +1,10 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
+
 from Application.Models import MagnifierWindowModel
-from Application.Views import MagnifierWindow
 import Application.Settings
+from Application.Views import MagnifierWindow
+
 
 class MagnifierWindowViewModel(QtCore.QObject):
     """

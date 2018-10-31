@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+
 from Application.Settings import MagnifierWindowSettings
 
 

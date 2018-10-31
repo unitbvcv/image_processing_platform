@@ -1,7 +1,8 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from Application.Views import MagnifierPixelFrame
-import Application.Settings
 import numpy as np
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+import Application.Settings
+from Application.Views import MagnifierPixelFrame
 
 
 class MagnifierWindow(QtWidgets.QMainWindow):

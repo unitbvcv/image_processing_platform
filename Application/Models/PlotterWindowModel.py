@@ -1,48 +1,17 @@
+from dataclasses import dataclass, field
+from typing import Dict
+
+from pyqtgraph import PlotDataItem
+
+
+@dataclass(frozen=True)  # because the references to the dicts never change; remove if necessary
 class PlotterWindowModel:
     """
     TODO: document PlotterWindowModel
     """
 
-    def __init__(self):
-        """
-        TODO: document PlotterWindowModel constructor
-        :param self:
-        :return:
-        """
-        self._availablePlotDataItemsOriginalImage = {}
-        self._availablePlotDataItemsProcessedImage = {}
+    availablePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
+    availablePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
 
-        self._visiblePlotDataItemsOriginalImage = {}
-        self._visiblePlotDataItemsProcessedImage = {}
-
-    @property
-    def availablePlotDataItemsOriginalImage(self):
-        """
-        TODO: document PlotterWindowModel availablePlotDataItemsOriginalImage
-        :return:
-        """
-        return self._availablePlotDataItemsOriginalImage
-
-    @property
-    def availablePlotDataItemsProcessedImage(self):
-        """
-        TODO: document PlotterWindowModel availablePlotDataItemsProcessedImage
-        :return:
-        """
-        return self._availablePlotDataItemsProcessedImage()
-
-    @property
-    def visiblePlotDataItemsOriginalImage(self):
-        """
-        TODO: document PlotterWindowModel visiblePlotDataItemsOriginalImage
-        :return:
-        """
-        return self._visiblePlotDataItemsOriginalImage
-
-    @property
-    def visiblePlotDataItemsProcessedImage(self):
-        """
-        TODO: document PlotterWindowModel visiblePlotDataItemsProcessedImage
-        :return:
-        """
-        return self._visiblePlotDataItemsProcessedImage
+    visiblePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
+    visiblePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
