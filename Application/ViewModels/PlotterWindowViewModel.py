@@ -151,8 +151,6 @@ class PlotterWindowViewModel(QtCore.QObject):
         self._model.availablePlotDataItemsProcessedImage.clear()
 
 
-# de facut selectia pe list widget cu diferenta de seturi - se poate face intern
-#
 # pentru plotare e nevoie de poze; sugestie:
 # cand se schimba functia din combo box, ploterul emite un semnal si mainVM apeleaza refreshPlotter
 # si ii da ca parametrii cele 2 poze si last clickul (asemanator cu calculateAndSetParam..)

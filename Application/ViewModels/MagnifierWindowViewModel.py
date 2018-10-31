@@ -61,8 +61,8 @@ class MagnifierWindowViewModel(QtCore.QObject):
         :param index:
         :return:
         """
-        Application.Settings.MagnifierWindowSettings.fontSize = 2
-        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.aa
+
+        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.colorSpacesDict[index]
         self._view.setColorSpace(self._model.colorSpace)
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):

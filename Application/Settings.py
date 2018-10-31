@@ -1,6 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Dict, Any
+from typing import Dict
 
 
 @dataclass(frozen=True)
@@ -9,12 +9,12 @@ class MainWindowSettings:
     TODO: document MainWindowSettings and members
     """
 
-    zoomMinimumValue: float = field(default=0.0, init=False)
-    zoomMaximumValue: float = field(default=20.0, init=False)
-    zoomSingleStep: float = field(default=0.05, init=False)
-    zoomPageStep: float = field(default=1.0, init=False)
-    zoomDefaultValue: float = field(default=1.0, init=False)
-    ticksInterval: int = field(default=1, init=False)
+    zoomMinimumValue: float = field(default=0.0)
+    zoomMaximumValue: float = field(default=20.0)
+    zoomSingleStep: float = field(default=0.05)
+    zoomPageStep: float = field(default=1.0)
+    zoomDefaultValue: float = field(default=1.0)
+    ticksInterval: int = field(default=1)
 
     def __post_init__(self):
         # TODO: think if more tests are needed
@@ -22,11 +22,20 @@ class MainWindowSettings:
         assert self.zoomMinimumValue < self.zoomDefaultValue < self.zoomMaximumValue
 
 
-@dataclass()
+# TODO: must be singleton; find alternative (tried metaclass, not working) or explain
+MainWindowSettings = MainWindowSettings()
+
+
+@dataclass(frozen=True)
 class MagnifierWindowSettings:
     """
     TODO: document MagnifierWindowSettings
     """
+
+    frameGridSize: int = field(default=9)  # positive odd number here
+    threeZoneHeightPadding: int = field(default=12)  # in pixels
+    fourZoneHeightPadding: int = field(default=6)  # in pixels
+    fontSize: int = field(default=8)  # in points
 
     class ColorSpaces(Enum):
         RGB = (0, 'RGB (Red Green Blue)')
@@ -35,18 +44,20 @@ class MagnifierWindowSettings:
         CMYK = (3, 'CMYK (Cyan Magenta Yellow Black)')
         GRAY = (4, 'Grayscale')
 
-    aa: Any
-
-    frameGridSize: int = field(default=9, init=False)  # positive odd number here
-    threeZoneHeightPadding: int = field(default=12, init=False)  # in pixels
-    fourZoneHeightPadding: int = field(default=6, init=False)  # in pixels
-    fontSize: int = field(default=8, init=False)  # in points
+    # TODO: try to find more elegant solution to this
+    colorSpacesDict: Dict[int, ColorSpaces] \
+        = field(default_factory=lambda:
+                {index: colorSp for (index, colorSp) in enumerate(MagnifierWindowSettings.ColorSpaces)})
 
     def __post_init__(self):
         # TODO: think if more tests are needed
         assert self.frameGridSize % 2 == 1
         assert self.frameGridSize > 0
         assert self.fontSize > 0
+
+
+# TODO: must be singleton! find alternative or explain
+MagnifierWindowSettings = MagnifierWindowSettings()
 
 
 # TODO: to be removed and replaced by functions defined in PlotterAlgorithms folder
