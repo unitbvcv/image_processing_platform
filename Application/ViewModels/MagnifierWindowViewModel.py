@@ -1,10 +1,12 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
-from Application.Models import MagnifierWindowModel
-from Application.Views import MagnifierWindow
-import Application.Settings
 
-class MagnifierWindowViewModel(QtWidgets.QWidget):
+from Application.Models import MagnifierWindowModel
+import Application.Settings
+from Application.Views import MagnifierWindow
+
+
+class MagnifierWindowViewModel(QtCore.QObject):
     """
     TODO: document MagnifierWindowViewModel
     """
@@ -16,19 +18,13 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
         TODO: document MagnifierWindowViewModel constructor
         :param parent:
         """
-
-        # aici sau in mainVM? sau in Settings? se pot pune in implementarea proprietatilor, dar e ineficient
-        assert (Application.Settings.MagnifierWindowSettings.frameGridSize % 2 == 1)
-        assert (Application.Settings.MagnifierWindowSettings.frameGridSize > 0)
-        assert (Application.Settings.MagnifierWindowSettings.fontSize > 0)
-
         super().__init__(parent)
 
         # Instantiate the model
         self._model = MagnifierWindowModel()
 
         # Instantiate the view
-        self._view = MagnifierWindow(self)
+        self._view = MagnifierWindow()
 
         # Connect the view
         self._view.comboBoxColorSpace.currentIndexChanged[int].connect(self._magnifierColorSpaceIndexChanged)
@@ -67,7 +63,8 @@ class MagnifierWindowViewModel(QtWidgets.QWidget):
         :param index:
         :return:
         """
-        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.ColorSpacesDictionary[index]
+
+        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.colorSpacesDict[index]
         self._view.setColorSpace(self._model.colorSpace)
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):

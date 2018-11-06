@@ -100,33 +100,6 @@ class Controller(QtCore.QObject):
         # show the main window
         self.mainWindow.show()
 
-        smartDialog = SmartDialog()
-        dictionar = smartDialog.showDialog(threshold=int,
-                                           threshold2=int,
-                                           threshold4=("Lambda", float),
-                                           threshold5=("ăăă", float),
-                                           threshold6=("ăăă", float),
-                                           threshold7=("ăăă", float),
-                                           threshold8=("ăăă", float),
-                                           threshold9=("ăăă", float),
-                                           threshold10=("ăăă", float),
-                                           threshold11=("ăăă", float),
-                                           threshold12=("ăăă", float),
-                                           threshold13=("ăăă", float),
-                                           threshold14=("ăăă", float),
-                                           threshold15=("ăăă", float),
-                                           threshold16=("ăăă", float),
-                                           threshold17=("ăăă", float),
-                                           threshold18=("ăăă", float),
-                                           threshold19=("ăăă", float),
-                                           threshold20=("ăăă", float),
-                                           threshold21=("ăăă", float),
-                                           threshold22=("ăăă", float),
-                                           threshold23=("ăăă", float),
-                                           threshold24=("ăăă", float)
-                                           )
-        print(dictionar)
-
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
         # TODO: make difference of sets, instead of deleting everything and then reshowing them
         plotItem = self.plotterWindow.graphicsViewOriginalImage.getPlotItem()
