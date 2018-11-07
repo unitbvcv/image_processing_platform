@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Application.Views import MainWindowImageLabel
+from Application.Views.MainWindowImageLabel import MainWindowImageLabel
 
 
 class MainWindowView(QtWidgets.QMainWindow):
@@ -220,9 +220,11 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTools.menuAction())
 
-        self.mainWindow.rightMenuBar = QtWidgets.QMenuBar()
-        self.mainWindow.menuBar.setCornerWidget(self.mainWindow.rightMenuBar)
-        self.mainWindow.rightMenuBar.addAction('Save as original image', self._actionSaveAsOriginalImage)
+        self.rightMenuBar = QtWidgets.QMenuBar()
+        self.menuBar.setCornerWidget(self.rightMenuBar)
+        self.actionSaveAsOriginalImage = QtWidgets.QAction(self)
+        self.actionSaveAsOriginalImage.setObjectName("actionSaveAsOriginalImage")
+        self.rightMenuBar.addAction(self.actionSaveAsOriginalImage)
 
         self._retranslateUi()
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -242,6 +244,7 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.actionExit.setText(_translate("MainWindow", "Exit"))
         self.actionMagnifier.setText(_translate("MainWindow", "Magnifier"))
         self.actionPlotter.setText(_translate("MainWindow", "Plotter"))
+        self.actionSaveAsOriginalImage.setText(_translate("MainWindow", "Save as original image"))
 
     def _setupImageLabels(self):
         self.stackedLayoutOriginalImage = QtWidgets.QStackedLayout(self.scrollAreaWidgetOriginalImage)
@@ -337,8 +340,8 @@ class MainWindowView(QtWidgets.QMainWindow):
     def _labelFinishedPaintingEvent(self):
         # here we can synchronize scrollbars, after the paint event has finished
         # before paint event, the scrollbars don't exist
-        self.mainWindow.scrollAreaProcessedImage.horizontalScrollBar().setValue(
-            self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().value())
+        self.scrollAreaProcessedImage.horizontalScrollBar().setValue(
+            self.scrollAreaOriginalImage.horizontalScrollBar().value())
 
-        self.mainWindow.scrollAreaProcessedImage.verticalScrollBar().setValue(
-            self.mainWindow.scrollAreaOriginalImage.verticalScrollBar().value())
+        self.scrollAreaProcessedImage.verticalScrollBar().setValue(
+            self.scrollAreaOriginalImage.verticalScrollBar().value())

@@ -1,11 +1,14 @@
-from Application.Models import MainWindowModel
-from Application.Views import MainWindowView
-from PyQt5 import QtCore
+from Application.Models.MainWindowModel import MainWindowModel
+from Application.Views.MainWindowView import MainWindowView
+from PyQt5 import QtCore, QtWidgets
+import Application.Settings
+import cv2 as opencv
 
 
-class MainWindowViewModel(QtCore.QObject):
+class MainWindowVM(QtCore.QObject):
     def __init__(self, parent=None):
         super().__init__(parent)
+
         # instantiate the model
         self._model = MainWindowModel()
 
@@ -13,38 +16,38 @@ class MainWindowViewModel(QtCore.QObject):
         self._view = MainWindowView()
 
         # connect the actions to methods
-        self.mainWindow.actionExit.triggered.connect(self._actionExit)
-        self.mainWindow.actionInvert.triggered.connect(self._actionInvert)
-        self.mainWindow.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
-        self.mainWindow.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
-        self.mainWindow.actionMagnifier.triggered.connect(self._actionMagnifier)
-        self.mainWindow.actionPlotter.triggered.connect(self._actionPlotter)
-        self.mainWindow.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
+        # self._view.actionExit.triggered.connect(self._actionExit)
+        # self._view.actionInvert.triggered.connect(self._actionInvert)
+        # self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
+        # self._view.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
+        # self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
+        # self._view.actionPlotter.triggered.connect(self._actionPlotter)
+        # self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
 
         # connect image labels to slots for updating the ui
         # TODO: make some signals in this VM that are emitted by those and sent to the MainVM
-        self.mainWindow.labelOriginalImage.mouse_moved.connect(self._mouseMovedEvent)
-        self.mainWindow.labelProcessedImage.mouse_moved.connect(self._mouseMovedEvent)
-        self.mainWindow.labelOriginalImage.mouse_pressed.connect(self._mousePressedEvent)
-        self.mainWindow.labelProcessedImage.mouse_pressed.connect(self._mousePressedEvent)
+        # self._view.labelOriginalImage.mouse_moved.connect(self._mouseMovedEvent)
+        # self._view.labelProcessedImage.mouse_moved.connect(self._mouseMovedEvent)
+        # self._view.labelOriginalImage.mouse_pressed.connect(self._mousePressedEvent)
+        # self._view.labelProcessedImage.mouse_pressed.connect(self._mousePressedEvent)
 
         # TODO: think about moving those into the view
         # connect the zoom option
-        self.mainWindow.horizontalSliderZoom.setMinimum(
+        self._view.horizontalSliderZoom.setMinimum(
             self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMinimumValue))
-        self.mainWindow.horizontalSliderZoom.setMaximum(
+        self._view.horizontalSliderZoom.setMaximum(
             self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMaximumValue))
-        self.mainWindow.horizontalSliderZoom.setSingleStep(
+        self._view.horizontalSliderZoom.setSingleStep(
             self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomSingleStep))
-        self.mainWindow.horizontalSliderZoom.setPageStep(
+        self._view.horizontalSliderZoom.setPageStep(
             self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomPageStep))
-        self.mainWindow.horizontalSliderZoom.setTickInterval(
+        self._view.horizontalSliderZoom.setTickInterval(
             self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.ticksInterval)
         )
         defaultZoom = self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
-        self.mainWindow.horizontalSliderZoom.setValue(defaultZoom)
-        self.mainWindow.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
-        self.mainWindow.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
+        self._view.horizontalSliderZoom.setValue(defaultZoom)
+        self._view.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
+        self._view.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
         self._zoom = self._calculateSliderValueFromZoom(defaultZoom)
 
         # show the main window

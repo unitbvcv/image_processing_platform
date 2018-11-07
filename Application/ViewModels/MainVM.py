@@ -1,13 +1,13 @@
-from PyQt5 import QtCore, QtWidgets
-from Application.Models import Model
-from Application.ViewModels import MagnifierWindowViewModel, PlotterWindowViewModel
-# from Application.ViewModels.PlotterWindowViewModel import
+from PyQt5 import QtCore
 import Application.Settings
-import numpy as np
-import cv2 as opencv
+import numpy
+from Application.Models.MainModel import MainModel
+from Application.ViewModels.MainWindowVM import MainWindowVM
+from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
+from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
 
 
-class MainViewModel(QtWidgets.QWidget):
+class MainVM(QtCore.QObject):
     """
     TODO: document MainViewModel class
     """
@@ -20,24 +20,16 @@ class MainViewModel(QtWidgets.QWidget):
         super().__init__(parent)
 
         # Instantiate MainModel
-        self._model = Model()
+        self._model = MainModel()
+
+        # Instantiate MainWindowViewModel
+        self._mainWindowVM = MainWindowVM()
 
         # Instantiate MagnifierViewModel
-        self._magnifierVM = MagnifierWindowViewModel(self)
+        self._magnifierVM = MagnifierWindowVM(self)
 
         # Instantiate PlotterViewModel
-        self._plotterVM = PlotterWindowViewModel(self)
-
-        # testing TODO: to remove testing code
-        self._magnifierVM.showWindow()
-
-        self._plotterVM.showWindow()
-
-        self._model.originalImage = opencv.imread('C:/Users/vladv/OneDrive/Imagini/WhatsApp Image '
-                                                  '2016-10-30 at 20.51.19.jpeg', opencv.IMREAD_GRAYSCALE)
-        self.imageClickedEvent(QtCore.QPoint(897, 1590))
-        self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK)
-        # self._magnifierVM.resetMagnifier()
+        self._plotterVM = PlotterWindowVM(self)
 
     def imageClickedEvent(self, clickPosition):
         """
@@ -72,11 +64,11 @@ class MainViewModel(QtWidgets.QWidget):
         """
         frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
 
-        imagePixels = np.full((frameGridSize, frameGridSize), None)
+        imagePixels = numpy.full((frameGridSize, frameGridSize), None)
 
         if image is not None:
             if len(image.shape) == 3:
-                imagePixels = np.full((frameGridSize, frameGridSize, image.shape[2]), None)
+                imagePixels = numpy.full((frameGridSize, frameGridSize, image.shape[2]), None)
 
             frameOffset = frameGridSize // 2
             yPos = clickPosition.y()
