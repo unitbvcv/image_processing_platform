@@ -16,13 +16,12 @@ class MainWindowVM(QtCore.QObject):
         self._view = MainWindowView()
 
         # connect the actions to methods
-        # self._view.actionExit.triggered.connect(self._actionExit)
-        # self._view.actionInvert.triggered.connect(self._actionInvert)
-        # self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
-        # self._view.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
-        # self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
-        # self._view.actionPlotter.triggered.connect(self._actionPlotter)
-        # self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
+        self._view.actionExit.triggered.connect(self._actionExit)
+        self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
+        self._view.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
+        self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
+        self._view.actionPlotter.triggered.connect(self._actionPlotter)
+        self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
 
         # connect image labels to slots for updating the ui
         # TODO: make some signals in this VM that are emitted by those and sent to the MainVM
@@ -32,23 +31,7 @@ class MainWindowVM(QtCore.QObject):
         # self._view.labelProcessedImage.mouse_pressed.connect(self._mousePressedEvent)
 
         # TODO: think about moving those into the view
-        # connect the zoom option
-        self._view.horizontalSliderZoom.setMinimum(
-            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMinimumValue))
-        self._view.horizontalSliderZoom.setMaximum(
-            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomMaximumValue))
-        self._view.horizontalSliderZoom.setSingleStep(
-            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomSingleStep))
-        self._view.horizontalSliderZoom.setPageStep(
-            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomPageStep))
-        self._view.horizontalSliderZoom.setTickInterval(
-            self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.ticksInterval)
-        )
-        defaultZoom = self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
-        self._view.horizontalSliderZoom.setValue(defaultZoom)
-        self._view.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
-        self._view.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
-        self._zoom = self._calculateSliderValueFromZoom(defaultZoom)
+
 
         # show the main window
         self._view.show()
@@ -171,48 +154,3 @@ class MainWindowVM(QtCore.QObject):
         self._zoomValueChangedEvent(self._calculateSliderValueFromZoom(self._zoom))
 
         self._setClickPosition()
-
-    # TODO: think about moving those 5 into the view
-    def _zoomValueResetEvent(self):
-        sliderValue = self._calculateSliderValueFromZoom(Application.Settings.MainWindowSettings.zoomDefaultValue)
-        self.mainWindow.horizontalSliderZoom.setValue(sliderValue)
-        self._zoomValueChangedEvent(sliderValue)
-
-    def _zoomValueChangedEvent(self, value):
-        self._zoom = self._calculateZoomFromSliderValue(value)
-        self.mainWindow.labelZoomFactor.setText(f"{self._zoom:.2f}x")
-        self._setZoomInView()
-
-    def _calculateZoomFromSliderValue(self, value):
-        return value * Application.Settings.MainWindowSettings.zoomSingleStep \
-               + Application.Settings.MainWindowSettings.zoomMinimumValue
-
-    def _calculateSliderValueFromZoom(self, value):
-        return int((value - Application.Settings.MainWindowSettings.zoomMinimumValue)
-                   / Application.Settings.MainWindowSettings.zoomSingleStep)
-
-    def _setZoomInView(self):
-        self.mainWindow.labelOriginalImage.setZoom(self._zoom)
-        self.mainWindow.labelProcessedImage.setZoom(self._zoom)
-        self._setClickPosition()
-
-    def _resetApplicationState(self):
-        self.magnifierWindow.reset()
-        self.plotterWindow.reset()
-        self.mainWindow.labelOriginalImage.setClickPosition(None)
-        self.mainWindow.labelProcessedImage.setClickPosition(None)
-        self._lastClick = None
-        self._zoomValueResetEvent()
-        self.mainWindow.scrollAreaOriginalImage.horizontalScrollBar().setValue(0)
-
-    def _setClickPosition(self):
-        # TODO: transform this in highlightPosition(clickPosition) (coming from MainVM)
-        self.mainWindow.labelOriginalImage.setClickPosition(None)
-        self.mainWindow.labelProcessedImage.setClickPosition(None)
-
-        if self._isPlotterWindowShowing or self._isMagnifierWindowShowing:
-            if self.model.originalImage is not None:
-                self.mainWindow.labelOriginalImage.setClickPosition(self._lastClick)
-
-            if self.model.processedImage is not None:
-                self.mainWindow.labelProcessedImage.setClickPosition(self._lastClick)
