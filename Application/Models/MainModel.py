@@ -1,5 +1,16 @@
-class Model(object):  # dataclass?
-    def __init__(self):
-        self.originalImage = None
-        self.processedImage = None
-        self.clickPosition = None
+from dataclasses import dataclass
+import cv2 as opencv
+
+
+@dataclass
+class MainModel(object):
+    originalImage = None
+    processedImage = None
+    # TODO: whytf is this here?
+    clickPosition = None
+
+    def readOriginalImage(self, filePath : str, *asGrayscale : bool):
+        if asGrayscale:
+            self.originalImage = opencv.imread(filePath, opencv.IMREAD_GRAYSCALE)
+        else:
+            self.originalImage = opencv.imread(filePath, opencv.IMREAD_COLOR)

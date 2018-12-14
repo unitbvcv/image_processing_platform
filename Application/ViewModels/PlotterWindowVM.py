@@ -1,11 +1,10 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
+from Application.Models.PlotterWindowModel import PlotterWindowModel
+from Application.Views.PlotterWindowView import PlotterWindowView
 
-from Application.Models import PlotterWindowModel
-from Application.Views import PlotterWindow
 
-
-class PlotterWindowViewModel(QtCore.QObject):
+class PlotterWindowVM(QtCore.QObject):
     """
     TODO: document PlotterWindowViewModel
     """
@@ -23,7 +22,7 @@ class PlotterWindowViewModel(QtCore.QObject):
         self._model = PlotterWindowModel()
 
         # Instantiate the view
-        self._view = PlotterWindow()
+        self._view = PlotterWindowView()
 
         # Connect the view
         self._view.closing.connect(self.closingWindow)

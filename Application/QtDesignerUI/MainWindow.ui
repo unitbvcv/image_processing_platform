@@ -298,8 +298,6 @@
     </property>
     <addaction name="actionMagnifier"/>
     <addaction name="actionPlotter"/>
-    <addaction name="separator"/>
-    <addaction name="actionInvert"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools"/>

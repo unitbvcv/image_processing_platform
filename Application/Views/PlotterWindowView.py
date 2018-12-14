@@ -4,7 +4,7 @@ from pyqtgraph import PlotWidget
 import Application.Settings
 
 
-class PlotterWindow(QtWidgets.QMainWindow):
+class PlotterWindowView(QtWidgets.QMainWindow):
     """
     TODO: document PlotterWindow
     """

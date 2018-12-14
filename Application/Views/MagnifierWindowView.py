@@ -2,10 +2,10 @@ import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import Application.Settings
-from Application.Views import MagnifierPixelFrame
+from Application.Views.MagnifierPixelFrame import MagnifierPixelFrame
 
 
-class MagnifierWindow(QtWidgets.QMainWindow):
+class MagnifierWindowView(QtWidgets.QMainWindow):
     """
     TODO: MagnifierWindow documentation
     """
