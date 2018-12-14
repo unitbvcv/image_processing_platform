@@ -1,8 +1,10 @@
 import numpy
 
 from Application.Models.PlottingData import PlottingData
+from Application.PlottingAlgorithms.PlotterDecorators import PlotterFunction
 
-@PlotterFunction(title="Plot row values", fromMainModel=["clickPosition"], always_recalculate=True)
+
+@PlotterFunction(title="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotRowValues(image, clickPosition):
     """
     TODO: document plotRowValues
@@ -39,7 +41,7 @@ def plotRowValues(image, clickPosition):
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot column values", fromMainModel=["clickPosition"], always_recalculate=True)
+@PlotterFunction(title="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotColumnValues(image, clickPosition):
     """
     TODO: document plotColumnValues
@@ -76,7 +78,7 @@ def plotColumnValues(image, clickPosition):
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot histogram", always_recalculate=False)
+@PlotterFunction(title="Plot histogram", computeOnImageChanged=True)
 def plotHistogram(image):
     """
     TODO: document plotHistogram

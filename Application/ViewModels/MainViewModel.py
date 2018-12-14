@@ -1,10 +1,12 @@
 from PyQt5 import QtCore, QtWidgets
-from Application.Models import Model
-from Application.ViewModels import MagnifierWindowViewModel, PlotterWindowViewModel
-# from Application.ViewModels.PlotterWindowViewModel import
-import Application.Settings
 import numpy as np
 import cv2 as opencv
+
+import Application.Settings
+from Application.Models import Model
+from Application.ViewModels import MagnifierWindowViewModel, PlotterWindowViewModel
+from Application import PlottingAlgorithms
+# from Application.ViewModels.PlotterWindowViewModel import
 
 
 class MainViewModel(QtWidgets.QWidget):

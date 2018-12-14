@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import *
 
+from pyqtgraph import PlotDataItem
+
 
 @dataclass(frozen=True)
 class PlottingData:
@@ -11,7 +13,10 @@ class PlottingData:
     :return:
     """
 
-    y: Iterable  # list, tuple, dictview, ndarray, set etc.
+    y: Iterable  # list, tuple, dictview, ndarray, set, generator etc.
     x: Optional[Iterable] = None
     pen: Union[str, Tuple[int, int, int, int]] = 'w'
     name: Optional[str] = None
+
+    def toPlotDataItem(self):
+        return PlotDataItem(x=self.x, y=self.y, pen=self.pen, name=self.name)

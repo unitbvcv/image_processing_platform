@@ -4,20 +4,22 @@ from Application.PlottingAlgorithms import registeredAlgorithms
 
 class PlotterFunction(object):
 
-    def __init__(self, title, fromMainModel=[], computeOnImageChanged=False, computeOnClick=False):
+    def __init__(self, title, fromMainModel=[], computeOnImageChanged=False, computeOnClick=False, **kwargs):
         self._title = title
         self._fromMainModel = fromMainModel
         self._computeOnImageChanged = computeOnImageChanged
         self._computeOnClick = computeOnClick
+        self.__dict__.update(kwargs)
 
     def __call__(self, func):
 
         class PlotterFunctionWrapper:
-            def __init__(self, func, argList, onChange, onClick):
+            def __init__(self, func, argList, onChange, onClick, **kwargs):
                 self._argNames = argList
                 self._func = func
                 self._computeOnImageChanged = onChange
                 self._computeOnClick = onClick
+                self.__dict__.update(kwargs)
 
                 functools.update_wrapper(self, func)
 
