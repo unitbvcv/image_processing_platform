@@ -35,6 +35,7 @@ class MainVM(QtCore.QObject):
 
         # test
         self._magnifierVM.showWindow()
+        self._plotterVM.showWindow()
         self.onLoadImageAction(r"C:\Users\vladv\OneDrive\Imagini\IMG_4308.JPG", False)
 
         self.imageClickedEvent(QtCore.QPoint(100, 100))
@@ -47,20 +48,26 @@ class MainVM(QtCore.QObject):
         else:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
 
-
     def imageClickedEvent(self, clickPosition):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
         :return:
         """
-        if self._magnifierVM.isVisible: # sau plotterul
+        if self._magnifierVM.isVisible or self._magnifierVM.isVisible: # sau plotterul
             # mainWindowVM.highlightPosition(clickPosition)
+            # de desenat linia si coloana rosie de highlight
+            pass
 
-            magnifiedRegions = self._getMagnifiedRegions(clickPosition)
-            self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
+        magnifiedRegions = self._getMagnifiedRegions(clickPosition)
+        self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
 
-            # set plotter parameters
+        for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+            if plottingFunction.computeOnClick:
+                self._plotterVM.setDirtyData(plottingFunction.title)
+
+        if self._plotterVM.isVisible:
+            self._plotterVM.refresh()
 
     def _getMagnifiedRegions(self, clickPosition):
         """

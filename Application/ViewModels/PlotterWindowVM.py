@@ -1,7 +1,10 @@
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
+
 from Application.Models.PlotterWindowModel import PlotterWindowModel
+from Application.Models.PlottingFunctionModel import PlottingFunctionModel
 from Application.Views.PlotterWindowView import PlotterWindowView
+import Application.PlottingAlgorithms as PlottingAlgorithms
 
 
 class PlotterWindowVM(QtCore.QObject):
@@ -20,6 +23,8 @@ class PlotterWindowVM(QtCore.QObject):
 
         # Instantiate the model
         self._model = PlotterWindowModel()
+        for functionName in PlottingAlgorithms.registeredAlgorithms.keys():
+            self._model.functionModels[functionName] = PlottingFunctionModel()
 
         # Instantiate the view
         self._view = PlotterWindowView()
@@ -49,6 +54,31 @@ class PlotterWindowVM(QtCore.QObject):
         :return:
         """
         return self._view.isVisible()
+
+    def setDirtyData(self, functionName : str):
+        self._model.functionModels[functionName].isDirty = True
+
+    def refresh(self):
+        pass
+
+    def reset(self):
+        """
+        TODO: document PlotterWindowViewModel resetPlotter
+        :return:
+        """
+        # Clearing the view
+        self._view.clearPlotItems()
+        #TODO: verifica daca mai e necesar clear pe legend
+        self._view.clearPlotItemsLegends(self._model.visiblePlotDataItemsOriginalImage.keys(),
+                                         self._model.visiblePlotDataItemsProcessedImage.keys())
+        self._view.clearListWidgets()
+
+        # Clearing the model
+        self._model.visiblePlotDataItemsOriginalImage.clear()
+        self._model.visiblePlotDataItemsProcessedImage.clear()
+
+        self._model.availablePlotDataItemsOriginalImage.clear()
+        self._model.availablePlotDataItemsProcessedImage.clear()
 
     @pyqtSlot()
     def _scaleAndCenterButtonPressed(self):
@@ -130,25 +160,6 @@ class PlotterWindowVM(QtCore.QObject):
             self._model.availablePlotDataItemsProcessedImage,
             self._model.visiblePlotDataItemsProcessedImage,
             self._view.listWidgetVisibleProcessedImage)
-
-    def resetPlotter(self):
-        """
-        TODO: document PlotterWindowViewModel resetPlotter
-        :return:
-        """
-        # Clearing the view
-        self._view.clearPlotItems()
-        #TODO: verifica daca mai e necesar clear pe legend
-        self._view.clearPlotItemsLegends(self._model.visiblePlotDataItemsOriginalImage.keys(),
-                                         self._model.visiblePlotDataItemsProcessedImage.keys())
-        self._view.clearListWidgets()
-
-        # Clearing the model
-        self._model.visiblePlotDataItemsOriginalImage.clear()
-        self._model.visiblePlotDataItemsProcessedImage.clear()
-
-        self._model.availablePlotDataItemsOriginalImage.clear()
-        self._model.availablePlotDataItemsProcessedImage.clear()
 
 
 # pentru plotare e nevoie de poze; sugestie:
