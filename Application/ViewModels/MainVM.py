@@ -1,6 +1,5 @@
 from PyQt5 import QtCore
 import cv2 as opencv
-from Application import PlottingAlgorithms
 import Application.Settings
 import numpy
 from Application.Models.MainModel import MainModel
