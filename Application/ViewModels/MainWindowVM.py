@@ -3,7 +3,7 @@ from Application.Views.MainWindowView import MainWindowView
 from PyQt5 import QtCore, QtWidgets
 import Application.Settings
 import cv2 as opencv
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 
 class MainWindowVM(QtCore.QObject):
@@ -25,7 +25,8 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionLoadGrayscaleImage.triggered.connect(self._actionLoadGrayscaleImage)
         self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
 
-    def _actionLoadGreyscaleImage(self):
+    @pyqtSlot()
+    def _actionLoadGrayscaleImage(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self._view, caption='Open grayscale file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
@@ -33,6 +34,7 @@ class MainWindowVM(QtCore.QObject):
 
         self.loadImageSignal.emit(filePath, True)
 
+    @pyqtSlot()
     def _actionLoadColorImage(self):
         filePath, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self._view, caption='Open color file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
