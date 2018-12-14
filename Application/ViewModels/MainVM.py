@@ -23,7 +23,7 @@ class MainVM(QtCore.QObject):
         self._model = MainModel()
 
         # Instantiate MainWindowViewModel
-        self._mainWindowVM = MainWindowVM()
+        self._mainWindowVM = MainWindowVM(self)
 
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowVM(self)

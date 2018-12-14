@@ -58,7 +58,7 @@ class MainWindowVM(QtCore.QObject):
     def _actionLoadGrayscaleImage(self):
         # TODO: move to MainViewModel, make a signal and emit it
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self.mainWindow, caption='Open grayscale file',
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(parent=self._view, caption='Open grayscale file',
                                                             filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
                                                                    '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
                                                             )
