@@ -23,26 +23,11 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
             self.scrollAreaOriginalImage.verticalScrollBar().setValue)
 
-        #
+        # connect signals to slots
         self.labelOriginalImage.mouse_leaved.connect(self._mouseLeavedEvent)
         self.labelProcessedImage.mouse_leaved.connect(self._mouseLeavedEvent)
         self.labelOriginalImage.finished_painting.connect(self._labelFinishedPaintingEvent)
         self.labelProcessedImage.finished_painting.connect(self._labelFinishedPaintingEvent)
-
-        # define dictionary for runtime
-        self._menusDictionary = {
-            "menuFile": self.menuFile,
-            "menuTools": self.menuTools
-        }
-
-        self._menuActionsDictionary = {
-            "actionLoadGrayscaleImage": self.actionLoadGrayscaleImage,
-            "actionLoadColorImage": self.actionLoadColorImage,
-            "actionSaveProcessedImage": self.actionSaveProcessedImage,
-            "actionExit": self.actionExit,
-            "actionMagnifier": self.actionMagnifier,
-            "actionPlotter": self.actionPlotter
-        }
 
     def _setupUi(self):
         self.setObjectName("MainWindow")
@@ -266,10 +251,6 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.stackedLayoutOriginalImage.addWidget(self.labelOriginalImage)
         self.stackedLayoutProcessedImage.addWidget(self.labelProcessedImage)
 
-    def setImages(self, originalImage, processedImage):
-        self.labelOriginalImage.setLabelImage(originalImage)
-        self.labelProcessedImage.setLabelImage(processedImage)
-
     def addMenu(self, menuName, beforeMenuName=None):
         """
         Adds a QMenu to the top menu bar with the name and objectName menuName [before beforeMenuName].
@@ -325,10 +306,6 @@ class MainWindowView(QtWidgets.QMainWindow):
                 beforeAction = self._menuActionsDictionary[beforeActionName]
             self._menusDictionary[menuName].insertSeparator(beforeAction)
 
-    def _labelMousePressEvent(self, QMouseEvent):
-        # TODO: emit a signal coming from labels
-        pass
-
     def _mouseLeavedEvent(self, QEvent):
         self.labelMousePosition.setText('')
         self.labelOriginalImagePixelValue.setText('')
@@ -361,12 +338,11 @@ class MainWindowView(QtWidgets.QMainWindow):
             Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
                 Application.Settings.MainWindowSettings.ticksInterval)
         )
-        defaultZoom = Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-            Application.Settings.MainWindowSettings.zoomDefaultValue)
-        self.horizontalSliderZoom.setValue(defaultZoom)
+
+        self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
+        self.horizontalSliderZoom.setValue(Application.Utils.ZoomOperations.calculateSliderValueFromZoom(self._zoom))
         self.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
         self.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
-        self._zoom = Application.Utils.ZoomOperations.calculateSliderValueFromZoom(defaultZoom)
 
     def _setupMenuCornerWidget(self):
         self.rightMenuBar = QtWidgets.QMenuBar()
@@ -385,33 +361,10 @@ class MainWindowView(QtWidgets.QMainWindow):
         self._zoomValueChangedEvent(sliderValue)
 
     def _zoomValueChangedEvent(self, value):
-        self._zoom = Application.Utils.ZoomOperations.calculateSliderValueFromZoom(value)
+        self._zoom = Application.Utils.ZoomOperations.calculateZoomFromSliderValue(value)
         self.labelZoomFactor.setText(f"{self._zoom:.2f}x")
         self._setZoom()
 
     def _setZoom(self):
         self.labelOriginalImage.setZoom(self._zoom)
         self.labelProcessedImage.setZoom(self._zoom)
-        self._drawClickPosition()
-
-    def _resetViewState(self):
-        # TODO: link this somehow with MainVM
-        self.magnifierWindow.reset()
-        self.plotterWindow.reset()
-        self.labelOriginalImage.setClickPosition(None)
-        self.labelProcessedImage.setClickPosition(None)
-        self._lastClick = None
-        self._zoomValueResetEvent()
-        self.scrollAreaOriginalImage.horizontalScrollBar().setValue(0)
-
-    def _drawClickPosition(self):
-        # TODO: transform this in highlightPosition(clickPosition) (coming from MainVM)
-        self.labelOriginalImage.setClickPosition(None)
-        self.labelProcessedImage.setClickPosition(None)
-
-        # if self._isPlotterWindowShowing or self._isMagnifierWindowShowing:
-        #     if self.model.originalImage is not None:
-        #         self.mainWindow.labelOriginalImage.setClickPosition(self._lastClick)
-        #
-        #     if self.model.processedImage is not None:
-        #         self.mainWindow.labelProcessedImage.setClickPosition(self._lastClick)
