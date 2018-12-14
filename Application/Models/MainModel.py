@@ -9,7 +9,7 @@ class MainModel(object):
     # TODO: whytf is this here?
     clickPosition = None
 
-    def readOriginalImage(self, filePath : str, *asGrayscale : bool):
+    def readOriginalImage(self, filePath : str, asGrayscale : bool):
         if asGrayscale:
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_GRAYSCALE)
         else:

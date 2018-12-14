@@ -1,8 +1,8 @@
-from PyQt5 import QtCore
-import cv2 as opencv
-from Application import PlottingAlgorithms
-import Application.Settings
 import numpy
+from PyQt5 import QtCore
+
+import Application.Settings
+from Application import PlottingAlgorithms
 from Application.Models.MainModel import MainModel
 from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
@@ -32,6 +32,21 @@ class MainVM(QtCore.QObject):
 
         # Instantiate PlotterViewModel
         self._plotterVM = PlotterWindowVM(self)
+
+        # test
+        self._magnifierVM.showWindow()
+        self.onLoadImageAction(r"C:\Users\vladv\OneDrive\Imagini\IMG_4308.JPG", False)
+
+        self.imageClickedEvent(QtCore.QPoint(100, 100))
+
+    def onLoadImageAction(self, filePath : str, asGreyscale : bool):
+        self._model.readOriginalImage(filePath, asGreyscale)
+        self.resetVMs()
+        if asGreyscale:
+            self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
+        else:
+            self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
+
 
     def imageClickedEvent(self, clickPosition):
         """
@@ -89,3 +104,8 @@ class MainVM(QtCore.QObject):
                 image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
 
         return imagePixels
+
+    def resetVMs(self):
+        self._magnifierVM.resetMagnifier()
+        # self.__plotterVM.reset()
+        # self._mainWindowVM.reset()

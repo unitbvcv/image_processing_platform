@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import Application.Settings
-import Application.Utils
+import Application.Utils.ColorSpaceOperations
 
 
 class MagnifierPixelFrame(QtWidgets.QFrame):
