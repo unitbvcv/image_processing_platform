@@ -7,9 +7,10 @@ class MainModel(object):
     originalImage = None
     processedImage = None
     # TODO: whytf is this here?
+    # TODO: because i need it in basic plotting algorithms
     clickPosition = None
 
-    def readOriginalImage(self, filePath : str, asGrayscale : bool):
+    def readOriginalImage(self, filePath: str, asGrayscale: bool):
         if asGrayscale:
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_GRAYSCALE)
         else:

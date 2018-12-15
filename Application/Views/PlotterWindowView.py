@@ -235,6 +235,7 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         :return:
         """
         for plotDataItem in plotDataItems:
+            plotItem.legend.removeItem(plotDataItem.name())
             plotItem.removeItem(plotDataItem)
 
     def clearPlotItems(self):
@@ -252,11 +253,17 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         :param processedImageKeys:
         :return:
         """
-        for legendString in originalImageKeys:
-            self.plotItemOriginalImage.legend.removeItem(legendString)
+        for item in self.plotItemOriginalImage.legend.items:
+            self.plotItemOriginalImage.legend.removeItem(item)
 
-        for legendString in processedImageKeys:
-            self.plotItemProcessedImage.legend.removeItem(legendString)
+        for item in self.plotItemProcessedImage.legend.items:
+            self.plotItemProcessedImage.legend.removeItem(item)
+
+        # for legendString in originalImageKeys:
+        #     self.plotItemOriginalImage.legend.removeItem(legendString)
+        #
+        # for legendString in processedImageKeys:
+        #     self.plotItemProcessedImage.legend.removeItem(legendString)
 
     def clearListWidgets(self):
         """

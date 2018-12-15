@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from Application.Models.PlottingDataItemModel import PlottingDataItemModel
 
@@ -6,8 +6,8 @@ from Application.Models.PlottingDataItemModel import PlottingDataItemModel
 @dataclass(frozen=True)
 class PlottingFunctionModel:
     """
-    TODO: document PlotterWindowModel
+    TODO: document PlottingFunctionModel
     """
 
-    originalImagePlotDataItems: PlottingDataItemModel = PlottingDataItemModel()
-    processedImagePlotDataItems: PlottingDataItemModel = PlottingDataItemModel()
+    originalImagePlotDataItems: PlottingDataItemModel = field(default_factory=lambda: PlottingDataItemModel())
+    processedImagePlotDataItems: PlottingDataItemModel = field(default_factory=lambda: PlottingDataItemModel())

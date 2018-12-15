@@ -4,18 +4,18 @@ from Application.PlottingAlgorithms import registeredAlgorithms
 
 class PlotterFunction(object):
 
-    def __init__(self, title, fromMainModel=[], computeOnImageChanged=False, computeOnClick=False, **kwargs):
-        self._title = title
+    def __init__(self, name, fromMainModel=[], computeOnImageChanged=False, computeOnClick=False, **kwargs):
+        self._name = name
         self._fromMainModel = fromMainModel
         self._computeOnImageChanged = computeOnImageChanged
         self._computeOnClick = computeOnClick
-        self.__dict__.update(kwargs)
+        self._kwargs = kwargs
 
     def __call__(self, func):
 
         class PlotterFunctionWrapper:
-            def __init__(self, title, func, argList, onChange, onClick, **kwargs):
-                self._title = title
+            def __init__(self, name, func, argList, onChange, onClick, **kwargs):
+                self._name = name
                 self._argNames = argList
                 self._func = func
                 self._computeOnImageChanged = onChange
@@ -25,8 +25,8 @@ class PlotterFunction(object):
                 functools.update_wrapper(self, func)
 
             @property
-            def title(self):
-                return self._title
+            def name(self):
+                return self._name
 
             @property
             def computeOnImageChanged(self):
@@ -42,6 +42,7 @@ class PlotterFunction(object):
             def prepare(self, mainModel):
                 return {argName: mainModel.__dict__[argName] for argName in self._argNames}
 
-        wrapper = PlotterFunctionWrapper(self._title, func, self._fromMainModel, self._computeOnImageChanged, self._computeOnClick)
-        registeredAlgorithms[self._title] = wrapper
+        wrapper = PlotterFunctionWrapper(self._name, func, self._fromMainModel,
+                                         self._computeOnImageChanged, self._computeOnClick, **self._kwargs)
+        registeredAlgorithms[self._name] = wrapper
         return wrapper

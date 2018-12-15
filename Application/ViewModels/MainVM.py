@@ -1,4 +1,5 @@
 import numpy
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSlot
 
@@ -33,17 +34,22 @@ class MainVM(QtCore.QObject):
 
         # Instantiate PlotterViewModel
         self._plotterVM = PlotterWindowVM(self)
+        self._plotterVM.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
+        self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 
         # test
         self._magnifierVM.showWindow()
         self._plotterVM.showWindow()
         self.onLoadImageAction(r"C:\Users\vladv\OneDrive\Imagini\IMG_4308.JPG", False)
 
-        self.imageClickedEvent(QtCore.QPoint(100, 100))
+        # self.imageClickedEvent(QtCore.QPoint(100, 100))
 
-    def onLoadImageAction(self, filePath : str, asGreyscale : bool):
+    # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
+
+    def onLoadImageAction(self, filePath: str, asGreyscale: bool):
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
         self._model.processedImage = None
+        self._model.clickPosition = None
         self.resetVMs()
 
         # setup magnifier
@@ -55,22 +61,42 @@ class MainVM(QtCore.QObject):
         # setup plotter
         for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
             if plottingFunction.computeOnImageChanged:
-                args = plottingFunction.prepare(self._model)
-                if self._model.originalImage is not None:
-                    plottingDataList = plottingFunction(self._model.originalImage, **args)
-                    plotDataItemDict = {plottingData.name: plottingData.toPlotDataItem()
-                                        for plottingData in plottingDataList}
-                    self._plotterVM.updateOriginalImageFunctionData(plottingFunction.title, plotDataItemDict)
-                    # not finished
+                # self.onSendPlotterData(plottingFunction.name)
+                # this is lazier :))
+                self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+                self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+
+        if self._plotterVM.isVisible:
+            self._plotterVM.refresh()
+
+    @pyqtSlot(str)
+    def onSendOriginalImagePlotterData(self, functionName):
+        self._sendPlotterData(functionName, self._model.originalImage, self._plotterVM.updateOriginalImageFunctionData)
+
+    @pyqtSlot(str)
+    def onSendProcessedImagePlotterData(self, functionName):
+        self._sendPlotterData(functionName, self._model.processedImage,
+                              self._plotterVM.updateProcessedImageFunctionData)
+
+    def _sendPlotterData(self, functionName, image, updateFunction):
+        plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
+        args = plottingFunction.prepare(self._model)
+        plottingDataList = plottingFunction(image, **args)
+        plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
+                             for plottingData in plottingDataList}
+        updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtCore.QPoint)
-    def imageClickedEvent(self, clickPosition : QtCore.QPoint):
+    def imageClickedEvent(self, clickPosition):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
         :return:
         """
-        if self._magnifierVM.isVisible or self._magnifierVM.isVisible: # sau plotterul
+
+        self._model.clickPosition = clickPosition
+
+        if self._magnifierVM.isVisible or self._magnifierVM.isVisible:
             # mainWindowVM.highlightPosition(clickPosition)
             # de desenat linia si coloana rosie de highlight
             pass
@@ -80,7 +106,8 @@ class MainVM(QtCore.QObject):
 
         for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
             if plottingFunction.computeOnClick:
-                self._plotterVM.setDirtyData(plottingFunction.title)
+                self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+                self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()

@@ -4,7 +4,7 @@ from Application.Models.PlottingData import PlottingData
 from Application.PlottingAlgorithms._PlotterDecorators import PlotterFunction
 
 
-@PlotterFunction(title="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
+@PlotterFunction(name="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotRowValues(image, clickPosition):
     """
     TODO: document plotRowValues
@@ -14,9 +14,8 @@ def plotRowValues(image, clickPosition):
     """
     plotDataItemsList = []
 
-    if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+    if image is None or clickPosition is None:
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:
@@ -41,7 +40,7 @@ def plotRowValues(image, clickPosition):
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
+@PlotterFunction(name="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotColumnValues(image, clickPosition):
     """
     TODO: document plotColumnValues
@@ -51,9 +50,8 @@ def plotColumnValues(image, clickPosition):
     """
     plotDataItemsList = []
 
-    if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+    if image is None or clickPosition is None:
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:
@@ -78,7 +76,7 @@ def plotColumnValues(image, clickPosition):
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot histogram", computeOnImageChanged=True)
+@PlotterFunction(name="Plot histogram", computeOnImageChanged=True)
 def plotHistogram(image):
     """
     TODO: document plotHistogram
@@ -88,8 +86,7 @@ def plotHistogram(image):
     plotDataItemsList = []
 
     if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:

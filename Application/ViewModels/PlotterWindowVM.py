@@ -13,6 +13,8 @@ class PlotterWindowVM(QtCore.QObject):
     """
 
     closingWindow = QtCore.pyqtSignal(QtGui.QCloseEvent, name="closingWindow")
+    needOriginalImageData = QtCore.pyqtSignal(str, name='needOriginalImageData')
+    needProcessedImageData = QtCore.pyqtSignal(str, name='needProcessedImageData')
 
     def __init__(self, parent=None):
         """
@@ -31,6 +33,7 @@ class PlotterWindowVM(QtCore.QObject):
 
         # Connect the view
         self._view.closing.connect(self.closingWindow)
+        # can't connect to currentIndexChanged[str]; why? don't ask me...
         self._view.comboBoxFunction.currentIndexChanged[int].connect(self._functionComboBoxIndexChanged)
         self._view.listWidgetVisibleOriginalImage.itemSelectionChanged.connect(
             self._visiblePlotsOriginalImageSelectionChangedEvent)
@@ -56,35 +59,48 @@ class PlotterWindowVM(QtCore.QObject):
         return self._view.isVisible()
 
     def updateOriginalImageFunctionData(self, functionName, plotDataItems):
-        self._model.functionModels[functionName].availablePlotDataItemsOriginalImage = plotDataItems
+        self._model.functionModels[functionName].originalImagePlotDataItems.availablePlotDataItems = plotDataItems
+        self._model.functionModels[functionName].originalImagePlotDataItems.isDirty = False
 
-    def setDirtyData(self, functionName : str):
-        self._model.functionModels[functionName].isDirty = True
+    def updateProcessedImageFunctionData(self, functionName, plotDataItems):
+        self._model.functionModels[functionName].processedImagePlotDataItems.availablePlotDataItems = plotDataItems
+        self._model.functionModels[functionName].processedImagePlotDataItems.isDirty = False
 
-    def setCleanData(self, functionName : str):
-        self._model.functionModels[functionName].isDirty = False
+    def setOriginalImageDataAsDirty(self, functionName):
+        self._model.functionModels[functionName].originalImagePlotDataItems.isDirty = True
+
+    def setProcessedImageDataAsDirty(self, functionName):
+        self._model.functionModels[functionName].processedImagePlotDataItems.isDirty = True
 
     def refresh(self):
-        pass
+        # if the data for the current function is dirty signal needData
+        # update the view
+        # basically this is what _functionComboBoxIndexChanged does, but calling context is different
+        self._functionComboBoxIndexChanged(self._view.comboBoxFunction.currentIndex())
 
     def reset(self):
         """
         TODO: document PlotterWindowViewModel resetPlotter
         :return:
         """
-        # Clearing the view
-        self._view.clearPlotItems()
-        #TODO: verifica daca mai e necesar clear pe legend
-        self._view.clearPlotItemsLegends(self._model.visiblePlotDataItemsOriginalImage.keys(),
-                                         self._model.visiblePlotDataItemsProcessedImage.keys())
-        self._view.clearListWidgets()
+
+        self._clearView()
 
         # Clearing the model
-        self._model.visiblePlotDataItemsOriginalImage.clear()
-        self._model.visiblePlotDataItemsProcessedImage.clear()
+        for plottingFunctionModel in self._model.functionModels.values():
+            plottingFunctionModel.originalImagePlotDataItems.clear()
+            plottingFunctionModel.processedImagePlotDataItems.clear()
 
-        self._model.availablePlotDataItemsOriginalImage.clear()
-        self._model.availablePlotDataItemsProcessedImage.clear()
+    def _clearView(self):
+        # TODO: verifica daca mai e necesar clear pe legend (din documentatia de pyqtgraph, cred ca nu)
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        originalImagePlotDataItems = self._model.functionModels[currentFunctionName].originalImagePlotDataItems
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        processedImagePlotDataItems = self._model.functionModels[currentFunctionName].processedImagePlotDataItems
+        self._view.clearPlotItemsLegends(originalImagePlotDataItems.visiblePlotDataItems.keys(),
+                                         processedImagePlotDataItems.visiblePlotDataItems.keys())
+        self._view.clearPlotItems()
+        self._view.clearListWidgets()
 
     @pyqtSlot()
     def _scaleAndCenterButtonPressed(self):
@@ -98,8 +114,32 @@ class PlotterWindowVM(QtCore.QObject):
         self._view.scaleAndCenterToPlots(plots)
 
     @pyqtSlot(int)
-    def _functionComboBoxIndexChanged(self, index):
-        pass
+    def _functionComboBoxIndexChanged(self, functionIndex):
+        functionName = self._view.comboBoxFunction.itemText(functionIndex)
+        if self._model.functionModels[functionName].originalImagePlotDataItems.isDirty:
+            self.needOriginalImageData.emit(functionName)
+
+        if self._model.functionModels[functionName].processedImagePlotDataItems.isDirty:
+            self.needProcessedImageData.emit(functionName)
+
+        # because the 3 windows are on the same thread, THEORETICALLY our connections are direct/synchronous
+        # so a slot is called immediately after the signal is emitted and the emitting function is resumed
+        # after the slot finished ... theoretically
+        # because of that, I can call a refresh on the plotter as the data is all up to date
+        self._updateView()
+
+    def _updateView(self):
+        # PRECONDITION: data is NOT dirty
+        self._clearView()
+
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        currentFunctionModel = self._model.functionModels[currentFunctionName]
+
+        self._view.populateListWidgets(
+            currentFunctionModel.originalImagePlotDataItems.availablePlotDataItems.keys(),
+            currentFunctionModel.processedImagePlotDataItems.availablePlotDataItems.keys())
+        self._view.listWidgetVisibleOriginalImage.selectAll()  # hack; credits to Cosmin
+        self._view.listWidgetVisibleProcessedImage.selectAll()
 
     def _visiblePlotsSelectionChanged(self, plotItem, availablePlotDataItems, visiblePlotDataItems, listWidget):
         """
@@ -149,10 +189,14 @@ class PlotterWindowVM(QtCore.QObject):
         TODO document PlotterWindowViewModel _visiblePlotsOriginalImageSelectionChangedEvent
         :return:
         """
+
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        originalImagePlotDataItems = self._model.functionModels[currentFunctionName].originalImagePlotDataItems
+
         self._visiblePlotsSelectionChanged(
             self._view.plotItemOriginalImage,
-            self._model.availablePlotDataItemsOriginalImage,
-            self._model.visiblePlotDataItemsOriginalImage,
+            originalImagePlotDataItems.availablePlotDataItems,
+            originalImagePlotDataItems.visiblePlotDataItems,
             self._view.listWidgetVisibleOriginalImage)
 
     @pyqtSlot()
@@ -161,16 +205,12 @@ class PlotterWindowVM(QtCore.QObject):
         TODO: document PlotterWindowViewModel _visiblePlotsProcessedImageSelectionChangedEvent
         :return:
         """
+
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        processedImagePlotDataItems = self._model.functionModels[currentFunctionName].processedImagePlotDataItems
+
         self._visiblePlotsSelectionChanged(
             self._view.plotItemProcessedImage,
-            self._model.availablePlotDataItemsProcessedImage,
-            self._model.visiblePlotDataItemsProcessedImage,
+            processedImagePlotDataItems.availablePlotDataItems,
+            processedImagePlotDataItems.visiblePlotDataItems,
             self._view.listWidgetVisibleProcessedImage)
-
-
-# pentru plotare e nevoie de poze; sugestie:
-# cand se schimba functia din combo box, ploterul emite un semnal si mainVM apeleaza refreshPlotter
-# si ii da ca parametrii cele 2 poze si last clickul (asemanator cu calculateAndSetParam..)
-#
-# la ckick event se apeleaza tot refreshPlotter
-#
