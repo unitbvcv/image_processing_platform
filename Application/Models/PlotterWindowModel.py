@@ -11,9 +11,3 @@ class PlotterWindowModel:
     """
 
     functionModels: Dict[str, PlottingFunctionModel] = field(default_factory=lambda: {})
-
-    # availablePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-    # availablePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-    #
-    # visiblePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-    # visiblePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})

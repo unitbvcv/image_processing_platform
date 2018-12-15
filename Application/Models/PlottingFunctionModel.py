@@ -1,19 +1,13 @@
-from dataclasses import dataclass, field
-from typing import Dict
+from dataclasses import dataclass
 
-from pyqtgraph import PlotDataItem
+from Application.Models.PlottingDataItemModel import PlottingDataItemModel
 
 
-@dataclass()  # because the references to the dicts never change; remove if necessary
+@dataclass(frozen=True)
 class PlottingFunctionModel:
     """
     TODO: document PlotterWindowModel
     """
 
-    isDirty: bool = True
-
-    availablePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-    availablePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-
-    visiblePlotDataItemsOriginalImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
-    visiblePlotDataItemsProcessedImage: Dict[str, PlotDataItem] = field(default_factory=lambda: {})
+    originalImagePlotDataItems: PlottingDataItemModel = PlottingDataItemModel()
+    processedImagePlotDataItems: PlottingDataItemModel = PlottingDataItemModel()

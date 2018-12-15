@@ -1,5 +1,6 @@
 import numpy
 from PyQt5 import QtCore
+from PyQt5.QtCore import pyqtSlot
 
 import Application.Settings
 from Application import PlottingAlgorithms
@@ -41,14 +42,29 @@ class MainVM(QtCore.QObject):
         self.imageClickedEvent(QtCore.QPoint(100, 100))
 
     def onLoadImageAction(self, filePath : str, asGreyscale : bool):
-        self._model.readOriginalImage(filePath, asGreyscale)
+        self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
+        self._model.processedImage = None
         self.resetVMs()
+
+        # setup magnifier
         if asGreyscale:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
         else:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
 
-    def imageClickedEvent(self, clickPosition):
+        # setup plotter
+        for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+            if plottingFunction.computeOnImageChanged:
+                args = plottingFunction.prepare(self._model)
+                if self._model.originalImage is not None:
+                    plottingDataList = plottingFunction(self._model.originalImage, **args)
+                    plotDataItemDict = {plottingData.name: plottingData.toPlotDataItem()
+                                        for plottingData in plottingDataList}
+                    self._plotterVM.updateOriginalImageFunctionData(plottingFunction.title, plotDataItemDict)
+                    # not finished
+
+    @pyqtSlot(QtCore.QPoint)
+    def imageClickedEvent(self, clickPosition : QtCore.QPoint):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
@@ -113,6 +129,6 @@ class MainVM(QtCore.QObject):
         return imagePixels
 
     def resetVMs(self):
-        self._magnifierVM.resetMagnifier()
-        # self.__plotterVM.reset()
+        self._magnifierVM.reset()
+        self._plotterVM.reset()
         # self._mainWindowVM.reset()

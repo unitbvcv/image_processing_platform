@@ -55,8 +55,14 @@ class PlotterWindowVM(QtCore.QObject):
         """
         return self._view.isVisible()
 
+    def updateOriginalImageFunctionData(self, functionName, plotDataItems):
+        self._model.functionModels[functionName].availablePlotDataItemsOriginalImage = plotDataItems
+
     def setDirtyData(self, functionName : str):
         self._model.functionModels[functionName].isDirty = True
+
+    def setCleanData(self, functionName : str):
+        self._model.functionModels[functionName].isDirty = False
 
     def refresh(self):
         pass
