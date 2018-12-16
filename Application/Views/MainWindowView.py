@@ -1,3 +1,5 @@
+import re
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import Application.Settings
@@ -32,18 +34,17 @@ class MainWindowView(QtWidgets.QMainWindow):
 
         # define necessary data for menu API
         self._menusDictionary = {
-            "menuFile": self.menuFile,
-            "menuTools": self.menuTools
+            self.menuFile.title(): self.menuFile,
+            self.menuTools.title(): self.menuTools
         }
 
         self._menuActionsDictionary = {
-            "actionLoadGrayscaleImage": self.actionLoadGrayscaleImage,
-            "actionLoadColorImage": self.actionLoadColorImage,
-            "actionSaveProcessedImage": self.actionSaveProcessedImage,
-            "actionExit": self.actionExit,
-            "actionMagnifier": self.actionMagnifier,
-            "actionPlotter": self.actionPlotter,
-            "actionInvert": self.actionInvert
+            self.actionLoadGrayscaleImage.text(): self.actionLoadGrayscaleImage,
+            self.actionLoadColorImage.text(): self.actionLoadColorImage,
+            self.actionSaveProcessedImage.text(): self.actionSaveProcessedImage,
+            self.actionExit.text(): self.actionExit,
+            self.actionMagnifier.text(): self.actionMagnifier,
+            self.actionPlotter.text(): self.actionPlotter
         }
 
 # region WINDOW SET UP
@@ -215,8 +216,6 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.actionMagnifier.setObjectName("actionMagnifier")
         self.actionPlotter = QtWidgets.QAction(self)
         self.actionPlotter.setObjectName("actionPlotter")
-        self.actionInvert = QtWidgets.QAction(self)
-        self.actionInvert.setObjectName("actionInvert")
         self.menuFile.addAction(self.actionLoadGrayscaleImage)
         self.menuFile.addAction(self.actionLoadColorImage)
         self.menuFile.addSeparator()
@@ -307,63 +306,129 @@ class MainWindowView(QtWidgets.QMainWindow):
 # endregion
 
 # region MENU API
-# TODO: make it possible to add submenus
-    def addMenu(self, menuName, beforeMenuName=None):
+
+    def addMenu(self, menuName, menuPath=None, beforeElementName=None):
         """
-        Adds a QMenu to the top menu bar with the name and objectName menuName to the left of beforeMenuName.
-        If it already exists, it does nothing.
-        If beforeMenuName is None, it appends the menu.
+        Adds a QMenu in the deepest menu given in menuPath with the title and objectName menuName before the element
+        with the identifier beforeElementName. Parameter menuName will be used as key to identify the menu afterwards.
+        If it already exists or menuName is None or path is invalid, it does nothing - no matter in which other menu
+        the name is already used.
+        If the sub-menus along the path do not exist, they will be created (appending them in their corresponding menu).
+        Path is invalid if a menu with the same name already exists when new menus are being created.
+        If menuPath is not given, the menu will be added in the top menu bar.
+        If beforeElementName is not specified or is not found or is not valid (present in the menu), the menu is added
+        as the last element.
+
+        Examples of paths:
+            - 'Foo/Bar'
+            - 'Foo\\Bar'
+            - r'Foo\Bar'
+
+        Example of invalid path:
+            - 'File/Submenu/File'
+
         :param menuName: string
-        :param beforeMenuName: string; default value: None
+        :param menuPath: string; default value: None
+        :param beforeElementName: string; default value: None
         :return: None
         """
 
-        if menuName not in self._menusDictionary:
-            beforeMenuAction = None
-            if beforeMenuName is not None \
-                    and beforeMenuName in self._menusDictionary:
-                beforeMenuAction = self._menusDictionary[beforeMenuName].menuAction()
-            menu = QtWidgets.QMenu(self.menuBar)
-            menu.setObjectName(menuName)
-            menu.setTitle(QtCore.QCoreApplication.translate("MainWindow", menuName))
-            self.menuBar.insertAction(beforeMenuAction, menu.menuAction())
-            self._menusDictionary[menuName] = menu
+        def _addMenu(menuName, menu, beforeAction):
+            newMenu = QtWidgets.QMenu(menu)
+            newMenu.setTitle(QtCore.QCoreApplication.translate("MainWindow", menuName))
+            newMenu.setObjectName(menuName)
+            self._menusDictionary[menuName] = newMenu
+            menu.insertAction(beforeAction, newMenu.menuAction())
 
-    def addMenuAction(self, menuName, actionName, beforeActionName=None):
+        if menuName is not None and menuName not in self._menusDictionary:
+            beforeElementAction = None
+            if beforeElementName in self._menuActionsDictionary:
+                beforeElementAction = self._menuActionsDictionary[beforeElementName]
+            elif beforeElementName in self._menusDictionary:
+                beforeElementAction = self._menusDictionary[beforeElementName].menuAction()
+
+            currentMenu = self.menuBar
+            if menuPath is not None:
+                menuNames = re.split(r'[/\\]', menuPath)
+
+                # traverse the path to the deepest submenu; create them along the way if they don't exist
+                startedNonExistingMenusPath = False
+                for currentSubMenuName in menuNames:
+                    if startedNonExistingMenusPath is False:
+                        if currentSubMenuName not in self._menusDictionary:
+                            _addMenu(currentSubMenuName, currentMenu, beforeElementAction)
+                            startedNonExistingMenusPath = True
+                        elif self._menusDictionary[currentSubMenuName].menuAction() not in currentMenu.actions():
+                            return
+                    else:
+                        if currentSubMenuName in self._menusDictionary:
+                            return
+                        _addMenu(currentSubMenuName, currentMenu, beforeElementAction)
+
+                    currentMenu = self._menusDictionary[currentSubMenuName]
+
+            # here the deepest submenu and insertion point have been found
+            _addMenu(menuName, currentMenu, beforeElementAction)
+
+    def addMenuAction(self, actionName, menuPath, beforeElementName=None):
         """
-        Adds a QAction to the top menuName with the name and objectName actionName [before beforeActionName].
-        If it already exists or the menuName doesn't exist, it does nothing.
-        If beforeActionName is not found, it appends the new action.
-        :param menuName: string
+        Adds a QAction to the deepest menu in the menuPath with the title and objectName actionName before the element
+        with the identifier beforeElementName. Parameter actionName will be used as key to identify the menu afterwards.
+        If it already exists or menuPath is None or actionName is None or path is invalid, it does nothing - no matter
+        in which other menu the name is already used.
+        If the sub-menus along the path do not exist, they will be created (appending them in their corresponding menu).
+        Path is invalid if a menu with the same name already exists when new menus are being created.
+        If beforeElementName is not specified or is not found or is not valid (present in the menu), the action is added
+        as the last element.
+
         :param actionName: string
-        :param beforeActionName: string; default value: None
+        :param menuPath: string
+        :param beforeElementName: string; default value: None
         :return: None
         """
-        if menuName in self._menusDictionary \
-                and actionName not in self._menuActionsDictionary:
-            beforeAction = None
-            if beforeActionName in self._menuActionsDictionary:
-                beforeAction = self._menuActionsDictionary[beforeActionName]
-            action = QtWidgets.QAction(self)
-            action.setObjectName(actionName)
-            action.setText(QtCore.QCoreApplication.translate("MainWindow", actionName))
-            self._menusDictionary[menuName].insertAction(beforeAction, action)
-            self._menuActionsDictionary[actionName] = action
 
-    def addMenuSeparator(self, menuName, beforeActionName=None):
-        """
-        Adds a separator in the menuName [before beforeActionName].
-        It does nothing if the menuName is not found.
-        If beforeActionName is not found, it appends the new action.
-        :param menuName: string
-        :param beforeActionName: string; default value: None
-        :return: None
-        """
-        if menuName in self._menusDictionary:
-            beforeAction = None
-            if beforeActionName is not None:
-                beforeAction = self._menuActionsDictionary[beforeActionName]
-            self._menusDictionary[menuName].insertSeparator(beforeAction)
+        def _addAction(actionName, menu, beforeAction):
+            newAction = QtWidgets.QAction(self)
+            newAction.setObjectName(actionName)
+            newAction.setText(QtCore.QCoreApplication.translate("MainWindow", actionName))
+            menu.insertAction(beforeAction, newAction)
+            self._menuActionsDictionary[actionName] = newAction
+
+        if actionName is not None and actionName not in self._menuActionsDictionary:
+            beforeElementAction = None
+            if beforeElementName in self._menuActionsDictionary:
+                beforeElementAction = self._menuActionsDictionary[beforeElementName]
+            elif beforeElementName in self._menusDictionary:
+                beforeElementAction = self._menusDictionary[beforeElementName].menuAction()
+
+            if menuPath is not None:
+                menuNames = re.split(r'[/\\]', menuPath)
+                lastMenuName = menuNames[-1]
+
+                if lastMenuName not in self._menusDictionary:
+                    self.addMenu(lastMenuName, '/'.join(menuNames[:-1]))
+
+                    if lastMenuName not in self._menusDictionary:
+                        return  # invalid path
+
+                menu = self._menusDictionary[lastMenuName]
+                _addAction(actionName, menu, beforeElementAction)
+
+
+    # def addMenuSeparator(self, menuName, beforeActionName=None):
+    #     """
+    #     Adds a separator in the menuName [before beforeActionName].
+    #     It does nothing if the menuName is not found.
+    #     If beforeActionName is not found, it appends the new action.
+    #     :param menuName: string
+    #     :param beforeActionName: string; default value: None
+    #     :return: None
+    #     """
+    #     if menuName in self._menusDictionary:
+    #         beforeAction = None
+    #         if beforeActionName is not None:
+    #             beforeAction = self._menuActionsDictionary[beforeActionName]
+    #         self._menusDictionary[menuName].insertSeparator(beforeAction)
 
 # endregion
 

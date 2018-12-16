@@ -38,6 +38,16 @@ class MainVM(QtCore.QObject):
         self._plotterVM.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
         self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 
+        self._mainWindowVM._view.addMenu("Test", "Test1/Test2")
+        self._mainWindowVM._view.addMenu("File2", "File/File1", "Exit")
+        self._mainWindowVM._view.addMenu("File3", "File/File1/File", "Exit")
+
+        self._mainWindowVM._view.addMenuAction("TestAction", "Test1/Test2")
+        self._mainWindowVM._view.addMenuAction("TestAction2", "Test1/Test2", "TestAction")
+        self._mainWindowVM._view.addMenuAction("TestAction3", "Test3/Test4")
+        self._mainWindowVM._view.addMenuAction("TestAction4", "Test3/File")
+
+
         # test
         self._magnifierVM.showWindow()
         self._plotterVM.showWindow()
