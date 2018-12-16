@@ -40,12 +40,14 @@ class MainWindowVM(QtCore.QObject):
 
         # connect image labels signals to slots
         self._view.labelOriginalImage.mouseMovedSignal.connect(self._onMouseMovedOnImageLabel)
+        self._view.labelProcessedImage.mouseMovedSignal.connect(self._onMouseMovedOnImageLabel)
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMouseMovedOnImageLabel(self, QMouseEvent):
-        x = int(QMouseEvent.x() / self._view.zoom)
-        y = int(QMouseEvent.y() / self._view.zoom)
-        self.mouseMovedOnImageLabelZoomCorrectedSignal.emit(x, y)
+        if self._view.zoom != 0:
+            x = int(QMouseEvent.x() / self._view.zoom)
+            y = int(QMouseEvent.y() / self._view.zoom)
+            self.mouseMovedOnImageLabelZoomCorrectedSignal.emit(x, y)
 
     def setMousePositionLabelText(self, text):
         self._view.labelMousePosition.setText(text)
