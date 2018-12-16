@@ -8,8 +8,17 @@ from Application.Views.MainWindowImageLabel import MainWindowImageLabel
 
 
 class MainWindowView(QtWidgets.QMainWindow):
+    @property
+    def zoom(self):
+        return self._zoom
+
     def __init__(self):
         super().__init__()
+
+        # Python doesn't like properties on variables that are created in a function that's not __init__
+        # so we create it here
+        self._zoom = 1.0
+
         self._setupUi()
         self._setupImageLabels()
         self._setupMenuCornerWidget()
@@ -27,10 +36,10 @@ class MainWindowView(QtWidgets.QMainWindow):
             self.scrollAreaOriginalImage.verticalScrollBar().setValue)
 
         # connect signals to slots
-        self.labelOriginalImage.mouse_leaved.connect(self._mouseLeavedEvent)
-        self.labelProcessedImage.mouse_leaved.connect(self._mouseLeavedEvent)
-        self.labelOriginalImage.finished_painting.connect(self._labelFinishedPaintingEvent)
-        self.labelProcessedImage.finished_painting.connect(self._labelFinishedPaintingEvent)
+        self.labelOriginalImage.mouseLeavedSignal.connect(self._mouseLeavedEvent)
+        self.labelProcessedImage.mouseLeavedSignal.connect(self._mouseLeavedEvent)
+        self.labelOriginalImage.finishedPaintingSignal.connect(self._labelFinishedPaintingEvent)
+        self.labelProcessedImage.finishedPaintingSignal.connect(self._labelFinishedPaintingEvent)
 
         # define necessary data for menu API
         self._menusDictionary = {

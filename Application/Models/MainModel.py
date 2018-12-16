@@ -19,4 +19,4 @@ class MainModel(object):
 
     def saveProcessedImage(self, filePath : str):
         # i think it need to be converted from RGB to BGR
-        opencv.imwrite(filePath, self.processedImage)
+        opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))

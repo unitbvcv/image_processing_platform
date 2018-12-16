@@ -332,11 +332,6 @@
     <string>Plotter</string>
    </property>
   </action>
-  <action name="actionInvert">
-   <property name="text">
-    <string>Invert</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
