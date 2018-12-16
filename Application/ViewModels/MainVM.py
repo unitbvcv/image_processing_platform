@@ -28,7 +28,7 @@ class MainVM(QtCore.QObject):
 
         # Instantiate MainWindowViewModel
         self._mainWindowVM = MainWindowVM(self)
-        self._mainWindowVM.loadImageSignal.connect(self.onLoadImageAction)
+        self._mainWindowVM.loadOriginalImageSignal.connect(self.onLoadImageAction)
 
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowVM(self)

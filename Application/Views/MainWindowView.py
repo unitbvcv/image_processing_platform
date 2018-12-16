@@ -1,7 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Application.Views.MainWindowImageLabel import MainWindowImageLabel
+
 import Application.Settings
 import Application.Utils.ZoomOperations
+from Application.Views.MainWindowImageLabel import MainWindowImageLabel
 
 
 class MainWindowView(QtWidgets.QMainWindow):
@@ -382,12 +383,6 @@ class MainWindowView(QtWidgets.QMainWindow):
 
     def closeEvent(self, QCloseEvent):
         QtCore.QCoreApplication.quit()
-
-    def setOriginalImageLabel(self, image):
-        self.labelOriginalImage.setLabelImage(image)
-
-    def setProcessedImageLabel(self, image):
-        self.labelProcessedImage.setLabelImage(image)
 
 # region ZOOM FUNCTIONALITY
 

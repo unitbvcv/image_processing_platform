@@ -1,10 +1,9 @@
 import os
 
 from PyQt5 import QtCore, QtWidgets
-
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
-import Application.Setings
+import Application.Settings
 import Application.Utils.FileOperations
 from Application.Models.MainWindowModel import MainWindowModel
 from Application.Views.MainWindowView import MainWindowView
@@ -84,8 +83,8 @@ class MainWindowVM(QtCore.QObject):
                 initialFilter='Portable Network Graphics file (*.png)'
             )
 
-            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) and os.path.isfile(
-                    filePath):
+            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) \
+                    and os.path.isfile(filePath):
                 self.saveProcessedImageSignal.emit(filePath)
             else:
                 messagebox = QtWidgets.QMessageBox(self._view)
@@ -95,3 +94,15 @@ class MainWindowVM(QtCore.QObject):
             messagebox = QtWidgets.QMessageBox(self._view)
             messagebox.setText("Save processed image: no processed image.")
             messagebox.exec()
+
+    def showNewOriginalImage(self, image):
+        self._view.labelOriginalImage.setLabelImage(image)
+        self._view.labelProcessedImage.setLabelImage(None)
+
+    def reset(self):
+        # TODO: clean image labels? and click position? and reset zoom? anything else?
+        self._view.labelOriginalImage.setLabelImage(None)
+        self._view.labelProcessedImage.setLabelImage(None)
+        
+        self._view.labelOriginalImage.setClickPosition(None)
+        self._view.labelProcessedImage.setClickPosition(None)
