@@ -14,3 +14,6 @@ class MainModel(object):
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_GRAYSCALE)
         else:
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_COLOR)
+
+    def saveProcessedImage(self, filePath : str):
+        opencv.imwrite(filePath, self.processedImage)

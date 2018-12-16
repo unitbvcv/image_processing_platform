@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+import cv2 as opencv
 import Application.Settings
 
 
