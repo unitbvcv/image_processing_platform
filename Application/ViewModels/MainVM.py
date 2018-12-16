@@ -44,13 +44,13 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
         self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
 
-        self._mainWindowVM.mouseMovedOnImageLabelZoomCorrectedSignal.connect(self._onMouseMovedOnImageLabelZoomCorrected)
+        self._mainWindowVM.mouseMovedOnImageLabelZoomCorrectedSignal.connect(self._onMouseMovedImageLabelZoomCorrected)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
 
     @pyqtSlot(int, int)
-    def _onMouseMovedOnImageLabelZoomCorrected(self, x, y):
+    def _onMouseMovedImageLabelZoomCorrected(self, x, y):
         labelText = ''
 
         if self._model.originalImage is not None or self._model.processedImage is not None:

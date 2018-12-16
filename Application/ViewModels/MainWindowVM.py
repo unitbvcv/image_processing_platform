@@ -39,15 +39,23 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionSaveAsOriginalImage.triggered.connect(self._actionSaveAsOriginalImage)
 
         # connect image labels signals to slots
-        self._view.labelOriginalImage.mouseMovedSignal.connect(self._onMouseMovedOnImageLabel)
-        self._view.labelProcessedImage.mouseMovedSignal.connect(self._onMouseMovedOnImageLabel)
+        self._view.labelOriginalImage.mouseMovedSignal.connect(self._onMouseMovedImageLabel)
+        self._view.labelProcessedImage.mouseMovedSignal.connect(self._onMouseMovedImageLabel)
+        self._view.labelOriginalImage.mouseLeavedSignal.connect(self._onMouseLeavedImageLabel)
+        self._view.labelProcessedImage.mouseLeavedSignal.connect(self._onMouseLeavedImageLabel)
 
     @pyqtSlot(QtGui.QMouseEvent)
-    def _onMouseMovedOnImageLabel(self, QMouseEvent):
+    def _onMouseMovedImageLabel(self, QMouseEvent):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
             self.mouseMovedOnImageLabelZoomCorrectedSignal.emit(x, y)
+
+    @pyqtSlot(QtCore.QEvent)
+    def _onMouseLeavedImageLabel(self, QEvent):
+        self._view.labelMousePosition.setText('')
+        self._view.labelOriginalImagePixelValue.setText('')
+        self._view.labelProcessedImagePixelValue.setText('')
 
     def setMousePositionLabelText(self, text):
         self._view.labelMousePosition.setText(text)
