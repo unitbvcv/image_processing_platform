@@ -16,3 +16,7 @@ class MainModel(object):
         else:
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_COLOR)
             self.originalImage = opencv.cvtColor(self.originalImage, opencv.COLOR_BGR2RGB)
+
+    def saveProcessedImage(self, filePath : str):
+        # i think it need to be converted from RGB to BGR
+        opencv.imwrite(filePath, self.processedImage)
