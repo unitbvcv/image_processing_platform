@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
 
+
 class SmartDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)

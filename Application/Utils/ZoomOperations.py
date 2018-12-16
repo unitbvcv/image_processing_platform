@@ -1,9 +1,8 @@
-import Application.Settings
+from Application.Settings import MainWindowSettings
+
 
 def calculateZoomFromSliderValue(value):
-    return value * Application.Settings.MainWindowSettings.zoomSingleStep \
-           + Application.Settings.MainWindowSettings.zoomMinimumValue
+    return value * MainWindowSettings.zoomSingleStep + MainWindowSettings.zoomMinimumValue
 
 def calculateSliderValueFromZoom(value):
-    return int((value - Application.Settings.MainWindowSettings.zoomMinimumValue)
-               / Application.Settings.MainWindowSettings.zoomSingleStep)
+    return int((value - MainWindowSettings.zoomMinimumValue) / MainWindowSettings.zoomSingleStep)

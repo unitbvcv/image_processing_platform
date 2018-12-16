@@ -1,4 +1,5 @@
 import functools
+
 from Application.PlottingAlgorithms import registeredAlgorithms
 
 

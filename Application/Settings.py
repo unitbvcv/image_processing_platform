@@ -9,12 +9,12 @@ class MainWindowSettings:
     TODO: document MainWindowSettings and members
     """
 
-    zoomMinimumValue: float = field(default=0.0)
-    zoomMaximumValue: float = field(default=20.0)
-    zoomSingleStep: float = field(default=0.05)
-    zoomPageStep: float = field(default=1.0)
-    zoomDefaultValue: float = field(default=1.0)
-    ticksInterval: int = field(default=1)
+    zoomMinimumValue: float = 0.0
+    zoomMaximumValue: float = 20.0
+    zoomSingleStep: float = 0.05
+    zoomPageStep: float = 1.0
+    zoomDefaultValue: float = 1.0
+    ticksInterval: int = 1
 
     def __post_init__(self):
         # TODO: think if more tests are needed
@@ -32,10 +32,10 @@ class MagnifierWindowSettings:
     TODO: document MagnifierWindowSettings
     """
 
-    frameGridSize: int = field(default=9)  # positive odd number here
-    threeZoneHeightPadding: int = field(default=12)  # in pixels
-    fourZoneHeightPadding: int = field(default=6)  # in pixels
-    fontSize: int = field(default=8)  # in points
+    frameGridSize: int = 9  # positive odd number here
+    threeZoneHeightPadding: int = 12  # in pixels
+    fourZoneHeightPadding: int = 6  # in pixels
+    fontSize: int = 8  # in points
 
     class ColorSpaces(Enum):
         RGB = (0, 'RGB (Red Green Blue)')
@@ -58,11 +58,3 @@ class MagnifierWindowSettings:
 
 # TODO: must be singleton! find alternative or explain
 MagnifierWindowSettings = MagnifierWindowSettings()
-
-
-# TODO: to be removed and replaced by functions defined in PlotterAlgorithms folder
-class PlotterWindowSettings:
-    class Functions(Enum):
-        PLOT_ROW_VALUES = (0, 'Plot row values')
-        PLOT_COL_VALUES = (1, 'Plot column values')
-        PLOT_HISTOGRAM = (2, 'Plot histogram')
