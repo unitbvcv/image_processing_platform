@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
 
+from Application.Settings import MagnifierWindowSettings
 from Application.Models.MagnifierWindowModel import MagnifierWindowModel
-import Application.Settings
 from Application.Views.MagnifierWindowView import MagnifierWindowView
 
 
@@ -11,7 +11,7 @@ class MagnifierWindowVM(QtCore.QObject):
     TODO: document MagnifierWindowViewModel
     """
 
-    windowClosing = QtCore.pyqtSignal(QtGui.QCloseEvent, name="windowClosing")
+    windowClosing = pyqtSignal(QtGui.QCloseEvent, name="windowClosing")
 
     def __init__(self, parent=None):
         """
@@ -47,7 +47,7 @@ class MagnifierWindowVM(QtCore.QObject):
         """
         return self._view.isVisible()
 
-    def setMagnifierColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+    def setMagnifierColorSpace(self, colorSpace : MagnifierWindowSettings.ColorSpaces):
         """
         TODO: document MagnifierWindowViewModel.setMagnifierColorSpace
         :param colorSpace:
@@ -64,7 +64,7 @@ class MagnifierWindowVM(QtCore.QObject):
         :return:
         """
 
-        self._model.colorSpace = Application.Settings.MagnifierWindowSettings.colorSpacesDict[index]
+        self._model.colorSpace = MagnifierWindowSettings.colorSpacesDict[index]
         self._view.setColorSpace(self._model.colorSpace)
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):
@@ -74,7 +74,7 @@ class MagnifierWindowVM(QtCore.QObject):
         :param processedImagePixels:
         :return:
         """
-        frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
+        frameGridSize = MagnifierWindowSettings.frameGridSize
 
         for row in range(frameGridSize):
             for column in range(frameGridSize):

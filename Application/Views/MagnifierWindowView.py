@@ -1,7 +1,9 @@
 import numpy as np
-from PyQt5 import QtCore, QtGui, QtWidgets
 
-import Application.Settings
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import pyqtSignal
+
+from Application.Settings import MagnifierWindowSettings
 from Application.Views.MagnifierPixelFrame import MagnifierPixelFrame
 
 
@@ -10,7 +12,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
     TODO: MagnifierWindow documentation
     """
 
-    closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
+    closing = pyqtSignal(QtGui.QCloseEvent, name='closing')
 
     def __init__(self, parent=None):
         """
@@ -20,10 +22,11 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         super().__init__(parent)
         self._setupUi()
 
-        rows = Application.Settings.MagnifierWindowSettings.frameGridSize
-        columns = Application.Settings.MagnifierWindowSettings.frameGridSize
-        generateList = \
-            lambda nbRows, nbColumns: [[MagnifierPixelFrame() for column in range(nbColumns)] for row in range(nbRows)]
+        rows = MagnifierWindowSettings.frameGridSize
+        columns = MagnifierWindowSettings.frameGridSize
+        generateList = lambda nbRows, nbColumns: [
+            [MagnifierPixelFrame() for column in range(nbColumns)] for row in range(nbRows)
+        ]
         self.frameListOriginalImage = generateList(rows, columns)
         self.frameListProcessedImage = generateList(rows, columns)  # can't use copy/deepcopy
 
@@ -83,7 +86,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         sizePolicy.setHeightForWidth(self.comboBoxColorSpace.sizePolicy().hasHeightForWidth())
         self.comboBoxColorSpace.setSizePolicy(sizePolicy)
         self.comboBoxColorSpace.addItems(
-            [item.value[1] for item in Application.Settings.MagnifierWindowSettings.ColorSpaces])
+            [item.value[1] for item in MagnifierWindowSettings.ColorSpaces])
         self.comboBoxColorSpace.setObjectName("comboBoxColorSpace")
         self.horizontalLayoutColorSpace.addWidget(self.comboBoxColorSpace)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -105,13 +108,13 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
         self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
 
-    def setColorSpace(self, colorSpace : Application.Settings.MagnifierWindowSettings.ColorSpaces):
+    def setColorSpace(self, colorSpace : MagnifierWindowSettings.ColorSpaces):
         """
         TODO: document MagnifierWindow setColorSpace
         :return:
         """
-        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+        for row in range(MagnifierWindowSettings.frameGridSize):
+            for column in range(MagnifierWindowSettings.frameGridSize):
                 self.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
                 self.frameListProcessedImage[row][column].setColorDisplayFormat(colorSpace)
 
@@ -139,7 +142,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         if isinstance(color, int):
             pixelFrame.setFrameColorGrayLevel(color)
         elif isinstance(color, np.ndarray):
-            pixelFrame.setFrameColorRgb(red=color[2], green=color[1], blue=color[0])
+            pixelFrame.setFrameColorRgb(red=color[0], green=color[1], blue=color[2])
         else:
             pixelFrame.setFrameColorGrayLevel(None)
 
@@ -152,8 +155,8 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         TODO: document MagnifierWindow reset
         :return: None
         """
-        for row in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
-            for column in range(Application.Settings.MagnifierWindowSettings.frameGridSize):
+        for row in range(MagnifierWindowSettings.frameGridSize):
+            for column in range(MagnifierWindowSettings.frameGridSize):
                 self.frameListOriginalImage[row][column].clear()
                 self.frameListProcessedImage[row][column].clear()
         self.comboBoxColorSpace.setCurrentIndex(0)

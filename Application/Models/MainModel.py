@@ -15,3 +15,4 @@ class MainModel(object):
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_GRAYSCALE)
         else:
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_COLOR)
+            self.originalImage = opencv.cvtColor(self.originalImage, opencv.COLOR_BGR2RGB)

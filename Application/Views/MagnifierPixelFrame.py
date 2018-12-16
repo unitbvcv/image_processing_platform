@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-import Application.Settings
+from Application.Settings import MagnifierWindowSettings
 import Application.Utils.ColorSpaceOperations
 
 
@@ -16,9 +16,9 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
         super().__init__(parent)
         self._isVisible = False
         self._backgroundColor = QtGui.QColor(255, 255, 255)
-        self._colorDisplayFormat = Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB
+        self._colorDisplayFormat = MagnifierWindowSettings.ColorSpaces.RGB
 
-    def setColorDisplayFormat(self, colorSpace: Application.Settings.MagnifierWindowSettings.ColorSpaces):
+    def setColorDisplayFormat(self, colorSpace: MagnifierWindowSettings.ColorSpaces):
         """
         TODO: document MagnifierPixelFrame.setColorDisplayFormat
         """
@@ -61,7 +61,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             painter.fillRect(self.rect(), self._backgroundColor)
 
             font = QtGui.QFont("Arial")
-            font.setPointSize(Application.Settings.MagnifierWindowSettings.fontSize)
+            font.setPointSize(MagnifierWindowSettings.fontSize)
             painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
 
@@ -70,7 +70,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             else:
                 painter.setBrush(QtCore.Qt.black)
 
-            if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY:
+            if self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.GRAY:
                 text = str((self._backgroundColor.red() + self._backgroundColor.green() +
                             self._backgroundColor.blue()) // 3)
 
@@ -79,7 +79,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvance) / 2,
                                  self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
-            elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.CMYK:
+            elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.CMYK:
                 textCyan = str(self._backgroundColor.cyan())
                 textMagenta = str(self._backgroundColor.magenta())
                 textYellow = str(self._backgroundColor.yellow())
@@ -95,10 +95,10 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 # the (usually) visible part of the text is the ascent, not the height
                 # fonts usually have a baseline; the font will have parts of it below the baseline
                 # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
-                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding) / 4
+                zoneHeight = (self.height() - MagnifierWindowSettings.fourZoneHeightPadding) / 4
                 halfFontAscent = fontMetrics.ascent() / 2
                 halfZoneHeight = zoneHeight / 2
-                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.fourZoneHeightPadding / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.fourZoneHeightPadding / 2
 
                 painter.drawText((self.width() - horizontalAdvanceCyan) / 2, zoneHeight - zoneHeightOffset,
                                  textCyan)
@@ -109,15 +109,15 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 painter.drawText((self.width() - horizontalAdvanceBlack) / 2, zoneHeight * 4 - zoneHeightOffset,
                                  textBlack)
             else:
-                if self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB:
+                if self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.RGB:
                     textFirst = str(self._backgroundColor.red())
                     textSecond = str(self._backgroundColor.green())
                     textThird = str(self._backgroundColor.blue())
-                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSL:
+                elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.HSL:
                     textFirst = str(self._backgroundColor.hue())
                     textSecond = str(self._backgroundColor.saturation())
                     textThird = str(self._backgroundColor.lightness())
-                elif self._colorDisplayFormat is Application.Settings.MagnifierWindowSettings.ColorSpaces.HSV:
+                elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.HSV:
                     textFirst = str(self._backgroundColor.hue())
                     textSecond = str(self._backgroundColor.saturation())
                     textThird = str(self._backgroundColor.value())
@@ -131,10 +131,10 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 # the (usually) visible part of the text is the ascent, not the height
                 # fonts usually have a baseline; the font will have parts of it below the baseline
                 # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
-                zoneHeight = (self.height() - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding) / 3
+                zoneHeight = (self.height() - MagnifierWindowSettings.threeZoneHeightPadding) / 3
                 halfFontAscent = fontMetrics.ascent() / 2
                 halfZoneHeight = zoneHeight / 2
-                zoneHeightOffset = halfZoneHeight - halfFontAscent - Application.Settings.MagnifierWindowSettings.threeZoneHeightPadding / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.threeZoneHeightPadding / 2
 
                 painter.drawText((self.width() - horizontalAdvanceRed) / 2, zoneHeight - zoneHeightOffset,
                                  textFirst)

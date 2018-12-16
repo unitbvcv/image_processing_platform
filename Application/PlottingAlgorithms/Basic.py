@@ -26,7 +26,7 @@ def plotRowValues(image, clickPosition):
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 2], pen='r')
+        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
@@ -34,7 +34,7 @@ def plotRowValues(image, clickPosition):
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 0], pen='b')
+        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
@@ -62,7 +62,7 @@ def plotColumnValues(image, clickPosition):
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[:, clickPosition.x(), 2], pen='r')
+        plottingData = PlottingData(plotName, image[:, clickPosition.x(), 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
@@ -70,7 +70,7 @@ def plotColumnValues(image, clickPosition):
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 0], pen='b')
+        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
@@ -101,7 +101,7 @@ def plotHistogram(image):
 
     # Color image
     elif len(image.shape) == 3:
-        histogram = numpy.histogram(image[:, :, 2], bins=range(257), range=(-1, 255))[0]
+        histogram = numpy.histogram(image[:, :, 0], bins=range(257), range=(-1, 255))[0]
         plotName = 'Red histogram'
         plottingData = PlottingData(plotName, histogram, pen='r')
         plotDataItemsList.append(plottingData)
@@ -111,7 +111,7 @@ def plotHistogram(image):
         plottingData = PlottingData(plotName, histogram, pen='g')
         plotDataItemsList.append(plottingData)
 
-        histogram = numpy.histogram(image[:, :, 0], bins=range(257), range=(-1, 255))[0]
+        histogram = numpy.histogram(image[:, :, 2], bins=range(257), range=(-1, 255))[0]
         plotName = 'Blue histogram'
         plottingData = PlottingData(plotName, histogram, pen='b')
         plotDataItemsList.append(plottingData)
