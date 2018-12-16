@@ -35,8 +35,8 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
         self._view.actionExit.triggered.connect(self._actionExit)
         self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
-        self._view.actionPlotter.triggered.connect(self._actionPlotter)
-        self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
+        self._view.actionPlotter.triggered.connect(self.openPlotterSignal)
+        self._view.actionMagnifier.triggered.connect(self.openMagnifierSignal)
         self._view.actionSaveAsOriginalImage.triggered.connect(self._actionSaveAsOriginalImage)
 
         # connect image labels signals to slots
@@ -89,14 +89,6 @@ class MainWindowVM(QtCore.QObject):
     @pyqtSlot()
     def _actionExit(self):
         QtCore.QCoreApplication.quit()
-
-    @pyqtSlot()
-    def _actionPlotter(self):
-        self.openPlotterSignal.emit()
-
-    @pyqtSlot()
-    def _actionMagnifier(self):
-        self.openMagnifierSignal.emit()
 
     @pyqtSlot()
     def _actionLoadGrayscaleImage(self):
