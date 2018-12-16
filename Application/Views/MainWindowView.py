@@ -29,6 +29,24 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.labelOriginalImage.finished_painting.connect(self._labelFinishedPaintingEvent)
         self.labelProcessedImage.finished_painting.connect(self._labelFinishedPaintingEvent)
 
+        # define necessary data for menu API
+        self._menusDictionary = {
+            "menuFile": self.menuFile,
+            "menuTools": self.menuTools
+        }
+
+        self._menuActionsDictionary = {
+            "actionLoadGrayscaleImage": self.actionLoadGrayscaleImage,
+            "actionLoadColorImage": self.actionLoadColorImage,
+            "actionSaveProcessedImage": self.actionSaveProcessedImage,
+            "actionExit": self.actionExit,
+            "actionMagnifier": self.actionMagnifier,
+            "actionPlotter": self.actionPlotter,
+            "actionInvert": self.actionInvert
+        }
+
+# region WINDOW SET UP
+
     def _setupUi(self):
         self.setObjectName("MainWindow")
         self.resize(1024, 768)
@@ -251,14 +269,54 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.stackedLayoutOriginalImage.addWidget(self.labelOriginalImage)
         self.stackedLayoutProcessedImage.addWidget(self.labelProcessedImage)
 
+    def _setupMenuCornerWidget(self):
+        self.rightMenuBar = QtWidgets.QMenuBar()
+        self.menuBar.setCornerWidget(self.rightMenuBar)
+        self.actionSaveAsOriginalImage = QtWidgets.QAction(self)
+        self.actionSaveAsOriginalImage.setObjectName("actionSaveAsOriginalImage")
+        self.rightMenuBar.addAction(self.actionSaveAsOriginalImage)
+
+        _translate = QtCore.QCoreApplication.translate
+        self.actionSaveAsOriginalImage.setText(_translate("MainWindow", "Save as original image"))
+
+    def _setupZoomFunctionality(self):
+        # connect the zoom option
+        self.horizontalSliderZoom.setMinimum(
+            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
+                Application.Settings.MainWindowSettings.zoomMinimumValue))
+        self.horizontalSliderZoom.setMaximum(
+            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
+                Application.Settings.MainWindowSettings.zoomMaximumValue))
+        self.horizontalSliderZoom.setSingleStep(
+            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
+                Application.Settings.MainWindowSettings.zoomSingleStep))
+        self.horizontalSliderZoom.setPageStep(
+            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
+                Application.Settings.MainWindowSettings.zoomPageStep))
+        self.horizontalSliderZoom.setTickInterval(
+            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
+                Application.Settings.MainWindowSettings.ticksInterval)
+        )
+
+        self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
+        self.horizontalSliderZoom.setValue(Application.Utils.ZoomOperations.calculateSliderValueFromZoom(self._zoom))
+        self.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
+        self.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
+
+# endregion
+
+# region MENU API
+# TODO: make it possible to add submenus
     def addMenu(self, menuName, beforeMenuName=None):
         """
-        Adds a QMenu to the top menu bar with the name and objectName menuName [before beforeMenuName].
+        Adds a QMenu to the top menu bar with the name and objectName menuName to the left of beforeMenuName.
         If it already exists, it does nothing.
+        If beforeMenuName is None, it appends the menu.
         :param menuName: string
         :param beforeMenuName: string; default value: None
         :return: None
         """
+
         if menuName not in self._menusDictionary:
             beforeMenuAction = None
             if beforeMenuName is not None \
@@ -306,6 +364,8 @@ class MainWindowView(QtWidgets.QMainWindow):
                 beforeAction = self._menuActionsDictionary[beforeActionName]
             self._menusDictionary[menuName].insertSeparator(beforeAction)
 
+# endregion
+
     def _mouseLeavedEvent(self, QEvent):
         self.labelMousePosition.setText('')
         self.labelOriginalImagePixelValue.setText('')
@@ -320,39 +380,16 @@ class MainWindowView(QtWidgets.QMainWindow):
         self.scrollAreaProcessedImage.verticalScrollBar().setValue(
             self.scrollAreaOriginalImage.verticalScrollBar().value())
 
-    def _setupZoomFunctionality(self):
-        # connect the zoom option
-        self.horizontalSliderZoom.setMinimum(
-            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.zoomMinimumValue))
-        self.horizontalSliderZoom.setMaximum(
-            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.zoomMaximumValue))
-        self.horizontalSliderZoom.setSingleStep(
-            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.zoomSingleStep))
-        self.horizontalSliderZoom.setPageStep(
-            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.zoomPageStep))
-        self.horizontalSliderZoom.setTickInterval(
-            Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.ticksInterval)
-        )
+    def closeEvent(self, QCloseEvent):
+        QtCore.QCoreApplication.quit()
 
-        self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
-        self.horizontalSliderZoom.setValue(Application.Utils.ZoomOperations.calculateSliderValueFromZoom(self._zoom))
-        self.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
-        self.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
+    def setOriginalImageLabel(self, image):
+        self.labelOriginalImage.setLabelImage(image)
 
-    def _setupMenuCornerWidget(self):
-        self.rightMenuBar = QtWidgets.QMenuBar()
-        self.menuBar.setCornerWidget(self.rightMenuBar)
-        self.actionSaveAsOriginalImage = QtWidgets.QAction(self)
-        self.actionSaveAsOriginalImage.setObjectName("actionSaveAsOriginalImage")
-        self.rightMenuBar.addAction(self.actionSaveAsOriginalImage)
+    def setProcessedImageLabel(self, image):
+        self.labelProcessedImage.setLabelImage(image)
 
-        _translate = QtCore.QCoreApplication.translate
-        self.actionSaveAsOriginalImage.setText(_translate("MainWindow", "Save as original image"))
+# region ZOOM FUNCTIONALITY
 
     def _zoomValueResetEvent(self):
         sliderValue = Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
@@ -368,3 +405,5 @@ class MainWindowView(QtWidgets.QMainWindow):
     def _setZoom(self):
         self.labelOriginalImage.setZoom(self._zoom)
         self.labelProcessedImage.setZoom(self._zoom)
+
+# endregion

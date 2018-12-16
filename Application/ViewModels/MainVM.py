@@ -28,6 +28,7 @@ class MainVM(QtCore.QObject):
 
         # Instantiate MainWindowViewModel
         self._mainWindowVM = MainWindowVM(self)
+        self._mainWindowVM.loadImageSignal.connect(self.onLoadImageAction)
 
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowVM(self)
@@ -45,12 +46,17 @@ class MainVM(QtCore.QObject):
         self.imageClickedEvent(QtCore.QPoint(100, 100))
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
+    # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
 
-    def onLoadImageAction(self, filePath: str, asGreyscale: bool):
+    @pyqtSlot(str, bool)
+    def onLoadImageAction(self, filePath, asGreyscale):
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
         self._model.processedImage = None
         self._model.clickPosition = None
         self.resetVMs()
+
+        # setup main window
+        self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
 
         # setup magnifier
         if asGreyscale:
@@ -71,19 +77,26 @@ class MainVM(QtCore.QObject):
 
     @pyqtSlot(str)
     def onSendOriginalImagePlotterData(self, functionName):
-        self._sendPlotterData(functionName, self._model.originalImage, self._plotterVM.updateOriginalImageFunctionData)
+        self._sendPlotterData(
+            functionName,
+            self._model.originalImage,
+            self._plotterVM.updateOriginalImageFunctionData
+        )
 
     @pyqtSlot(str)
     def onSendProcessedImagePlotterData(self, functionName):
-        self._sendPlotterData(functionName, self._model.processedImage,
-                              self._plotterVM.updateProcessedImageFunctionData)
+        self._sendPlotterData(
+            functionName,
+            self._model.processedImage,
+            self._plotterVM.updateProcessedImageFunctionData
+        )
 
     def _sendPlotterData(self, functionName, image, updateFunction):
         plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
         args = plottingFunction.prepare(self._model)
         plottingDataList = plottingFunction(image, **args)
         plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                             for plottingData in plottingDataList}
+                         for plottingData in plottingDataList}
         updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtCore.QPoint)
@@ -150,7 +163,7 @@ class MainVM(QtCore.QObject):
             rowEndIndex, endFullRows = endIndexes(yPos, frameOffset, frameGridSize, image.shape[0])
             columnEndIndex, endFullColumns = endIndexes(xPos, frameOffset, frameGridSize, image.shape[1])
 
-            imagePixels[startEmptyRows:endFullRows, startEmptyColumns: endFullColumns] = \
+            imagePixels[startEmptyRows:endFullRows, startEmptyColumns:endFullColumns] = \
                 image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
 
         return imagePixels
@@ -158,4 +171,4 @@ class MainVM(QtCore.QObject):
     def resetVMs(self):
         self._magnifierVM.reset()
         self._plotterVM.reset()
-        # self._mainWindowVM.reset()
+        self._mainWindowVM.reset()
