@@ -57,7 +57,7 @@ class MainVM(QtCore.QObject):
         if not self._magnifierVM.isVisible and not self._plotterVM.isVisible:
             self._mainWindowVM.highlightImageLabelClickPosition(None)
             self._model.clickPosition = None
-            self._magnifierVM.reset()
+            self._magnifierVM.clear()
 
             for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
                 if plottingFunction.computeOnClick:
@@ -244,6 +244,6 @@ class MainVM(QtCore.QObject):
         return imagePixels
 
     def resetVMs(self):
-        self._magnifierVM.reset()
+        self._magnifierVM.clear()
         self._plotterVM.reset()
         self._mainWindowVM.reset()

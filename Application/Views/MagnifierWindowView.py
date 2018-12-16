@@ -155,12 +155,10 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         else:
             pixelFrame.setFrameColorGrayLevel(None)
 
-    def reset(self):
+    def clear(self):
         """
-        Clears the settings of every pixel frame (not the color space) and then sets the color space from the combo box.
-        Updating the combo box may or may not call the slot in the VM (depending on whether RGB was already set or not).
-        If it calls the slot, every pixel frame will redraw itself when the color space is set.
-        If it doesn't call the slot, an update must be called from the window.
+        This clears all the pixels from the window. It doesn't reset the color space, because it is always set when
+        loading a new image.
         TODO: document MagnifierWindow reset
         :return: None
         """
@@ -168,7 +166,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
             for column in range(MagnifierWindowSettings.frameGridSize):
                 self.frameListOriginalImage[row][column].clear()
                 self.frameListProcessedImage[row][column].clear()
-        self.comboBoxColorSpace.setCurrentIndex(0)
+
         self.update()
 
     def closeEvent(self, QCloseEvent):

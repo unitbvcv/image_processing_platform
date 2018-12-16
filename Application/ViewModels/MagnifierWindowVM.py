@@ -84,7 +84,7 @@ class MagnifierWindowVM(QtCore.QObject):
                 pixelProcessedImageColor = processedImagePixels[row, column]
                 self._view.setProcessedPixelFrameColor(row, column, pixelProcessedImageColor)
 
-    def reset(self):
+    def clear(self):
         """Clears the magnifier window.
 
         Resetting the model isn't necessary as the view will reset it indirectly through the VM.
@@ -93,4 +93,4 @@ class MagnifierWindowVM(QtCore.QObject):
             None
 
         """
-        self._view.reset()
+        self._view.clear()
