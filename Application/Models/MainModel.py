@@ -6,8 +6,6 @@ import cv2 as opencv
 class MainModel(object):
     originalImage = None
     processedImage = None
-    # TODO: whytf is this here?
-    # TODO: because i need it in basic plotting algorithms
     clickPosition = None
 
     def readOriginalImage(self, filePath: str, asGrayscale: bool):
@@ -18,5 +16,4 @@ class MainModel(object):
             self.originalImage = opencv.cvtColor(self.originalImage, opencv.COLOR_BGR2RGB)
 
     def saveProcessedImage(self, filePath : str):
-        # i think it need to be converted from RGB to BGR
         opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))

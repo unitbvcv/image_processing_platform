@@ -44,14 +44,31 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
         self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
 
-        self._mainWindowVM.mouseMovedImageLabelZoomCorrectedSignal.connect(self._onMouseMovedImageLabelZoomCorrected)
-        self._mainWindowVM.mousePressedImageLabelZoomCorrectedSignal.connect(self._onMousePressedImageLabelZoomCorrected)
+        self._mainWindowVM.mouseMovedImageLabelSignal.connect(self._onMouseMovedImageLabel)
+        self._mainWindowVM.mousePressedImageLabelSignal.connect(self._onMousePressedImageLabel)
+
+        self._magnifierVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
+        self._plotterVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
-    # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
 
-    @pyqtSlot(int, int)
-    def _onMouseMovedImageLabelZoomCorrected(self, x, y):
+    @pyqtSlot(QtGui.QCloseEvent)
+    def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
+        if not self._magnifierVM.isVisible and not self._plotterVM.isVisible:
+            self._mainWindowVM.highlightImageLabelClickPosition(None)
+            self._model.clickPosition = None
+            self._magnifierVM.reset()
+
+            for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+                if plottingFunction.computeOnClick:
+                    self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+                    self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+
+    @pyqtSlot(QtCore.QPoint)
+    def _onMouseMovedImageLabel(self, clickPosition):
+        x = clickPosition.x()
+        y = clickPosition.y()
+
         labelText = ''
 
         if self._model.originalImage is not None or self._model.processedImage is not None:
@@ -92,12 +109,12 @@ class MainVM(QtCore.QObject):
         self._model.processedImage = None
         self.resetVMs()
 
-        # tell the magnifier we still have a click
-        if self._model.clickPosition is not None:
-            self._onMousePressedImageLabelZoomCorrected(self._model.clickPosition)
-
         # setup main window
         self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
+
+        # tell the magnifier we still have a click
+        if self._model.clickPosition is not None:
+            self._onMousePressedImageLabel(self._model.clickPosition)
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
@@ -161,43 +178,41 @@ class MainVM(QtCore.QObject):
                          for plottingData in plottingDataList}
         updateFunction(plottingFunction.name, plotDataItemsDict)
 
-    @pyqtSlot(int, int)
-    def _onMousePressedImageLabelZoomCorrected(self, x, y):
+    @pyqtSlot(QtCore.QPoint)
+    def _onMousePressedImageLabel(self, clickPosition):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
         :return:
         """
 
-        self._model.clickPosition = QtCore.QPoint(x, y)
+        if self._magnifierVM.isVisible or self._plotterVM.isVisible:
+            self._model.clickPosition = clickPosition
 
-        if self._magnifierVM.isVisible or self._magnifierVM.isVisible:
-            # mainWindowVM.highlightPosition(clickPosition)
-            # TODO: de desenat linia si coloana rosie de highlight
-            pass
+            self._mainWindowVM.highlightImageLabelClickPosition(clickPosition)
 
-        magnifiedRegions = self._getMagnifiedRegions(x, y)
-        self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
+            magnifiedRegions = self._getMagnifiedRegions(clickPosition)
+            self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
 
-        for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
-            if plottingFunction.computeOnClick:
-                self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-                self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+            for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+                if plottingFunction.computeOnClick:
+                    self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+                    self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
 
-        if self._plotterVM.isVisible:
-            self._plotterVM.refresh()
+            if self._plotterVM.isVisible:
+                self._plotterVM.refresh()
 
-    def _getMagnifiedRegions(self, x, y):
+    def _getMagnifiedRegions(self, clickPosition):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
         :param clickPosition: QPoint
         :return:
         """
-        originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, x, y)
-        processedImagePixels = self._getMagnifiedRegion(self._model.processedImage, x, y)
+        originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, clickPosition)
+        processedImagePixels = self._getMagnifiedRegion(self._model.processedImage, clickPosition)
         return originalImagePixels, processedImagePixels
 
-    def _getMagnifiedRegion(self, image, x, y):
+    def _getMagnifiedRegion(self, image, clickPosition):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
         Should explain what the function does here.
@@ -215,13 +230,13 @@ class MainVM(QtCore.QObject):
             frameOffset = frameGridSize // 2
 
             startIndexes = lambda pos, offset: (pos - offset, 0) if pos - offset >= 0 else (0, offset - pos)
-            rowStartIndex, startEmptyRows = startIndexes(y, frameOffset)
-            columnStartIndex, startEmptyColumns = startIndexes(x, frameOffset)
+            rowStartIndex, startEmptyRows = startIndexes(clickPosition.y(), frameOffset)
+            columnStartIndex, startEmptyColumns = startIndexes(clickPosition.x(), frameOffset)
 
             endIndexes = lambda pos, offset, gridSize, imageSize: \
                 (pos + offset + 1, gridSize) if pos + offset + 1 <= imageSize else (imageSize, offset + imageSize - pos)
-            rowEndIndex, endFullRows = endIndexes(y, frameOffset, frameGridSize, image.shape[0])
-            columnEndIndex, endFullColumns = endIndexes(x, frameOffset, frameGridSize, image.shape[1])
+            rowEndIndex, endFullRows = endIndexes(clickPosition.y(), frameOffset, frameGridSize, image.shape[0])
+            columnEndIndex, endFullColumns = endIndexes(clickPosition.x(), frameOffset, frameGridSize, image.shape[1])
 
             imagePixels[startEmptyRows:endFullRows, startEmptyColumns:endFullColumns] = \
                 image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]

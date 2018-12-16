@@ -12,7 +12,7 @@ class PlotterWindowVM(QtCore.QObject):
     TODO: document PlotterWindowViewModel
     """
 
-    closingWindow = QtCore.pyqtSignal(QtGui.QCloseEvent, name="closingWindow")
+    windowClosingSignal = QtCore.pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
     needOriginalImageData = QtCore.pyqtSignal(str, name='needOriginalImageData')
     needProcessedImageData = QtCore.pyqtSignal(str, name='needProcessedImageData')
 
@@ -33,7 +33,7 @@ class PlotterWindowVM(QtCore.QObject):
         self._view = PlotterWindowView()
 
         # Connect the view
-        self._view.closing.connect(self.closingWindow)
+        self._view.windowClosingSignal.connect(self.windowClosingSignal)
         # can't connect to currentIndexChanged[str]; why? don't ask me...
         self._view.comboBoxFunction.currentIndexChanged[int].connect(self._functionComboBoxIndexChanged)
         self._view.listWidgetVisibleOriginalImage.itemSelectionChanged.connect(
@@ -50,6 +50,7 @@ class PlotterWindowVM(QtCore.QObject):
 
         """
         self._view.show()  # will replotting be needed after a close and a show window?
+        self.refresh()
 
     @property
     def isVisible(self):
@@ -57,7 +58,7 @@ class PlotterWindowVM(QtCore.QObject):
         TODO: document PlotterWindowViewModel.isVisible
         :return:
         """
-        return self._view.isVisible()
+        return self._view.isWindowVisible
 
     def updateOriginalImageFunctionData(self, functionName, plotDataItems):
         self._model.functionModels[functionName].originalImagePlotDataItems.availablePlotDataItems = plotDataItems

@@ -9,7 +9,11 @@ class PlotterWindowView(QtWidgets.QMainWindow):
     TODO: document PlotterWindow
     """
 
-    closing = QtCore.pyqtSignal(QtGui.QCloseEvent, name='closing')
+    windowClosingSignal = QtCore.pyqtSignal(QtGui.QCloseEvent, name='windowClosingSignal')
+
+    @property
+    def isWindowVisible(self):
+        return self._isWindowVisible
 
     def __init__(self, parent=None):
         """
@@ -18,6 +22,8 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         """
         super().__init__(parent)
         self._setupUi()
+
+        self._isWindowVisible = False
 
         # make sure the window is always on top so that when we click it doesn't fall behind the main window
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
@@ -193,7 +199,11 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         :param QCloseEvent:
         :return:
         """
-        self.closing.emit(QCloseEvent)
+        self._isWindowVisible = False
+        self.windowClosingSignal.emit(QCloseEvent)
+
+    def showEvent(self, QShowEvent):
+        self._isWindowVisible = True
 
     @property
     def plotItemOriginalImage(self):

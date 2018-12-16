@@ -25,7 +25,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         if self._qImage is not None:
             self.setFixedSize(self._qImage.size() * zoom)
 
-    def setClickPosition(self, clickPosition: QtCore.QPoint):
+    def setClickPosition(self, clickPosition):
         self._clickPosition = clickPosition
         self.update()
 

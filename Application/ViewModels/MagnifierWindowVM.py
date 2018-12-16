@@ -11,7 +11,7 @@ class MagnifierWindowVM(QtCore.QObject):
     TODO: document MagnifierWindowViewModel
     """
 
-    windowClosing = pyqtSignal(QtGui.QCloseEvent, name="windowClosing")
+    windowClosingSignal = pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
 
     def __init__(self, parent=None):
         """
@@ -28,7 +28,7 @@ class MagnifierWindowVM(QtCore.QObject):
 
         # Connect the view
         self._view.comboBoxColorSpace.currentIndexChanged[int].connect(self._magnifierColorSpaceIndexChanged)
-        self._view.closing.connect(self.windowClosing)
+        self._view.windowClosingSignal.connect(self.windowClosingSignal)
 
     def showWindow(self):
         """Shows the magnifier window.
@@ -45,7 +45,7 @@ class MagnifierWindowVM(QtCore.QObject):
         TODO: document MagnifierWindowViewModel.isVisible
         :return:
         """
-        return self._view.isVisible()
+        return self._view.isWindowVisible
 
     def setMagnifierColorSpace(self, colorSpace : MagnifierWindowSettings.ColorSpaces):
         """

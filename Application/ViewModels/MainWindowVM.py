@@ -15,8 +15,8 @@ class MainWindowVM(QtCore.QObject):
     openPlotterSignal = pyqtSignal(name="openPlotterSignal")
     openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
     saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
-    mouseMovedImageLabelZoomCorrectedSignal = pyqtSignal(int, int, name="mouseMovedImageLabelZoomCorrectedSignal")
-    mousePressedImageLabelZoomCorrectedSignal = pyqtSignal(int, int, name="mousePressedImageLabelZoomCorrectedSignal")
+    mouseMovedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mouseMovedImageLabelSignal")
+    mousePressedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mousePressedImageLabelSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -47,19 +47,25 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelOriginalImage.mousePressedSignal.connect(self._onMousePressedImageLabel)
         self._view.labelProcessedImage.mousePressedSignal.connect(self._onMousePressedImageLabel)
 
+    def highlightImageLabelClickPosition(self, clickPosition):
+        if self._view.labelOriginalImage.imageSet:
+            self._view.labelOriginalImage.setClickPosition(clickPosition)
+        if self._view.labelProcessedImage.imageSet:
+            self._view.labelProcessedImage.setClickPosition(clickPosition)
+
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
-            self.mousePressedImageLabelZoomCorrectedSignal.emit(x, y)
+            self.mousePressedImageLabelSignal.emit(QtCore.QPoint(x, y))
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMouseMovedImageLabel(self, QMouseEvent):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
-            self.mouseMovedImageLabelZoomCorrectedSignal.emit(x, y)
+            self.mouseMovedImageLabelSignal.emit(QtCore.QPoint(x, y))
 
     @pyqtSlot(QtCore.QEvent)
     def _onMouseLeavedImageLabel(self, QEvent):
