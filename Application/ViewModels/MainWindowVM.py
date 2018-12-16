@@ -83,8 +83,7 @@ class MainWindowVM(QtCore.QObject):
                 initialFilter='Portable Network Graphics file (*.png)'
             )
 
-            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) \
-                    and os.path.isfile(filePath):
+            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath):
                 self.saveProcessedImageSignal.emit(filePath)
             else:
                 messagebox = QtWidgets.QMessageBox(self._view)
