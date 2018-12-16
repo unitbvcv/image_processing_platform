@@ -4,7 +4,7 @@ from Application.Models.PlottingData import PlottingData
 from Application.PlottingAlgorithms._PlotterDecorators import PlotterFunction
 
 
-@PlotterFunction(title="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
+@PlotterFunction(name="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotRowValues(image, clickPosition):
     """
     TODO: document plotRowValues
@@ -14,34 +14,33 @@ def plotRowValues(image, clickPosition):
     """
     plotDataItemsList = []
 
-    if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+    if image is None or clickPosition is None:
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(image[clickPosition.y()], pen='r', name=plotName)
+        plottingData = PlottingData(plotName, image[clickPosition.y()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(image[clickPosition.y(), :, 2], pen='r', name=plotName)
+        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 2], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(image[clickPosition.y(), :, 1], pen='g', name=plotName)
+        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(image[clickPosition.y(), :, 0], pen='b', name=plotName)
+        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 0], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
+@PlotterFunction(name="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
 def plotColumnValues(image, clickPosition):
     """
     TODO: document plotColumnValues
@@ -51,34 +50,33 @@ def plotColumnValues(image, clickPosition):
     """
     plotDataItemsList = []
 
-    if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+    if image is None or clickPosition is None:
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(image[:, clickPosition.x()], pen='r', name=plotName)
+        plottingData = PlottingData(plotName, image[:, clickPosition.x()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(image[:, clickPosition.x(), 2], pen='r', name=plotName)
+        plottingData = PlottingData(plotName, image[:, clickPosition.x(), 2], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(image[:, clickPosition.y(), 1], pen='g', name=plotName)
+        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(image[:, clickPosition.y(), 0], pen='b', name=plotName)
+        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 0], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
 
 
-@PlotterFunction(title="Plot histogram", computeOnImageChanged=True)
+@PlotterFunction(name="Plot histogram", computeOnImageChanged=True)
 def plotHistogram(image):
     """
     TODO: document plotHistogram
@@ -88,8 +86,7 @@ def plotHistogram(image):
     plotDataItemsList = []
 
     if image is None:
-        # TODO: what happens in this case ?
-        return None  # sau [] sau throw exception ?
+        return []
 
     # Grayscale image
     if len(image.shape) == 2:
@@ -99,24 +96,24 @@ def plotHistogram(image):
         # the first element in the range parameter needs to be lower than the first needed element
         histogram = numpy.histogram(image, bins=range(257), range=(-1, 255))[0]
         plotName = 'Gray histogram'
-        plottingData = PlottingData(histogram, pen='r', name=plotName)
+        plottingData = PlottingData(plotName, histogram, pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif len(image.shape) == 3:
         histogram = numpy.histogram(image[:, :, 2], bins=range(257), range=(-1, 255))[0]
         plotName = 'Red histogram'
-        plottingData = PlottingData(histogram, pen='r', name=plotName)
+        plottingData = PlottingData(plotName, histogram, pen='r')
         plotDataItemsList.append(plottingData)
 
         histogram = numpy.histogram(image[:, :, 1], bins=range(257), range=(-1, 255))[0]
         plotName = 'Green histogram'
-        plottingData = PlottingData(histogram, pen='g', name=plotName)
+        plottingData = PlottingData(plotName, histogram, pen='g')
         plotDataItemsList.append(plottingData)
 
         histogram = numpy.histogram(image[:, :, 0], bins=range(257), range=(-1, 255))[0]
         plotName = 'Blue histogram'
-        plottingData = PlottingData(histogram, pen='b', name=plotName)
+        plottingData = PlottingData(plotName, histogram, pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList

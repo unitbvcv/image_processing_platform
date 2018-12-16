@@ -13,10 +13,10 @@ class PlottingData:
     :return:
     """
 
+    name: str
     y: Iterable  # list, tuple, dictview, ndarray, set, generator etc.
     x: Optional[Iterable] = None
     pen: Union[str, Tuple[int, int, int, int]] = 'w'
-    name: Optional[str] = None
 
     def toPlotDataItem(self):
         return PlotDataItem(x=self.x, y=self.y, pen=self.pen, name=self.name)
