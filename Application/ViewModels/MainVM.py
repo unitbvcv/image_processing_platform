@@ -42,7 +42,7 @@ class MainVM(QtCore.QObject):
         self._plotterVM.showWindow()
         self.onLoadImageAction(r"C:\Users\vladv\OneDrive\Imagini\IMG_4308.JPG", False)
 
-        # self.imageClickedEvent(QtCore.QPoint(100, 100))
+        self.imageClickedEvent(QtCore.QPoint(100, 100))
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
 

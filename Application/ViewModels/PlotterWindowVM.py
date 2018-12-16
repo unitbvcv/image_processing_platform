@@ -25,6 +25,7 @@ class PlotterWindowVM(QtCore.QObject):
 
         # Instantiate the model
         self._model = PlotterWindowModel()
+
         for functionName in PlottingAlgorithms.registeredAlgorithms.keys():
             self._model.functionModels[functionName] = PlottingFunctionModel()
 
@@ -48,7 +49,7 @@ class PlotterWindowVM(QtCore.QObject):
              None
 
         """
-        self._view.show()
+        self._view.show()  # will replotting be needed after a close and a show window?
 
     @property
     def isVisible(self):
@@ -86,19 +87,13 @@ class PlotterWindowVM(QtCore.QObject):
 
         self._clearView()
 
-        # Clearing the model
+        # Emptying the model
         for plottingFunctionModel in self._model.functionModels.values():
             plottingFunctionModel.originalImagePlotDataItems.clear()
             plottingFunctionModel.processedImagePlotDataItems.clear()
 
     def _clearView(self):
-        # TODO: verifica daca mai e necesar clear pe legend (din documentatia de pyqtgraph, cred ca nu)
-        currentFunctionName = self._view.comboBoxFunction.currentText()
-        originalImagePlotDataItems = self._model.functionModels[currentFunctionName].originalImagePlotDataItems
-        currentFunctionName = self._view.comboBoxFunction.currentText()
-        processedImagePlotDataItems = self._model.functionModels[currentFunctionName].processedImagePlotDataItems
-        self._view.clearPlotItemsLegends(originalImagePlotDataItems.visiblePlotDataItems.keys(),
-                                         processedImagePlotDataItems.visiblePlotDataItems.keys())
+        self._view.clearPlotItemsLegends()
         self._view.clearPlotItems()
         self._view.clearListWidgets()
 
@@ -108,13 +103,24 @@ class PlotterWindowVM(QtCore.QObject):
         TODO: document PlotterWindowViewModel _scaleAndCenterButtonPressed
         :return:
         """
-        plots = list(self._model.visiblePlotDataItemsOriginalImage.values()) + \
-            list(self._model.visiblePlotDataItemsProcessedImage.values())
+        currentFunctionName = self._view.comboBoxFunction.currentText()
+        currentFunctionModel = self._model.functionModels[currentFunctionName]
+        # need to convert dict view to list
+        plots = list(currentFunctionModel.originalImagePlotDataItems.visiblePlotDataItems.values()) + \
+            list(currentFunctionModel.processedImagePlotDataItems.visiblePlotDataItems.values())
 
         self._view.scaleAndCenterToPlots(plots)
 
     @pyqtSlot(int)
     def _functionComboBoxIndexChanged(self, functionIndex):
+
+        # clearing the visible plotDataItems for the previous function
+        if self._view.previousComboBoxIndex != -1:
+            previousFunctionName = self._view.comboBoxFunction.itemText(self._view.previousComboBoxIndex)
+            self._model.functionModels[previousFunctionName].originalImagePlotDataItems.visiblePlotDataItems.clear()
+            self._model.functionModels[previousFunctionName].processedImagePlotDataItems.visiblePlotDataItems.clear()
+        self._view.previousComboBoxIndex = functionIndex
+
         functionName = self._view.comboBoxFunction.itemText(functionIndex)
         if self._model.functionModels[functionName].originalImagePlotDataItems.isDirty:
             self.needOriginalImageData.emit(functionName)
@@ -182,6 +188,9 @@ class PlotterWindowVM(QtCore.QObject):
             # removing them from the visible plots in the model
             for plotDataItemName in plotDataItemsNamesToRemove:
                 del visiblePlotDataItems[plotDataItemName]
+
+        if self._view.checkBoxAutoScaleAndCenterOnChange.isChecked():
+            self._scaleAndCenterButtonPressed()
 
     @pyqtSlot()
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):

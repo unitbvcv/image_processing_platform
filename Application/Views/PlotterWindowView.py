@@ -19,6 +19,10 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         super().__init__(parent)
         self._setupUi()
 
+        ''' this int is needed to clear the visiblePlotDataItems dictionary of the previously
+        selected function, otherwise on the next selection, nothing will show up '''
+        self.previousComboBoxIndex = -1
+
     def _setupUi(self):
         """
         TODO: document PlotterWindow _setupUi
@@ -246,24 +250,20 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         self.plotItemOriginalImage.clear()
         self.plotItemProcessedImage.clear()
 
-    def clearPlotItemsLegends(self, originalImageKeys, processedImageKeys):
+    def clearPlotItemsLegends(self):
         """
         TODO: document PlotterWindow clearPlotItemsLegends
         :param originalImageKeys:
         :param processedImageKeys:
         :return:
         """
-        for item in self.plotItemOriginalImage.legend.items:
-            self.plotItemOriginalImage.legend.removeItem(item)
+        labelsTexts = [label.text for _, label in self.plotItemOriginalImage.legend.items]
+        for text in labelsTexts:
+            self.plotItemOriginalImage.legend.removeItem(text)
 
-        for item in self.plotItemProcessedImage.legend.items:
-            self.plotItemProcessedImage.legend.removeItem(item)
-
-        # for legendString in originalImageKeys:
-        #     self.plotItemOriginalImage.legend.removeItem(legendString)
-        #
-        # for legendString in processedImageKeys:
-        #     self.plotItemProcessedImage.legend.removeItem(legendString)
+        labelsTexts = [label.text for _, label in self.plotItemProcessedImage.legend.items]
+        for text in labelsTexts:
+            self.plotItemProcessedImage.legend.removeItem(text)
 
     def clearListWidgets(self):
         """
