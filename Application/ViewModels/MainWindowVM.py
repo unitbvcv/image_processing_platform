@@ -11,9 +11,10 @@ from Application.Views.MainWindowView import MainWindowView
 
 class MainWindowVM(QtCore.QObject):
     loadOriginalImageSignal = pyqtSignal(str, bool, name="loadOriginalImageSignal")
-    saveProcessedImageSignal = pyqtSignal(str, bool, name="saveProcessedImageSignal")
+    saveProcessedImageSignal = pyqtSignal(str, name="saveProcessedImageSignal")
     openPlotterSignal = pyqtSignal(name="openPlotterSignal")
     openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
+    saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -34,6 +35,11 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
         self._view.actionPlotter.triggered.connect(self._actionPlotter)
         self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
+        self._view.actionSaveAsOriginalImage.triggered.connect(self._actionSaveAsOriginalImage)
+
+    @pyqtSlot()
+    def _actionSaveAsOriginalImage(self):
+        self.saveAsOriginalImageSignal.emit()
         
     @pyqtSlot()
     def _actionExit(self):

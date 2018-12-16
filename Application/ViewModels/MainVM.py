@@ -38,12 +38,34 @@ class MainVM(QtCore.QObject):
         self._plotterVM.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
         self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 
-        # test
         self._mainWindowVM.openPlotterSignal.connect(self._onOpenPlotterAction)
         self._mainWindowVM.openMagnifierSignal.connect(self._onOpenMagnifierAction)
 
+        self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
+        self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
+
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
+
+    @pyqtSlot(str)
+    def _onSaveProcessedImageAction(self, filePath):
+        self._model.saveProcessedImage(filePath)
+
+    @pyqtSlot()
+    def _onSaveAsOriginalImageAction(self):
+        self._model.originalImage = self._model.processedImage
+        self._model.processedImage = None
+        self.resetVMs()
+
+        # tell the magnifier we still have a click
+        if self._model.clickPosition is not None:
+            self.imageClickedEvent(self._model.clickPosition)
+
+        # setup main window
+        self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
+
+        if self._plotterVM.isVisible:
+            self._plotterVM.refresh()
 
     @pyqtSlot()
     def _onOpenPlotterAction(self):
@@ -68,14 +90,14 @@ class MainVM(QtCore.QObject):
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
         else:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
-
-        # setup plotter
-        for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
-            if plottingFunction.computeOnImageChanged:
-                # self.onSendPlotterData(plottingFunction.name)
-                # this is lazier :))
-                self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-                self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+        #
+        # # setup plotter
+        # for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+        #     if plottingFunction.computeOnImageChanged:
+        #         # self.onSendPlotterData(plottingFunction.name)
+        #         # this is lazier :))
+        #         self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+        #         self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
@@ -116,7 +138,7 @@ class MainVM(QtCore.QObject):
 
         if self._magnifierVM.isVisible or self._magnifierVM.isVisible:
             # mainWindowVM.highlightPosition(clickPosition)
-            # de desenat linia si coloana rosie de highlight
+            # TODO: de desenat linia si coloana rosie de highlight
             pass
 
         magnifiedRegions = self._getMagnifiedRegions(clickPosition)
