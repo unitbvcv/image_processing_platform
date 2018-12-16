@@ -69,7 +69,7 @@ class MainWindowVM(QtCore.QObject):
 
     @pyqtSlot()
     def _actionSaveProcessedImage(self):
-        if not self._view.labelProcessedImage.geometry():
+        if not self._view.labelProcessedImage.imageSet:
             filePath, _ = QtWidgets.QFileDialog.getSaveFileName(
                 parent=self._view, 
                 caption='Save processed image',

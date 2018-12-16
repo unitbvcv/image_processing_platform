@@ -10,6 +10,10 @@ class MainWindowImageLabel(QtWidgets.QLabel):
     mouse_leaved = pyqtSignal(QtCore.QEvent, name='mouseLeaved')
     finished_painting = pyqtSignal(name='finishedPainting')
 
+    @property
+    def imageSet(self):
+        return self._qImage is not None
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self._qImage = None
