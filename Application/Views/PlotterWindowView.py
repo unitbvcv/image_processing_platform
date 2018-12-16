@@ -19,6 +19,9 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         super().__init__(parent)
         self._setupUi()
 
+        # make sure the window is always on top so that when we click it doesn't fall behind the main window
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+
         ''' this int is needed to clear the visiblePlotDataItems dictionary of the previously
         selected function, otherwise on the next selection, nothing will show up '''
         self.previousComboBoxIndex = -1

@@ -22,6 +22,9 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         super().__init__(parent)
         self._setupUi()
 
+        # make sure the window is always on top so that when we click it doesn't fall behind the main window
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+
         rows = MagnifierWindowSettings.frameGridSize
         columns = MagnifierWindowSettings.frameGridSize
         generateList = lambda nbRows, nbColumns: [

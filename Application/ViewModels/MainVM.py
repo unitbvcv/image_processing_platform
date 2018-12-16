@@ -44,7 +44,8 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
         self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
 
-        self._mainWindowVM.mouseMovedOnImageLabelZoomCorrectedSignal.connect(self._onMouseMovedImageLabelZoomCorrected)
+        self._mainWindowVM.mouseMovedImageLabelZoomCorrectedSignal.connect(self._onMouseMovedImageLabelZoomCorrected)
+        self._mainWindowVM.mousePressedImageLabelZoomCorrectedSignal.connect(self._onMousePressedImageLabelZoomCorrected)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
@@ -93,7 +94,7 @@ class MainVM(QtCore.QObject):
 
         # tell the magnifier we still have a click
         if self._model.clickPosition is not None:
-            self.imageClickedEvent(self._model.clickPosition)
+            self._onMousePressedImageLabelZoomCorrected(self._model.clickPosition)
 
         # setup main window
         self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
@@ -160,22 +161,22 @@ class MainVM(QtCore.QObject):
                          for plottingData in plottingDataList}
         updateFunction(plottingFunction.name, plotDataItemsDict)
 
-    @pyqtSlot(QtCore.QPoint)
-    def imageClickedEvent(self, clickPosition):
+    @pyqtSlot(int, int)
+    def _onMousePressedImageLabelZoomCorrected(self, x, y):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
         :return:
         """
 
-        self._model.clickPosition = clickPosition
+        self._model.clickPosition = QtCore.QPoint(x, y)
 
         if self._magnifierVM.isVisible or self._magnifierVM.isVisible:
             # mainWindowVM.highlightPosition(clickPosition)
             # TODO: de desenat linia si coloana rosie de highlight
             pass
 
-        magnifiedRegions = self._getMagnifiedRegions(clickPosition)
+        magnifiedRegions = self._getMagnifiedRegions(x, y)
         self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
 
         for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
@@ -186,17 +187,17 @@ class MainVM(QtCore.QObject):
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
 
-    def _getMagnifiedRegions(self, clickPosition):
+    def _getMagnifiedRegions(self, x, y):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
         :param clickPosition: QPoint
         :return:
         """
-        originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, clickPosition)
-        processedImagePixels = self._getMagnifiedRegion(self._model.processedImage, clickPosition)
+        originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, x, y)
+        processedImagePixels = self._getMagnifiedRegion(self._model.processedImage, x, y)
         return originalImagePixels, processedImagePixels
 
-    def _getMagnifiedRegion(self, image, clickPosition):
+    def _getMagnifiedRegion(self, image, x, y):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
         Should explain what the function does here.
@@ -212,17 +213,15 @@ class MainVM(QtCore.QObject):
                 imagePixels = numpy.full((frameGridSize, frameGridSize, image.shape[2]), None)
 
             frameOffset = frameGridSize // 2
-            yPos = clickPosition.y()
-            xPos = clickPosition.x()
 
             startIndexes = lambda pos, offset: (pos - offset, 0) if pos - offset >= 0 else (0, offset - pos)
-            rowStartIndex, startEmptyRows = startIndexes(yPos, frameOffset)
-            columnStartIndex, startEmptyColumns = startIndexes(xPos, frameOffset)
+            rowStartIndex, startEmptyRows = startIndexes(y, frameOffset)
+            columnStartIndex, startEmptyColumns = startIndexes(x, frameOffset)
 
             endIndexes = lambda pos, offset, gridSize, imageSize: \
                 (pos + offset + 1, gridSize) if pos + offset + 1 <= imageSize else (imageSize, offset + imageSize - pos)
-            rowEndIndex, endFullRows = endIndexes(yPos, frameOffset, frameGridSize, image.shape[0])
-            columnEndIndex, endFullColumns = endIndexes(xPos, frameOffset, frameGridSize, image.shape[1])
+            rowEndIndex, endFullRows = endIndexes(y, frameOffset, frameGridSize, image.shape[0])
+            columnEndIndex, endFullColumns = endIndexes(x, frameOffset, frameGridSize, image.shape[1])
 
             imagePixels[startEmptyRows:endFullRows, startEmptyColumns:endFullColumns] = \
                 image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]
