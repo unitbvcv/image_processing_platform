@@ -16,4 +16,5 @@ class MainModel(object):
             self.originalImage = opencv.cvtColor(self.originalImage, opencv.COLOR_BGR2RGB)
 
     def saveProcessedImage(self, filePath : str):
-        opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))
+        if self.processedImage:
+            opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))
