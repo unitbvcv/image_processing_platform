@@ -142,8 +142,8 @@ class MainVM(QtCore.QObject):
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
         else:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
-        #
-        # # setup plotter
+
+        # setup plotter
         # for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
         #     if plottingFunction.computeOnImageChanged:
         #         # self.onSendPlotterData(plottingFunction.name)
