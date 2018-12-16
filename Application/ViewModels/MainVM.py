@@ -39,14 +39,19 @@ class MainVM(QtCore.QObject):
         self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 
         # test
-        self._magnifierVM.showWindow()
-        self._plotterVM.showWindow()
-        self.onLoadImageAction(r"C:\Users\vladv\OneDrive\Imagini\IMG_4308.JPG", False)
-
-        self.imageClickedEvent(QtCore.QPoint(100, 100))
+        self._mainWindowVM.openPlotterSignal.connect(self._onOpenPlotterAction)
+        self._mainWindowVM.openMagnifierSignal.connect(self._onOpenMagnifierAction)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
+
+    @pyqtSlot()
+    def _onOpenPlotterAction(self):
+        self._plotterVM.showWindow()
+
+    @pyqtSlot()
+    def _onOpenMagnifierAction(self):
+        self._magnifierVM.showWindow()
 
     @pyqtSlot(str, bool)
     def onLoadImageAction(self, filePath, asGreyscale):

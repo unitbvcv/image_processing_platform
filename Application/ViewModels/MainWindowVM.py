@@ -12,6 +12,8 @@ from Application.Views.MainWindowView import MainWindowView
 class MainWindowVM(QtCore.QObject):
     loadOriginalImageSignal = pyqtSignal(str, bool, name="loadOriginalImageSignal")
     saveProcessedImageSignal = pyqtSignal(str, bool, name="saveProcessedImageSignal")
+    openPlotterSignal = pyqtSignal(name="openPlotterSignal")
+    openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -30,10 +32,20 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionLoadColorImage.triggered.connect(self._actionLoadColorImage)
         self._view.actionExit.triggered.connect(self._actionExit)
         self._view.actionSaveProcessedImage.triggered.connect(self._actionSaveProcessedImage)
+        self._view.actionPlotter.triggered.connect(self._actionPlotter)
+        self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
         
     @pyqtSlot()
     def _actionExit(self):
         QtCore.QCoreApplication.quit()
+
+    @pyqtSlot()
+    def _actionPlotter(self):
+        self.openPlotterSignal.emit()
+
+    @pyqtSlot()
+    def _actionMagnifier(self):
+        self.openMagnifierSignal.emit()
 
     @pyqtSlot()
     def _actionLoadGrayscaleImage(self):
