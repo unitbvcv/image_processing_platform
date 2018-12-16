@@ -1,6 +1,6 @@
 import os
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 import Application.Settings
@@ -15,6 +15,7 @@ class MainWindowVM(QtCore.QObject):
     openPlotterSignal = pyqtSignal(name="openPlotterSignal")
     openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
     saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
+    mouseMovedOnImageLabelZoomCorrectedSignal = pyqtSignal(int, int, name="mouseMovedOnImageLabelSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -36,6 +37,24 @@ class MainWindowVM(QtCore.QObject):
         self._view.actionPlotter.triggered.connect(self._actionPlotter)
         self._view.actionMagnifier.triggered.connect(self._actionMagnifier)
         self._view.actionSaveAsOriginalImage.triggered.connect(self._actionSaveAsOriginalImage)
+
+        # connect image labels signals to slots
+        self._view.labelOriginalImage.mouseMovedSignal.connect(self._onMouseMovedOnImageLabel)
+
+    @pyqtSlot(QtGui.QMouseEvent)
+    def _onMouseMovedOnImageLabel(self, QMouseEvent):
+        x = int(QMouseEvent.x() / self._view.zoom)
+        y = int(QMouseEvent.y() / self._view.zoom)
+        self.mouseMovedOnImageLabelZoomCorrectedSignal.emit(x, y)
+
+    def setMousePositionLabelText(self, text):
+        self._view.labelMousePosition.setText(text)
+
+    def setOriginalImagePixelValueLabelText(self, text):
+        self._view.labelOriginalImagePixelValue.setText(text)
+
+    def setProcessedImagePixelValueLabelText(self, text):
+        self._view.labelProcessedImagePixelValue.setText(text)
 
     @pyqtSlot()
     def _actionSaveAsOriginalImage(self):

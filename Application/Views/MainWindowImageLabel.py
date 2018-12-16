@@ -5,10 +5,10 @@ import Application.Settings
 
 
 class MainWindowImageLabel(QtWidgets.QLabel):
-    mouse_moved = pyqtSignal(QtGui.QMouseEvent, name='mouseMoved')
-    mouse_pressed = pyqtSignal(QtGui.QMouseEvent, name='mousePressed')
-    mouse_leaved = pyqtSignal(QtCore.QEvent, name='mouseLeaved')
-    finished_painting = pyqtSignal(name='finishedPainting')
+    mouseMovedSignal = pyqtSignal(QtGui.QMouseEvent, name='mouseMovedSignal')
+    mousePressedSignal = pyqtSignal(QtGui.QMouseEvent, name='mousePressedSignal')
+    mouseLeavedSignal = pyqtSignal(QtCore.QEvent, name='mouseLeavedSignal')
+    finishedPaintingSignal = pyqtSignal(name='finishedPaintingSignal')
 
     @property
     def imageSet(self):
@@ -30,13 +30,13 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         self.update()
 
     def mouseMoveEvent(self, QMouseEvent):
-        self.mouse_moved.emit(QMouseEvent)
+        self.mouseMovedSignal.emit(QMouseEvent)
 
     def mousePressEvent(self, QMouseEvent):
-        self.mouse_pressed.emit(QMouseEvent)
+        self.mousePressedSignal.emit(QMouseEvent)
 
     def leaveEvent(self, QEvent):
-        self.mouse_leaved.emit(QEvent)
+        self.mouseLeavedSignal.emit(QEvent)
 
     def setLabelImage(self, image):
         # TODO: think about moving this to VM
@@ -93,4 +93,4 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
 
-        self.finished_painting.emit()
+        self.finishedPaintingSignal.emit()

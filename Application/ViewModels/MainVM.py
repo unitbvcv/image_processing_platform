@@ -1,6 +1,6 @@
 import numpy
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
 
 import Application.Settings
@@ -44,8 +44,42 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
         self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
 
+        self._mainWindowVM.mouseMovedOnImageLabelZoomCorrectedSignal.connect(self._onMouseMovedOnImageLabelZoomCorrected)
+
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: REMEMBER TO CONVERT IMAGE TO BGR WHEN SAVING ON DISK
+
+    @pyqtSlot(int, int)
+    def _onMouseMovedOnImageLabelZoomCorrected(self, x, y):
+        labelText = ''
+
+        if self._model.originalImage is not None or self._model.processedImage is not None:
+            labelText = f'Mouse position: (X, Y) = ({x}, {y})'
+        self._mainWindowVM.setMousePositionLabelText(labelText)
+
+        labelText = ''
+
+        # updating original image pixel label
+        if self._model.originalImage is not None:
+            if len(self._model.originalImage.shape) == 3:
+                pixel = self._model.originalImage[y][x]
+                labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
+            elif len(self._model.originalImage.shape) == 2:
+                pixel = self._model.originalImage[y][x]
+                labelText = f'(Gray) = ({pixel})'
+        self._mainWindowVM.setOriginalImagePixelValueLabelText(labelText)
+
+        labelText = ''
+
+        # updating processed image pixel label
+        if self._model.processedImage is not None:
+            if len(self._model.processedImage.shape) == 3:
+                pixel = self._model.processedImage[y][x]
+                labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
+            elif len(self._model.processedImage.shape) == 2:
+                pixel = self._model.processedImage[y][x]
+                labelText = f'(Gray) = ({pixel})'
+        self._mainWindowVM.setProcessedImagePixelValueLabelText(labelText)
 
     @pyqtSlot(str)
     def _onSaveProcessedImageAction(self, filePath):
