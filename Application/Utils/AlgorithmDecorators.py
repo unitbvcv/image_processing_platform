@@ -3,7 +3,7 @@ import functools
 from Application.ImageProcessingAlgorithms import registeredAlgorithms
 
 
-class RegisterAlgorithm(object):
+class RegisterAlgorithm:
 
     def __init__(self, name, menuPath, before=None, fromMainModel=[], **kwargs):
         self._name = name
@@ -12,7 +12,7 @@ class RegisterAlgorithm(object):
         self._fromMainModel = fromMainModel
         self._kwargs = kwargs
 
-    def __call__(self, func):
+    def __call__(self, function):
 
         class AlgorithmWrapper:
 
@@ -44,6 +44,6 @@ class RegisterAlgorithm(object):
             def prepare(self, mainModel):
                 return {argName: mainModel.__dict__[argName] for argName in self._fromMainModel}
 
-        wrapper = AlgorithmWrapper(func, self._name, self._menuPath, self._before, self._fromMainModel, **self._kwargs)
+        wrapper = AlgorithmWrapper(function, self._name, self._menuPath, self._before, self._fromMainModel, **self._kwargs)
         registeredAlgorithms[self._name] = wrapper
         return wrapper

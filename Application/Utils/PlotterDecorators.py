@@ -3,7 +3,7 @@ import functools
 from Application.PlottingAlgorithms import registeredAlgorithms
 
 
-class PlotterFunction(object):
+class PlotterFunction:
 
     def __init__(self, name, fromMainModel=[], computeOnImageChanged=False, computeOnClick=False, **kwargs):
         self._name = name
@@ -12,7 +12,7 @@ class PlotterFunction(object):
         self._computeOnClick = computeOnClick
         self._kwargs = kwargs
 
-    def __call__(self, func):
+    def __call__(self, function):
 
         class PlotterFunctionWrapper:
             def __init__(self, name, func, argList, onChange, onClick, **kwargs):
@@ -43,7 +43,7 @@ class PlotterFunction(object):
             def prepare(self, mainModel):
                 return {argName: mainModel.__dict__[argName] for argName in self._argNames}
 
-        wrapper = PlotterFunctionWrapper(self._name, func, self._fromMainModel,
+        wrapper = PlotterFunctionWrapper(self._name, function, self._fromMainModel,
                                          self._computeOnImageChanged, self._computeOnClick, **self._kwargs)
         registeredAlgorithms[self._name] = wrapper
         return wrapper

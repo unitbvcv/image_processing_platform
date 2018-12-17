@@ -1,18 +1,22 @@
+import functools
+
 from Application.Utils.SmartDialog import SmartDialog
 
 
-class InputDialog(object):
+class InputDialog:
 
     def __init__(self, **kwargs):
         self._kwargs = kwargs
 
-    def __call__(self, func):
+    def __call__(self, function):
 
         class InputDialogWrapper:
 
             def __init__(self, func, requestedInputs):
                 self._func = func
                 self._requestedInputs = requestedInputs
+
+                functools.update_wrapper(self, func)
 
             def __call__(self, *args, **kwargs):
 
@@ -21,4 +25,4 @@ class InputDialog(object):
 
                 return self._func(*args, **kwargs, **readData)
 
-        return InputDialogWrapper(func, self._kwargs)
+        return InputDialogWrapper(function, self._kwargs)
