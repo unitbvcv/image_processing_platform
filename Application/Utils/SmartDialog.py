@@ -95,7 +95,7 @@ class SmartDialog(QtWidgets.QDialog):
             try:
                 convertedValue = typeRequested(self._textBoxDictionary[paramName].text())
             except:
-                convertedValue = None
+                convertedValue = self._textBoxDictionary[paramName].text()
             readData[paramName] = convertedValue
 
         return readData
