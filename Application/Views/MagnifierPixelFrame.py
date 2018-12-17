@@ -65,10 +65,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
 
-            if Application.Utils.ColorSpaceOperations.isColorDark(self._backgroundColor):
-                painter.setPen(QtCore.Qt.white)
-            else:
-                painter.setBrush(QtCore.Qt.black)
+            painter.setPen(Application.Utils.ColorSpaceOperations.greatestContrastTextColorForBackground(QtGui.QColor(QtCore.Qt.white), QtGui.QColor(QtCore.Qt.black), self._backgroundColor))
 
             if self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.GRAY:
                 text = str((self._backgroundColor.red() + self._backgroundColor.green() +
