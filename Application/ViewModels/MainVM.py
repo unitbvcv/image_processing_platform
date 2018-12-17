@@ -10,6 +10,8 @@ from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
 from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
 
+import Application.ImageProcessingAlgorithms.Thresholding as Thresholding
+
 
 class MainVM(QtCore.QObject):
     """
@@ -154,6 +156,9 @@ class MainVM(QtCore.QObject):
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
+
+        # TODO: remove this test
+        Thresholding.binarization(self._model.originalImage, 130)
 
     @pyqtSlot(str)
     def onSendOriginalImagePlotterData(self, functionName):
