@@ -310,7 +310,7 @@ class MainWindowView(QtWidgets.QMainWindow):
         self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
         self.horizontalSliderZoom.setValue(Application.Utils.ZoomOperations.calculateSliderValueFromZoom(self._zoom))
         self.horizontalSliderZoom.valueChanged.connect(self._zoomValueChangedEvent)
-        self.buttonResetZoom.pressed.connect(self._zoomValueResetEvent)
+        self.buttonResetZoom.pressed.connect(self.zoomValueResetEvent)
 
 # endregion
 
@@ -460,7 +460,7 @@ class MainWindowView(QtWidgets.QMainWindow):
 
 # region ZOOM FUNCTIONALITY
 
-    def _zoomValueResetEvent(self):
+    def zoomValueResetEvent(self):
         sliderValue = Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
             Application.Settings.MainWindowSettings.zoomDefaultValue)
         self.horizontalSliderZoom.setValue(sliderValue)

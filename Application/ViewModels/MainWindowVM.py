@@ -154,9 +154,10 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelProcessedImage.setLabelImage(None)
 
     def reset(self):
-        # TODO: clean image labels? and click position? and reset zoom? anything else?
         self._view.labelOriginalImage.setLabelImage(None)
         self._view.labelProcessedImage.setLabelImage(None)
         
         self._view.labelOriginalImage.setClickPosition(None)
         self._view.labelProcessedImage.setClickPosition(None)
+
+        self._view.zoomValueResetEvent()
