@@ -11,7 +11,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
     finishedPaintingSignal = pyqtSignal(name='finishedPaintingSignal')
 
     @property
-    def imageSet(self):
+    def isImageSet(self):
         return self._qImage is not None
 
     def __init__(self, parent=None):

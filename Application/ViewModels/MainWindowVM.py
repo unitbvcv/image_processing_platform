@@ -48,9 +48,9 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelProcessedImage.mousePressedSignal.connect(self._onMousePressedImageLabel)
 
     def highlightImageLabelClickPosition(self, clickPosition):
-        if self._view.labelOriginalImage.imageSet:
+        if self._view.labelOriginalImage.isImageSet:
             self._view.labelOriginalImage.setClickPosition(clickPosition)
-        if self._view.labelProcessedImage.imageSet:
+        if self._view.labelProcessedImage.isImageSet:
             self._view.labelProcessedImage.setClickPosition(clickPosition)
 
     @pyqtSlot(QtGui.QMouseEvent)
@@ -124,7 +124,7 @@ class MainWindowVM(QtCore.QObject):
 
     @pyqtSlot()
     def _actionSaveProcessedImage(self):
-        if self._view.labelProcessedImage.imageSet:
+        if self._view.labelProcessedImage.isImageSet:
             filePath, _ = QtWidgets.QFileDialog.getSaveFileName(
                 parent=self._view, 
                 caption='Save processed image',
