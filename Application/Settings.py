@@ -38,11 +38,11 @@ class MagnifierWindowSettings:
     fontSize: int = 8  # in points
 
     class ColorSpaces(Enum):
-        RGB = (0, 'RGB (Red Green Blue)')
-        HSL = (1, 'HSL (Hue Saturation Lightness)')
-        HSV = (2, 'HSV (Hue Saturation Value)')
-        CMYK = (3, 'CMYK (Cyan Magenta Yellow Black)')
-        GRAY = (4, 'Grayscale')
+        RGB = (0, 'RGB (Red, Green, Blue) (max. 255R, 255G, 255B)')
+        HSL = (1, 'HSL (Hue, Saturation, Lightness) (max. 359°, 100%, 100%)')
+        HSV = (2, 'HSV (Hue, Saturation, Value) (max. 359°, 100%, 100%)')
+        CMYK = (3, 'CMYK (Cyan, Magenta, Yellow, Black) (max. 100%, 100%, 100%, 100%)')
+        GRAY = (4, 'Grayscale (max. 255G)')
 
     # TODO: try to find more elegant solution to this
     colorSpacesDict: Dict[int, ColorSpaces] \

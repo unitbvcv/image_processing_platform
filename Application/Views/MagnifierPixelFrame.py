@@ -77,10 +77,11 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                                  self.height() / 2 + fontMetrics.ascent() / 2,
                                  text)
             elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.CMYK:
-                textCyan = str(self._backgroundColor.cyan())
-                textMagenta = str(self._backgroundColor.magenta())
-                textYellow = str(self._backgroundColor.yellow())
-                textBlack = str(self._backgroundColor.black())
+                cmykBackgroundColor = self._backgroundColor.convertTo(QtGui.QColor.Cmyk)
+                textCyan = str(int(cmykBackgroundColor.cyan() / 255 * 100 + 0.5))
+                textMagenta = str(int(cmykBackgroundColor.magenta() / 255 * 100 + 0.5))
+                textYellow = str(int(cmykBackgroundColor.yellow() / 255 * 100 + 0.5))
+                textBlack = str(int(cmykBackgroundColor.black() / 255 * 100 + 0.5))
 
                 horizontalAdvanceCyan = fontMetrics.horizontalAdvance(textCyan, len(textCyan))
                 horizontalAdvanceMagenta = fontMetrics.horizontalAdvance(textMagenta, len(textMagenta))
@@ -111,13 +112,15 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                     textSecond = str(self._backgroundColor.green())
                     textThird = str(self._backgroundColor.blue())
                 elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.HSL:
-                    textFirst = str(self._backgroundColor.hue())
-                    textSecond = str(self._backgroundColor.saturation())
-                    textThird = str(self._backgroundColor.lightness())
+                    hslBackgroundColor = self._backgroundColor.convertTo(QtGui.QColor.Hsl)
+                    textFirst = str(hslBackgroundColor.hue())
+                    textSecond = str(int(hslBackgroundColor.saturation() / 255 * 100 + 0.5))
+                    textThird = str(int(hslBackgroundColor.lightness() / 255 * 100 + 0.5))
                 elif self._colorDisplayFormat is MagnifierWindowSettings.ColorSpaces.HSV:
-                    textFirst = str(self._backgroundColor.hue())
-                    textSecond = str(self._backgroundColor.saturation())
-                    textThird = str(self._backgroundColor.value())
+                    hsvBackgroundColor = self._backgroundColor.convertTo(QtGui.QColor.Hsv)
+                    textFirst = str(hsvBackgroundColor.hue())
+                    textSecond = str(int(hsvBackgroundColor.saturation() / 255 * 100 + 0.5))
+                    textThird = str(int(hsvBackgroundColor.value() / 255 * 100 + 0.5))
 
                 horizontalAdvanceRed = fontMetrics.horizontalAdvance(textFirst, len(textFirst))
                 horizontalAdvanceGreen = fontMetrics.horizontalAdvance(textSecond, len(textSecond))
