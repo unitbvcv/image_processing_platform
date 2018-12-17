@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSlot
 
 import Application.Settings
 from Application import PlottingAlgorithms
+from Application import ImageProcessingAlgorithms
 from Application.Models.MainModel import MainModel
 from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
@@ -37,6 +38,7 @@ class MainVM(QtCore.QObject):
 
         # Instantiate PlotterViewModel
         self._plotterVM = PlotterWindowVM(self)
+        self._plotterVM.registerFunctions(list(Application.PlottingAlgorithms.registeredAlgorithms.keys()))
         self._plotterVM.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
         self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 

@@ -4,7 +4,6 @@ from PyQt5.QtCore import pyqtSlot
 from Application.Models.PlotterWindowModel import PlotterWindowModel
 from Application.Models.PlottingFunctionModel import PlottingFunctionModel
 from Application.Views.PlotterWindowView import PlotterWindowView
-import Application.PlottingAlgorithms as PlottingAlgorithms
 
 
 class PlotterWindowVM(QtCore.QObject):
@@ -25,9 +24,6 @@ class PlotterWindowVM(QtCore.QObject):
 
         # Instantiate the model
         self._model = PlotterWindowModel()
-
-        for functionName in PlottingAlgorithms.registeredAlgorithms.keys():
-            self._model.functionModels[functionName] = PlottingFunctionModel()
 
         # Instantiate the view
         self._view = PlotterWindowView()
@@ -59,6 +55,14 @@ class PlotterWindowVM(QtCore.QObject):
         :return:
         """
         return self._view.isWindowVisible
+
+    def registerFunctions(self, functionNames):
+        # in model
+        for functionName in functionNames:
+            self._model.functionModels[functionName] = PlottingFunctionModel()
+        # in view
+        self._view.comboBoxFunction.addItems(functionNames)
+
 
     def updateOriginalImageFunctionData(self, functionName, plotDataItems):
         self._model.functionModels[functionName].originalImagePlotDataItems.availablePlotDataItems = plotDataItems
