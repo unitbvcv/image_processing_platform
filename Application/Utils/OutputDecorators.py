@@ -1,4 +1,4 @@
-import functools
+from functools import wraps
 
 from PyQt5.QtWidgets import QMessageBox
 
@@ -16,8 +16,9 @@ class OutputDialog:
                 self._func = func
                 self._title = title
 
-                functools.update_wrapper(self, func)
+                # functools.update_wrapper(self, func)
 
+            @wraps(function)
             def __call__(self, *args, **kwargs):
                 result = self._func(*args, **kwargs)
                 if isinstance(result, tuple):

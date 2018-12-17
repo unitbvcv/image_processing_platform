@@ -158,7 +158,7 @@ class MainVM(QtCore.QObject):
             self._plotterVM.refresh()
 
         # TODO: remove this test
-        Thresholding.binarization(self._model.originalImage, 130)
+        Thresholding.binarization(self._model.originalImage)
 
     @pyqtSlot(str)
     def onSendOriginalImagePlotterData(self, functionName):

@@ -1,4 +1,4 @@
-import functools
+from functools import wraps
 
 from Application.Utils.SmartDialog import SmartDialog
 
@@ -16,8 +16,9 @@ class InputDialog:
                 self._func = func
                 self._requestedInputs = requestedInputs
 
-                functools.update_wrapper(self, func)
+                # functools.update_wrapper(self, func)
 
+            @wraps(function)
             def __call__(self, *args, **kwargs):
 
                 dialog = SmartDialog()
