@@ -92,58 +92,67 @@ class MainWindowVM(QtCore.QObject):
 
     @pyqtSlot()
     def _actionLoadGrayscaleImage(self):
-        filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
-            parent=self._view,
-            caption='Open grayscale file',
-            filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
-                   '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
-        )
+        fileDialog = QtWidgets.QFileDialog(self._view)
+        fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        fileDialog.setNameFilter('Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
+                                 '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)')
+        fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen)
+        fileDialog.setWindowTitle("Load grayscale image")
 
-        if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) and os.path.isfile(filePath):
-            self.loadOriginalImageSignal.emit(filePath, True)
-        else:
-            messagebox = QtWidgets.QMessageBox(self._view)
-            messagebox.setText("Load grayscale image: invalid file path.")
-            messagebox.exec()
+        if fileDialog.exec():
+            filePath = fileDialog.selectedFiles()[0]
+
+            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) and os.path.isfile(filePath):
+                self.loadOriginalImageSignal.emit(filePath, True)
+            else:
+                messagebox = QtWidgets.QMessageBox(self._view)
+                messagebox.setText("Load grayscale image: invalid file path.")
+                messagebox.exec()
 
     @pyqtSlot()
     def _actionLoadColorImage(self):
-        filePath, _ = QtWidgets.QFileDialog.getOpenFileName(
-            parent=self._view,
-            caption='Open color file',
-            filter='Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
-                   '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)'
-        )
+        fileDialog = QtWidgets.QFileDialog(self._view)
+        fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
+        fileDialog.setNameFilter('Image files (*.bmp *.dib *.jpeg *.jpg *.jpe *.jp2 '
+                                 '*.png *.webp *.pbm *.pgm *.ppm *.ras *.sr *.tiff *.tif)')
+        fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptOpen)
+        fileDialog.setWindowTitle("Load color image")
 
-        if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) and os.path.isfile(filePath):
-            self.loadOriginalImageSignal.emit(filePath, False)
-        else:
-            messagebox = QtWidgets.QMessageBox(self._view)
-            messagebox.setText("Load color image: invalid file path.")
-            messagebox.exec()
+        if fileDialog.exec():
+            filePath = fileDialog.selectedFiles()[0]
+
+            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath) and os.path.isfile(
+                    filePath):
+                self.loadOriginalImageSignal.emit(filePath, False)
+            else:
+                messagebox = QtWidgets.QMessageBox(self._view)
+                messagebox.setText("Load color image: invalid file path.")
+                messagebox.exec()
 
     @pyqtSlot()
     def _actionSaveProcessedImage(self):
         if self._view.labelProcessedImage.isImageSet:
-            filePath, _ = QtWidgets.QFileDialog.getSaveFileName(
-                parent=self._view, 
-                caption='Save processed image',
-                filter='Bitmap file (*.bmp *.dib);;'
+            fileDialog = QtWidgets.QFileDialog(self._view)
+            fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
+            fileDialog.setNameFilter('Bitmap file (*.bmp *.dib);;'
                        'JPEG file (*.jpeg *.jpg *.jpe);;'
                        'JPEG 2000 file (*.jp2);;'
                        'Portable Network Graphics file (*.png);;'
                        'WebP file (*.webp);;'
                        'Sun rasters file (*.ras *.sr);;'
-                       'Tagged Image file (*.tiff *.tif)',
-                initialFilter='Portable Network Graphics file (*.png)'
-            )
+                       'Tagged Image file (*.tiff *.tif)')
+            fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+            fileDialog.setWindowTitle("Save processed image")
 
-            if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath):
-                self.saveProcessedImageSignal.emit(filePath)
-            else:
-                messagebox = QtWidgets.QMessageBox(self._view)
-                messagebox.setText("Save processed image: invalid file path.")
-                messagebox.exec()
+            if fileDialog.exec():
+                filePath = fileDialog.selectedFiles()[0]
+
+                if Application.Utils.FileOperations.is_path_exists_or_creatable_portable(filePath):
+                    self.saveProcessedImageSignal.emit(filePath)
+                else:
+                    messagebox = QtWidgets.QMessageBox(self._view)
+                    messagebox.setText("Save processed image: invalid file path.")
+                    messagebox.exec()
         else:
             messagebox = QtWidgets.QMessageBox(self._view)
             messagebox.setText("Save processed image: no processed image.")
