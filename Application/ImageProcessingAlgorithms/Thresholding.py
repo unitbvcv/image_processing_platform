@@ -1,10 +1,9 @@
-import numpy
-
 from Application.Utils.AlgorithmDecorators import RegisterAlgorithm
 from Application.Utils.InputDecorators import InputDialog
 from Application.Utils.OutputDecorators import OutputDialog
 
 
+# TODO: test if order of decorators matter
 @RegisterAlgorithm("Binarization", "Thresholding")
 @InputDialog(threshold=int)
 @OutputDialog(title="Binarization Output")
