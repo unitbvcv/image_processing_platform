@@ -171,12 +171,13 @@ class MainVM(QtCore.QObject):
         )
 
     def _sendPlotterData(self, functionName, image, updateFunction):
-        plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
-        args = plottingFunction.prepare(self._model)
-        plottingDataList = plottingFunction(image, **args)
-        plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                         for plottingData in plottingDataList}
-        updateFunction(plottingFunction.name, plotDataItemsDict)
+        if image is not None:
+            plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
+            args = plottingFunction.prepare(self._model)
+            plottingDataList = plottingFunction(image, **args)
+            plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
+                             for plottingData in plottingDataList}
+            updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtCore.QPoint)
     def _onMousePressedImageLabel(self, clickPosition):
