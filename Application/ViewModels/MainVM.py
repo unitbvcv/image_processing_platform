@@ -51,6 +51,7 @@ class MainVM(QtCore.QObject):
         self._plotterVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
+    # TODO: all the algorithms' qactions can connect to the same slot which checks if origImage is not None
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):

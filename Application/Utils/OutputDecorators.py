@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 class OutputDialog:
 
-    def __init__(self, title):
+    def __init__(self, title="Output dialog"):
         self._title = title
 
     def __call__(self, function):
@@ -20,7 +20,9 @@ class OutputDialog:
 
             def __call__(self, *args, **kwargs):
                 result = self._func(*args, **kwargs)
-                QMessageBox.about(None, self._title, result[-1])
-                return result[:-1]
+                if isinstance(result, tuple):
+                    QMessageBox.about(None, self._title, result[-1])
+                    result = result[:-1]
+                return result
 
         return OutputDialogWrapper(function, self._title)
