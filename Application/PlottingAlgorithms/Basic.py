@@ -1,7 +1,7 @@
 import numpy
 
 from Application.Models.PlottingData import PlottingData
-from Application.PlottingAlgorithms._PlotterDecorators import PlotterFunction
+from Application.Utils.PlotterDecorators import PlotterFunction
 
 
 @PlotterFunction(name="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
