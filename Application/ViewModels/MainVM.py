@@ -11,8 +11,6 @@ from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
 from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
 
-import Application.ImageProcessingAlgorithms.Thresholding as Thresholding
-
 
 class MainVM(QtCore.QObject):
     """
@@ -148,19 +146,8 @@ class MainVM(QtCore.QObject):
         else:
             self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
 
-        # setup plotter
-        # for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
-        #     if plottingFunction.computeOnImageChanged:
-        #         # self.onSendPlotterData(plottingFunction.name)
-        #         # this is lazier :))
-        #         self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-        #         self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
-
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
-
-        # TODO: remove this test
-        Thresholding.binarization(self._model.originalImage)
 
     @pyqtSlot(str)
     def onSendOriginalImagePlotterData(self, functionName):
