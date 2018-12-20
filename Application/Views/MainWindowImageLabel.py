@@ -104,14 +104,30 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 painter.setPen(QtGui.QPen(QtCore.Qt.blue))
                 painter.pen().setWidth(1)
 
+                if Application.Settings.RightClickPointerSettings.showClickOrder:
+                    font = QtGui.QFont("Arial")
+                    font.setPointSize(Application.Settings.RightClickPointerSettings.clickOrderFontSize)
+                    painter.setFont(font)
+                    fontMetrics = QtGui.QFontMetrics(font)
+
                 cornerCalcOffset = int(Application.Settings.RightClickPointerSettings.aroundClickSquareSize / 2) + 1
 
-                for (x, y) in self._rightClickLastPositions:
+                for clickNumber in range(len(self._rightClickLastPositions)):
+                    x, y = self._rightClickLastPositions[clickNumber]
+
                     # +1 because we need to take into account the thickness of the rectangle itself
                     # we want its contents inside to be frameGridSize^2
                     painter.drawRect(x - cornerCalcOffset,
                                      y - cornerCalcOffset,
                                      Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1,
                                      Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1)
+
+                    if Application.Settings.RightClickPointerSettings.showClickOrder:
+                        clickNumberStr = str(clickNumber + 1)
+                        horizontalAdvance = fontMetrics.horizontalAdvance(clickNumberStr, len(clickNumberStr))
+
+                        painter.drawText(x - horizontalAdvance / 2,
+                                         y + fontMetrics.ascent() / 2,
+                                         clickNumberStr)
 
         self.finishedPaintingSignal.emit()
