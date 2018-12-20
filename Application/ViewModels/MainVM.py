@@ -174,29 +174,31 @@ class MainVM(QtCore.QObject):
                              for plottingData in plottingDataList}
             updateFunction(plottingFunction.name, plotDataItemsDict)
 
-    @pyqtSlot(QtCore.QPoint)
-    def _onMousePressedImageLabel(self, clickPosition):
+    @pyqtSlot(QtCore.QPoint, QtCore.Qt.MouseButton)
+    def _onMousePressedImageLabel(self, clickPosition, mouseButton):
         """
         # TODO: document MainViewModel.imageClickedEvent
         :param clickPosition: QPoint
         :return:
         """
+        if mouseButton == QtCore.Qt.LeftButton:
+            if self._magnifierVM.isVisible or self._plotterVM.isVisible:
+                self._model.clickPosition = clickPosition
 
-        if self._magnifierVM.isVisible or self._plotterVM.isVisible:
-            self._model.clickPosition = clickPosition
+                self._mainWindowVM.highlightImageLabelClickPosition(clickPosition)
 
-            self._mainWindowVM.highlightImageLabelClickPosition(clickPosition)
+                magnifiedRegions = self._getMagnifiedRegions(clickPosition)
+                self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
 
-            magnifiedRegions = self._getMagnifiedRegions(clickPosition)
-            self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
+                for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
+                    if plottingFunction.computeOnClick:
+                        self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
+                        self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
 
-            for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
-                if plottingFunction.computeOnClick:
-                    self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-                    self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
-
-            if self._plotterVM.isVisible:
-                self._plotterVM.refresh()
+                if self._plotterVM.isVisible:
+                    self._plotterVM.refresh()
+        elif mouseButton == QtCore.Qt.RightButton:
+            pass
 
     def _getMagnifiedRegions(self, clickPosition):
         """

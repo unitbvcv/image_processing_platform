@@ -16,7 +16,7 @@ class MainWindowVM(QtCore.QObject):
     openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
     saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
     mouseMovedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mouseMovedImageLabelSignal")
-    mousePressedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mousePressedImageLabelSignal")
+    mousePressedImageLabelSignal = pyqtSignal(QtCore.QPoint, QtCore.Qt.MouseButton, name="mousePressedImageLabelSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -58,7 +58,7 @@ class MainWindowVM(QtCore.QObject):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
-            self.mousePressedImageLabelSignal.emit(QtCore.QPoint(x, y))
+            self.mousePressedImageLabelSignal.emit(QtCore.QPoint(x, y), QMouseEvent.button())
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMouseMovedImageLabel(self, QMouseEvent):
