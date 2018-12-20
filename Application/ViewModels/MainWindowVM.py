@@ -5,6 +5,7 @@ from PyQt5.QtCore import pyqtSignal, pyqtSlot
 
 import Application.Settings
 import Application.Utils.FileOperations
+from collections import deque
 from Application.Models.MainWindowModel import MainWindowModel
 from Application.Views.MainWindowView import MainWindowView
 
@@ -50,11 +51,17 @@ class MainWindowVM(QtCore.QObject):
 
         self._view.keyPressedSignal.connect(self.keyPressedSignal)
 
-    def highlightImageLabelClickPosition(self, clickPosition):
+    def highlightImageLabelLeftClickPosition(self, clickPosition):
         if self._view.labelOriginalImage.isImageSet:
-            self._view.labelOriginalImage.setClickPosition(clickPosition)
+            self._view.labelOriginalImage.setLeftClickPosition(clickPosition)
         if self._view.labelProcessedImage.isImageSet:
-            self._view.labelProcessedImage.setClickPosition(clickPosition)
+            self._view.labelProcessedImage.setLeftClickPosition(clickPosition)
+
+    def highlightImageLabelRightClickLastPositions(self, clickPositions : deque):
+        if self._view.labelOriginalImage.isImageSet:
+            self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
+        if self._view.labelProcessedImage.isImageSet:
+            self._view.labelProcessedImage.setLeftClickPosition(clickPositions)
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
@@ -169,7 +176,10 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelOriginalImage.setLabelImage(None)
         self._view.labelProcessedImage.setLabelImage(None)
         
-        self._view.labelOriginalImage.setClickPosition(None)
-        self._view.labelProcessedImage.setClickPosition(None)
+        self._view.labelOriginalImage.setLeftClickPosition(None)
+        self._view.labelProcessedImage.setLeftClickPosition(None)
+
+        self._view.labelOriginalImage.setRightClickLastPositions(None)
+        self._view.labelProcessedImage.setRightClickLastPositions(None)
 
         self._view.zoomValueResetEvent()

@@ -60,8 +60,8 @@ class MainVM(QtCore.QObject):
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
         if not self._magnifierVM.isVisible and not self._plotterVM.isVisible:
-            self._mainWindowVM.highlightImageLabelClickPosition(None)
-            self._model.clickPosition = None
+            self._mainWindowVM.highlightImageLabelLeftClickPosition(None)
+            self._model.leftClickPosition = None
             self._magnifierVM.clear()
 
             for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
@@ -118,8 +118,12 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
 
         # tell the magnifier we still have a click
-        if self._model.clickPosition is not None:
-            self._onMousePressedImageLabel(self._model.clickPosition)
+        if self._model.leftClickPosition is not None:
+            self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
+
+        if self._model.rightClickLastPositions.__len__() > 0:
+            for (x, y) in self._model.rightClickLastPositions:
+                self._onMousePressedImageLabel(QtCore.QPoint(x, y), QtCore.Qt.RightButton)
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
@@ -136,7 +140,8 @@ class MainVM(QtCore.QObject):
     def onLoadImageAction(self, filePath, asGreyscale):
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
         self._model.processedImage = None
-        self._model.clickPosition = None
+        self._model.leftClickPosition = None
+        self._model.rightClickLastPositions.clear()
         self.resetVMs()
 
         # setup main window
@@ -179,7 +184,8 @@ class MainVM(QtCore.QObject):
     @pyqtSlot(QtGui.QKeyEvent)
     def _onKeyPressed(self, QKeyEvent):
         if QKeyEvent.key() == QtCore.Qt.Key_Escape:
-            pass
+            self._model.rightClickLastPositions.clear()
+            self._mainWindowVM.highlightImageLabelRightClickLastPositions(None)
 
     @pyqtSlot(QtCore.QPoint, QtCore.Qt.MouseButton)
     def _onMousePressedImageLabel(self, clickPosition, mouseButton):
@@ -190,9 +196,9 @@ class MainVM(QtCore.QObject):
         """
         if mouseButton == QtCore.Qt.LeftButton:
             if self._magnifierVM.isVisible or self._plotterVM.isVisible:
-                self._model.clickPosition = clickPosition
+                self._model.leftClickPosition = clickPosition
 
-                self._mainWindowVM.highlightImageLabelClickPosition(clickPosition)
+                self._mainWindowVM.highlightImageLabelLeftClickPosition(clickPosition)
 
                 magnifiedRegions = self._getMagnifiedRegions(clickPosition)
                 self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
@@ -204,8 +210,17 @@ class MainVM(QtCore.QObject):
 
                 if self._plotterVM.isVisible:
                     self._plotterVM.refresh()
+
         elif mouseButton == QtCore.Qt.RightButton:
-            pass
+            self._addRightClickPosition(clickPosition)
+
+    def _addRightClickPosition(self, clickPosition):
+        self._model.rightClickLastPositions.appendleft((clickPosition.x(), clickPosition.y()))
+        self._mainWindowVM.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
+
+    def _clearRightClickLastPositions(self):
+        self._model.rightClickLastPositions.clear()
+        self._mainWindowVM.highlightImageLabelRightClickLastPositions(None)
 
     def _getMagnifiedRegions(self, clickPosition):
         """

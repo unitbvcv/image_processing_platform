@@ -1,12 +1,15 @@
 from dataclasses import dataclass
 import cv2 as opencv
+from collections import deque
+import Application.Settings
 
 
 @dataclass
 class MainModel(object):
     originalImage = None
     processedImage = None
-    clickPosition = None
+    leftClickPosition = None
+    rightClickLastPositions = deque(maxlen=Application.Settings.RightClickPointerSettings.numberOfClicksToRemember)
 
     def readOriginalImage(self, filePath: str, asGrayscale: bool):
         if asGrayscale:

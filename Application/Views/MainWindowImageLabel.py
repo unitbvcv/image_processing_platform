@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 
 import Application.Settings
+from collections import deque
 
 
 class MainWindowImageLabel(QtWidgets.QLabel):
@@ -18,15 +19,20 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         super().__init__(parent)
         self._qImage = None
         self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
-        self._clickPosition = None
+        self._leftClickPosition = None
+        self._rightClickLastPositions = None
 
     def setZoom(self, zoom):
         self._zoom = zoom
         if self._qImage is not None:
             self.setFixedSize(self._qImage.size() * zoom)
 
-    def setClickPosition(self, clickPosition):
-        self._clickPosition = clickPosition
+    def setLeftClickPosition(self, clickPosition):
+        self._leftClickPosition = clickPosition
+        self.update()
+
+    def setRightClickLastPositions(self, rightClickLastPositions : deque):
+        self._rightClickLastPositions = rightClickLastPositions
         self.update()
 
     def mouseMoveEvent(self, QMouseEvent):
@@ -74,23 +80,38 @@ class MainWindowImageLabel(QtWidgets.QLabel):
             painter.setTransform(transform, False)
 
             painter.drawImage(0, 0, self._qImage)
-            painter.setPen(QtGui.QPen(QtCore.Qt.red))
-            painter.pen().setWidth(1)
 
-            if self._clickPosition is not None:
+            if self._leftClickPosition is not None:
+                painter.setPen(QtGui.QPen(QtCore.Qt.red))
+                painter.pen().setWidth(1)
+
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
                 # vertical line
-                painter.drawLine(self._clickPosition.x(), 0, self._clickPosition.x(), (self.height() - 1) // self._zoom)
+                painter.drawLine(self._leftClickPosition.x(), 0, self._leftClickPosition.x(), (self.height() - 1) // self._zoom)
 
                 # horizontal line
-                painter.drawLine(0, self._clickPosition.y(), (self.width() - 1) // self._zoom, self._clickPosition.y())
+                painter.drawLine(0, self._leftClickPosition.y(), (self.width() - 1) // self._zoom, self._leftClickPosition.y())
 
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
-                painter.drawRect(self._clickPosition.x() - cornerCalcOffset,
-                                 self._clickPosition.y() - cornerCalcOffset,
+                painter.drawRect(self._leftClickPosition.x() - cornerCalcOffset,
+                                 self._leftClickPosition.y() - cornerCalcOffset,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
+
+            if self._rightClickLastPositions is not None:
+                painter.setPen(QtGui.QPen(QtCore.Qt.blue))
+                painter.pen().setWidth(1)
+
+                cornerCalcOffset = int(Application.Settings.RightClickPointerSettings.aroundClickSquareSize / 2) + 1
+
+                for (x, y) in self._rightClickLastPositions:
+                    # +1 because we need to take into account the thickness of the rectangle itself
+                    # we want its contents inside to be frameGridSize^2
+                    painter.drawRect(x - cornerCalcOffset,
+                                     y - cornerCalcOffset,
+                                     Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1,
+                                     Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1)
 
         self.finishedPaintingSignal.emit()
