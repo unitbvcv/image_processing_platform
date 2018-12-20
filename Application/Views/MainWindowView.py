@@ -1,6 +1,7 @@
 import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.Qt import pyqtSignal
 
 import Application.Settings
 import Application.Utils.ZoomOperations
@@ -8,6 +9,8 @@ from Application.Views.MainWindowImageLabel import MainWindowImageLabel
 
 
 class MainWindowView(QtWidgets.QMainWindow):
+    keyPressedSignal = pyqtSignal(QtGui.QKeyEvent, name="keyPressedSignal")
+
     @property
     def zoom(self):
         return self._zoom
@@ -457,6 +460,9 @@ class MainWindowView(QtWidgets.QMainWindow):
 
     def closeEvent(self, QCloseEvent):
         QtCore.QCoreApplication.quit()
+
+    def keyPressEvent(self, QKeyEvent):
+        self.keyPressedSignal.emit(QKeyEvent)
 
 # region ZOOM FUNCTIONALITY
 

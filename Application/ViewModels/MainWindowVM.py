@@ -17,6 +17,7 @@ class MainWindowVM(QtCore.QObject):
     saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
     mouseMovedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mouseMovedImageLabelSignal")
     mousePressedImageLabelSignal = pyqtSignal(QtCore.QPoint, QtCore.Qt.MouseButton, name="mousePressedImageLabelSignal")
+    keyPressedSignal = pyqtSignal(QtGui.QKeyEvent, name="keyPressedSignal")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -46,6 +47,8 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelProcessedImage.mouseLeavedSignal.connect(self._onMouseLeavedImageLabel)
         self._view.labelOriginalImage.mousePressedSignal.connect(self._onMousePressedImageLabel)
         self._view.labelProcessedImage.mousePressedSignal.connect(self._onMousePressedImageLabel)
+
+        self._view.keyPressedSignal.connect(self.keyPressedSignal)
 
     def highlightImageLabelClickPosition(self, clickPosition):
         if self._view.labelOriginalImage.isImageSet:

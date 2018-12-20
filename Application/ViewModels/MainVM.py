@@ -52,6 +52,8 @@ class MainVM(QtCore.QObject):
         self._magnifierVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
         self._plotterVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
 
+        self._mainWindowVM.keyPressedSignal.connect(self._onKeyPressed)
+
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: all the algorithms' qactions can connect to the same slot which checks if origImage is not None
 
@@ -173,6 +175,11 @@ class MainVM(QtCore.QObject):
             plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
                              for plottingData in plottingDataList}
             updateFunction(plottingFunction.name, plotDataItemsDict)
+
+    @pyqtSlot(QtGui.QKeyEvent)
+    def _onKeyPressed(self, QKeyEvent):
+        if QKeyEvent.key() == QtCore.Qt.Key_Escape:
+            pass
 
     @pyqtSlot(QtCore.QPoint, QtCore.Qt.MouseButton)
     def _onMousePressedImageLabel(self, clickPosition, mouseButton):
