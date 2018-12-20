@@ -58,3 +58,13 @@ class MagnifierWindowSettings:
 
 # TODO: must be singleton! find alternative or explain
 MagnifierWindowSettings = MagnifierWindowSettings()
+
+
+@dataclass(frozen=True)
+class RightClickPointerSettings:
+    """
+        TODO: document RightClickPointerSettings
+    """
+
+    aroundClickSquareSize: int = 9  # in pixels
+    numberOfClicksToRemember = 4
