@@ -215,7 +215,7 @@ class MainVM(QtCore.QObject):
             self._addRightClickPosition(clickPosition)
 
     def _addRightClickPosition(self, clickPosition):
-        self._model.rightClickLastPositions.appendleft((clickPosition.x(), clickPosition.y()))
+        self._model.rightClickLastPositions.append((clickPosition.x(), clickPosition.y()))
         self._mainWindowVM.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
 
     def _clearRightClickLastPositions(self):
