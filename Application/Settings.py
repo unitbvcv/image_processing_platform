@@ -66,10 +66,10 @@ class RightClickPointerSettings:
         TODO: document RightClickPointerSettings
     """
 
-    aroundClickSquareSize: int = 9  # in pixels
+    aroundClickSquareSize: int = 25  # in pixels
     numberOfClicksToRemember = 4
     showClickOrder = True
-    clickOrderFontSize = 6
+    clickOrderFontSize = 12
 
     def __post_init__(self):
         # TODO: think if more tests are needed
