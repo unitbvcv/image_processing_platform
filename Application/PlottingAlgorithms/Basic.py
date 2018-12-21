@@ -4,73 +4,77 @@ from Application.Models.PlottingData import PlottingData
 from Application.Utils.PlotterDecorators import PlotterFunction
 
 
-@PlotterFunction(name="Plot row values", fromMainModel=["clickPosition"], computeOnClick=True)
-def plotRowValues(image, clickPosition):
+@PlotterFunction(name="Plot row values", fromMainModel=["leftClickPosition"], computeOnClick=True)
+def plotRowValues(image, leftClickPosition):
+    # TODO: take note that the function parameter must be named the same as the
+    # fromMainModel parameters
     """
     TODO: document plotRowValues
     :param image:
-    :param clickPosition:
+    :param leftClickPosition:
     :return:
     """
     plotDataItemsList = []
 
-    if image is None or clickPosition is None:
+    if image is None or leftClickPosition is None:
         return []
 
     # Grayscale image
     if len(image.shape) == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(plotName, image[clickPosition.y()], pen='r')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 0], pen='r')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 1], pen='g')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[clickPosition.y(), :, 2], pen='b')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
 
 
-@PlotterFunction(name="Plot column values", fromMainModel=["clickPosition"], computeOnClick=True)
-def plotColumnValues(image, clickPosition):
+@PlotterFunction(name="Plot column values", fromMainModel=["leftClickPosition"], computeOnClick=True)
+def plotColumnValues(image, leftClickPosition):
+    # TODO: take note that the function parameter must be named the same as the
+    # fromMainModel parameters
     """
     TODO: document plotColumnValues
     :param image:
-    :param clickPosition:
+    :param leftClickPosition:
     :return:
     """
     plotDataItemsList = []
 
-    if image is None or clickPosition is None:
+    if image is None or leftClickPosition is None:
         return []
 
     # Grayscale image
     if len(image.shape) == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(plotName, image[:, clickPosition.x()], pen='r')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif len(image.shape) == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[:, clickPosition.x(), 0], pen='r')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x(), 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 1], pen='g')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.y(), 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[:, clickPosition.y(), 2], pen='b')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.y(), 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
