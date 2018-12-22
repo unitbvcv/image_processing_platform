@@ -126,8 +126,8 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                         clickNumberStr = str(clickNumber + 1)
                         horizontalAdvance = fontMetrics.horizontalAdvance(clickNumberStr, len(clickNumberStr))
 
-                        painter.drawText(x - horizontalAdvance / 2,
-                                         y + fontMetrics.ascent() / 2,
+                        painter.drawText(x - horizontalAdvance / 2 + 1,
+                                         y + fontMetrics.ascent() / 2 - 1,
                                          clickNumberStr)
 
         self.finishedPaintingSignal.emit()
