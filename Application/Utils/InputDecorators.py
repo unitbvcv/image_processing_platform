@@ -18,6 +18,9 @@ class InputDialog:
 
                 # functools.update_wrapper(self, func)
 
+            def __getattr__(self, item):
+                return self._func.item
+
             @wraps(function)
             def __call__(self, *args, **kwargs):
 

@@ -26,6 +26,9 @@ class RegisterAlgorithm:
 
                 # functools.update_wrapper(self, func)
 
+            def __getattr__(self, item):
+                return self._func.item
+
             @property
             def name(self):
                 return self._name
