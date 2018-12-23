@@ -361,7 +361,7 @@ class MainWindowView(QtWidgets.QMainWindow):
 
             currentMenu = self.menuBar
             if menuPath is not None:
-                menuNames = re.split(r'[/\\]', menuPath)
+                menuNames = [i for i in re.split(r'[/\\]', menuPath) if len(i) != 0]
 
                 # traverse the path to the deepest submenu; create them along the way if they don't exist
                 startedNonExistingMenusPath = False
@@ -372,9 +372,9 @@ class MainWindowView(QtWidgets.QMainWindow):
                             startedNonExistingMenusPath = True
                         elif self._menusDictionary[currentSubMenuName].menuAction() not in currentMenu.actions():
                             return
+                    elif currentSubMenuName in self._menusDictionary:
+                        return
                     else:
-                        if currentSubMenuName in self._menusDictionary:
-                            return
                         _addMenu(currentSubMenuName, currentMenu, beforeElementAction)
 
                     currentMenu = self._menusDictionary[currentSubMenuName]
@@ -414,17 +414,23 @@ class MainWindowView(QtWidgets.QMainWindow):
                 beforeElementAction = self._menusDictionary[beforeElementName].menuAction()
 
             if menuPath is not None:
-                menuNames = re.split(r'[/\\]', menuPath)
-                lastMenuName = menuNames[-1]
+                menuNames = [i for i in re.split(r'[/\\]', menuPath) if len(i) != 0]
 
-                if lastMenuName not in self._menusDictionary:
-                    self.addMenu(lastMenuName, '/'.join(menuNames[:-1]))
+                if len(menuNames) != 0:
+                    lastMenuName = menuNames[-1]
 
                     if lastMenuName not in self._menusDictionary:
-                        return  # invalid path
+                        del menuNames[-1]
+                        lastMenuPath = None
+                        if len(menuNames) != 0:
+                            lastMenuPath = '/'.join(menuNames)
+                        self.addMenu(lastMenuName, lastMenuPath)
 
-                menu = self._menusDictionary[lastMenuName]
-                _addAction(actionName, menu, beforeElementAction)
+                        if lastMenuName not in self._menusDictionary:
+                            return  # invalid path
+
+                    menu = self._menusDictionary[lastMenuName]
+                    _addAction(actionName, menu, beforeElementAction)
 
 
     # def addMenuSeparator(self, menuName, beforeActionName=None):
