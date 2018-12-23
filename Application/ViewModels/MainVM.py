@@ -74,7 +74,8 @@ class MainVM(QtCore.QObject):
 
             self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
-            self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
+            if self._model.leftClickPosition is not None:
+                self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
