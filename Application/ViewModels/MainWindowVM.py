@@ -62,7 +62,7 @@ class MainWindowVM(QtCore.QObject):
         if self._view.labelOriginalImage.isImageSet:
             self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
         if self._view.labelProcessedImage.isImageSet:
-            self._view.labelProcessedImage.setLeftClickPosition(clickPositions)
+            self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
