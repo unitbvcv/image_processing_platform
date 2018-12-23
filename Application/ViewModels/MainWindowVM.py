@@ -169,9 +169,11 @@ class MainWindowVM(QtCore.QObject):
             messagebox.setText("Save processed image: no processed image.")
             messagebox.exec()
 
-    def showNewOriginalImage(self, image):
+    def setOriginalImage(self, image):
         self._view.labelOriginalImage.setLabelImage(image)
-        self._view.labelProcessedImage.setLabelImage(None)
+
+    def setProcessedImage(self, image):
+        self._view.labelProcessedImage.setLabelImage(image)
 
     def reset(self):
         self._view.labelOriginalImage.setLabelImage(None)

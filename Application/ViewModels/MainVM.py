@@ -31,8 +31,9 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM = MainWindowVM(self)
         self._mainWindowVM.loadOriginalImageSignal.connect(self.onLoadImageAction)
 
-        # Create UI for the registered algorithms
+        # Create UI for the registered algorithms and connect them
         self._populateMenuBarWithAlgorithms()
+        self._mainWindowVM.algorithmTriggered.connect(self._onAlgorithmTriggerred)
 
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowVM(self)
@@ -58,13 +59,22 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM.keyPressedSignal.connect(self._onKeyPressed)
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
-    # TODO: all the algorithms' qactions can connect to the same slot which checks if origImage is not None
 
     def _populateMenuBarWithAlgorithms(self):
         algorithms = [(algorithm.name, algorithm.menuPath, algorithm.before)
                       for algorithm in ImageProcessingAlgorithms.registeredAlgorithms.values()]
         self._mainWindowVM.registerAlgorithmsInUi(algorithms)
-        # TODO: connect qActions to the algorithms somehow
+
+    @pyqtSlot(str)
+    def _onAlgorithmTriggerred(self, algorithmName):
+        if self._model.originalImage is not None:
+            algorithm = ImageProcessingAlgorithms.registeredAlgorithms[algorithmName]
+            args = algorithm.prepare(self._model)
+            self._model.processedImage = algorithm(self._model.originalImage.copy(), **args)
+
+            self._mainWindowVM.setProcessedImage(self._model.processedImage)
+
+            self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
@@ -124,7 +134,8 @@ class MainVM(QtCore.QObject):
         self.resetVMs()
 
         # setup main window
-        self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
+        self._mainWindowVM.setOriginalImage(self._model.originalImage)
+        self._mainWindowVM.setProcessedImage(None)
 
         # tell the magnifier we still have a click
         if self._model.leftClickPosition is not None:
@@ -154,7 +165,8 @@ class MainVM(QtCore.QObject):
         self.resetVMs()
 
         # setup main window
-        self._mainWindowVM.showNewOriginalImage(self._model.originalImage)
+        self._mainWindowVM.setOriginalImage(self._model.originalImage)
+        self._mainWindowVM.setProcessedImage(None)
 
         # setup magnifier
         if asGreyscale:
