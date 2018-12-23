@@ -53,16 +53,12 @@ class MainWindowVM(QtCore.QObject):
         self._view.keyPressedSignal.connect(self.keyPressedSignal)
 
     def highlightImageLabelLeftClickPosition(self, clickPosition):
-        if self._view.labelOriginalImage.isImageSet:
-            self._view.labelOriginalImage.setLeftClickPosition(clickPosition)
-        if self._view.labelProcessedImage.isImageSet:
-            self._view.labelProcessedImage.setLeftClickPosition(clickPosition)
+        self._view.labelOriginalImage.setLeftClickPosition(clickPosition)
+        self._view.labelProcessedImage.setLeftClickPosition(clickPosition)
 
     def highlightImageLabelRightClickLastPositions(self, clickPositions : deque):
-        if self._view.labelOriginalImage.isImageSet:
-            self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
-        if self._view.labelProcessedImage.isImageSet:
-            self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
+        self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
+        self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
