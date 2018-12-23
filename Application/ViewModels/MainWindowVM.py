@@ -95,7 +95,7 @@ class MainWindowVM(QtCore.QObject):
     @pyqtSlot()
     def _actionSaveAsOriginalImage(self):
         self.saveAsOriginalImageSignal.emit()
-        
+
     @pyqtSlot()
     def _actionExit(self):
         QtCore.QCoreApplication.quit()
@@ -145,12 +145,12 @@ class MainWindowVM(QtCore.QObject):
             fileDialog = QtWidgets.QFileDialog(self._view)
             fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
             fileDialog.setNameFilter('Bitmap file (*.bmp *.dib);;'
-                       'JPEG file (*.jpeg *.jpg *.jpe);;'
-                       'JPEG 2000 file (*.jp2);;'
-                       'Portable Network Graphics file (*.png);;'
-                       'WebP file (*.webp);;'
-                       'Sun rasters file (*.ras *.sr);;'
-                       'Tagged Image file (*.tiff *.tif)')
+                                     'JPEG file (*.jpeg *.jpg *.jpe);;'
+                                     'JPEG 2000 file (*.jp2);;'
+                                     'Portable Network Graphics file (*.png);;'
+                                     'WebP file (*.webp);;'
+                                     'Sun rasters file (*.ras *.sr);;'
+                                     'Tagged Image file (*.tiff *.tif)')
             fileDialog.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
             fileDialog.setWindowTitle("Save processed image")
 
@@ -175,7 +175,7 @@ class MainWindowVM(QtCore.QObject):
     def reset(self):
         self._view.labelOriginalImage.setLabelImage(None)
         self._view.labelProcessedImage.setLabelImage(None)
-        
+
         self._view.labelOriginalImage.setLeftClickPosition(None)
         self._view.labelProcessedImage.setLeftClickPosition(None)
 
@@ -183,3 +183,7 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelProcessedImage.setRightClickLastPositions(None)
 
         self._view.zoomValueResetEvent()
+
+    def registerAlgorithmsInUi(self, algorithms):
+        for name, menuPath, before in algorithms:
+            self._view.addMenuAction(name, menuPath, before)

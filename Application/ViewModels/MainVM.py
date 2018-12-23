@@ -31,6 +31,9 @@ class MainVM(QtCore.QObject):
         self._mainWindowVM = MainWindowVM(self)
         self._mainWindowVM.loadOriginalImageSignal.connect(self.onLoadImageAction)
 
+        # Create UI for the registered algorithms
+        self._populateMenuBarWithAlgorithms()
+
         # Instantiate MagnifierViewModel
         self._magnifierVM = MagnifierWindowVM(self)
 
@@ -56,6 +59,12 @@ class MainVM(QtCore.QObject):
 
     # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
     # TODO: all the algorithms' qactions can connect to the same slot which checks if origImage is not None
+
+    def _populateMenuBarWithAlgorithms(self):
+        algorithms = [(algorithm.name, algorithm.menuPath, algorithm.before)
+                      for algorithm in ImageProcessingAlgorithms.registeredAlgorithms.values()]
+        self._mainWindowVM.registerAlgorithmsInUi(algorithms)
+        # TODO: connect qActions to the algorithms somehow
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
@@ -178,7 +187,7 @@ class MainVM(QtCore.QObject):
             args = plottingFunction.prepare(self._model)
             plottingDataList = plottingFunction(image, **args)
             plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                             for plottingData in plottingDataList}
+                                 for plottingData in plottingDataList}
             updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtGui.QKeyEvent)
