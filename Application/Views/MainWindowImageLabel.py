@@ -64,7 +64,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                     QtGui.QImage.Format_Grayscale8
                 )
 
-            self.setFixedSize(self._qImage.size())
+            self.setFixedSize(self._qImage.size() * self._zoom)
         else:
             self.setFixedSize(0, 0)
             self._qImage = None
