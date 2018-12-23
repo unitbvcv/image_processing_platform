@@ -19,6 +19,7 @@ class MainWindowVM(QtCore.QObject):
     mouseMovedImageLabelSignal = pyqtSignal(QtCore.QPoint, name="mouseMovedImageLabelSignal")
     mousePressedImageLabelSignal = pyqtSignal(QtCore.QPoint, QtCore.Qt.MouseButton, name="mousePressedImageLabelSignal")
     keyPressedSignal = pyqtSignal(QtGui.QKeyEvent, name="keyPressedSignal")
+    algorithmTriggered = pyqtSignal(str, name="algorithmTriggered")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -186,4 +187,11 @@ class MainWindowVM(QtCore.QObject):
 
     def registerAlgorithmsInUi(self, algorithms):
         for name, menuPath, before in algorithms:
-            self._view.addMenuAction(name, menuPath, before)
+            newAction = self._view.addMenuAction(name, menuPath, before)
+            if newAction is not None:
+                newAction.triggered.connect(self._actionAlgorithm)
+
+    @pyqtSlot()
+    def _actionAlgorithm(self):
+        senderAction = self.sender()
+        self.algorithmTriggered.emit(senderAction.text())
