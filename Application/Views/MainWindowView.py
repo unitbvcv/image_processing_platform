@@ -342,7 +342,7 @@ class MainWindowView(QtWidgets.QMainWindow):
         :param menuName: string
         :param menuPath: string; default value: None
         :param beforeElementName: string; default value: None
-        :return: None
+        :return: the createdMenu: QMenu; if it is not created: None
         """
 
         def _addMenu(menuName, menu, beforeAction):
@@ -381,6 +381,7 @@ class MainWindowView(QtWidgets.QMainWindow):
 
             # here the deepest submenu and insertion point have been found
             _addMenu(menuName, currentMenu, beforeElementAction)
+            return self._menusDictionary[menuName]
 
     def addMenuAction(self, actionName, menuPath, beforeElementName=None):
         """
@@ -396,7 +397,7 @@ class MainWindowView(QtWidgets.QMainWindow):
         :param actionName: string
         :param menuPath: string
         :param beforeElementName: string; default value: None
-        :return: None
+        :return: the created action: QAction; if it is not created: None
         """
 
         def _addAction(actionName, menu, beforeAction):
@@ -431,6 +432,7 @@ class MainWindowView(QtWidgets.QMainWindow):
 
                     menu = self._menusDictionary[lastMenuName]
                     _addAction(actionName, menu, beforeElementAction)
+                    return self._menuActionsDictionary[actionName]
 
 
     # def addMenuSeparator(self, menuName, beforeActionName=None):
