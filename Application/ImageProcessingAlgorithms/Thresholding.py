@@ -3,9 +3,9 @@ from Application.Utils.InputDecorators import InputDialog
 from Application.Utils.OutputDecorators import OutputDialog
 
 
-@RegisterAlgorithm("Binarization", "Thresholding")
 @InputDialog(threshold=int)
 @OutputDialog(title="Binarization Output")
+@RegisterAlgorithm("Binarization", "Thresholding")
 def binarization(image, threshold):
     # if the image is grayscale
     if len(image.shape) == 2:

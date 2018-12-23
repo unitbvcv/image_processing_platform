@@ -1,6 +1,7 @@
 from functools import wraps
 
 from Application.Utils.SmartDialog import SmartDialog
+from Application.ImageProcessingAlgorithms import registeredAlgorithms
 
 
 class InputDialog:
@@ -19,7 +20,7 @@ class InputDialog:
                 # functools.update_wrapper(self, func)
 
             def __getattr__(self, item):
-                return self._func.item
+                return getattr(self._func, item)
 
             @wraps(function)
             def __call__(self, *args, **kwargs):
@@ -29,4 +30,8 @@ class InputDialog:
 
                 return self._func(*args, **kwargs, **readData)
 
-        return InputDialogWrapper(function, self._kwargs)
+        wrapper = InputDialogWrapper(function, self._kwargs)
+        for registeredFunctionName, registeredFunction in registeredAlgorithms.items():
+            if function is registeredFunction:
+                registeredAlgorithms[registeredFunctionName] = wrapper
+        return wrapper

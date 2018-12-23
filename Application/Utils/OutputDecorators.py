@@ -2,6 +2,8 @@ from functools import wraps
 
 from PyQt5.QtWidgets import QMessageBox
 
+from Application.ImageProcessingAlgorithms import registeredAlgorithms
+
 
 class OutputDialog:
 
@@ -19,7 +21,7 @@ class OutputDialog:
                 # functools.update_wrapper(self, func)
 
             def __getattr__(self, item):
-                return self._func.item
+                return getattr(self._func, item)
 
             @wraps(function)
             def __call__(self, *args, **kwargs):
@@ -29,4 +31,8 @@ class OutputDialog:
                     result = result[:-1]
                 return result
 
-        return OutputDialogWrapper(function, self._title)
+        wrapper = OutputDialogWrapper(function, self._title)
+        for registeredFunctionName, registeredFunction in registeredAlgorithms.items():
+            if function is registeredFunction:
+                registeredAlgorithms[registeredFunctionName] = wrapper
+        return wrapper
