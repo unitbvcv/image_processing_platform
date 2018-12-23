@@ -129,8 +129,9 @@ class MainVM(QtCore.QObject):
 
     @pyqtSlot()
     def _onSaveAsOriginalImageAction(self):
-        self._model.originalImage = self._model.processedImage
-        self._model.processedImage = None
+        processedImageCopy = self._model.processedImage
+        self._model.reset()
+        self._model.originalImage = processedImageCopy
         self.resetVMs()
 
         # setup main window
@@ -142,7 +143,7 @@ class MainVM(QtCore.QObject):
             self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
         if self._model.rightClickLastPositions.__len__() > 0:
-            for (x, y) in self._model.rightClickLastPositions:
+            for x, y in list(self._model.rightClickLastPositions):
                 self._onMousePressedImageLabel(QtCore.QPoint(x, y), QtCore.Qt.RightButton)
 
         if self._plotterVM.isVisible:
@@ -158,10 +159,8 @@ class MainVM(QtCore.QObject):
 
     @pyqtSlot(str, bool)
     def onLoadImageAction(self, filePath, asGreyscale):
+        self._model.reset()
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
-        self._model.processedImage = None
-        self._model.leftClickPosition = None
-        self._model.rightClickLastPositions.clear()
         self.resetVMs()
 
         # setup main window

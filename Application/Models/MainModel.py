@@ -18,6 +18,12 @@ class MainModel(object):
             self.originalImage = opencv.imread(filePath, opencv.IMREAD_COLOR)
             self.originalImage = opencv.cvtColor(self.originalImage, opencv.COLOR_BGR2RGB)
 
+    def reset(self):
+        self.originalImage = None
+        self.processedImage = None
+        self.leftClickPosition = None
+        self.rightClickLastPositions.clear()
+
     def saveProcessedImage(self, filePath : str):
         if self.processedImage:
             opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))
