@@ -36,7 +36,7 @@ class SmartDialog(QtWidgets.QDialog):
         self.baseLayout.addWidget(self.scrollArea)
 
         # Add buttons Ok & Cancel
-        self.horizontalButtonLayout = QtWidgets.QHBoxLayout(self)
+        self.horizontalButtonLayout = QtWidgets.QHBoxLayout()
         self.horizontalButtonLayout.setSpacing(6)
         self.horizontalButtonLayout.setContentsMargins(11, 11, 11, 11)
         self.horizontalButtonLayout.setObjectName("horizontalButtonLayout")
