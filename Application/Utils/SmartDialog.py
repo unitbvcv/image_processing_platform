@@ -1,3 +1,5 @@
+from sys import exc_info
+
 from PyQt5 import QtCore, QtWidgets
 
 
@@ -108,6 +110,14 @@ class SmartDialog(QtWidgets.QDialog):
 
             try:
                 convertedValue = typeRequested(self._textBoxDictionary[paramName].text())
+                self._readData[paramName] = convertedValue
             except:
-                convertedValue = self._textBoxDictionary[paramName].text()
-            self._readData[paramName] = convertedValue
+                exceptionInfo = exc_info()
+                QtWidgets.QMessageBox.critical(
+                    None,
+                    'InputDialog error',
+                    f'Conversion error for parameter {paramName}. Exception raised:\n'
+                    f'{exceptionInfo[0].__name__}: {exceptionInfo[1]}'
+                )
+                self._cancelled = True
+                return
