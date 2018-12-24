@@ -25,5 +25,10 @@ class MainModel(object):
         self.rightClickLastPositions.clear()
 
     def saveProcessedImage(self, filePath : str):
-        if self.processedImage:
-            opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))
+        if self.processedImage is not None:
+            processedImageShapeLen = len(self.processedImage.shape)
+
+            if processedImageShapeLen == 2:
+                opencv.imwrite(filePath, self.processedImage)
+            elif processedImageShapeLen == 3:
+                opencv.imwrite(filePath, opencv.cvtColor(self.processedImage, opencv.COLOR_RGB2BGR))
