@@ -1,6 +1,7 @@
 from functools import wraps
 
 from Application.ImageProcessingAlgorithms import registeredAlgorithms
+from Application.Utils._BaseWrapper import BaseWrapper
 
 
 class RegisterAlgorithm:
@@ -13,6 +14,13 @@ class RegisterAlgorithm:
         self._kwargs = kwargs
 
     def __call__(self, function):
+
+        # this checks if the function parameter contains in it a BaseWrapper (because function can be another wrapper)
+        # can be checked for any other attribute of BaseWrapper
+        # this is done to allow other decorators on the function
+        # the downside is that a false positive may occur if any of the wrappers has an attribute with the same name
+        if not hasattr(function, 'result'):
+            function = BaseWrapper(function)
 
         class AlgorithmWrapper:
 
@@ -46,8 +54,15 @@ class RegisterAlgorithm:
                 return self._func(*args, **kwargs)
 
             def prepare(self, mainModel):
-                return {argName: mainModel.__dict__[argName] for argName in self._fromMainModel}
+                return {argName: getattr(mainModel, argName) for argName in self._fromMainModel}
 
-        wrapper = AlgorithmWrapper(function, self._name, self._menuPath, self._before, self._fromMainModel, **self._kwargs)
-        registeredAlgorithms[self._name] = wrapper
+        wrapper = AlgorithmWrapper(
+            function,
+            self._name,
+            self._menuPath,
+            self._before,
+            self._fromMainModel,
+            **self._kwargs
+        )
+        registeredAlgorithms[wrapper.name] = wrapper
         return wrapper
