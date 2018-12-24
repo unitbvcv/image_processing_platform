@@ -115,6 +115,7 @@ class MainWindowVM(QtCore.QObject):
                 messagebox = QtWidgets.QMessageBox(self._view)
                 messagebox.setWindowTitle("Error")
                 messagebox.setText("Load grayscale image: invalid file path.")
+                messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                 messagebox.exec()
 
     @pyqtSlot()
@@ -136,6 +137,7 @@ class MainWindowVM(QtCore.QObject):
                 messagebox = QtWidgets.QMessageBox(self._view)
                 messagebox.setWindowTitle("Error")
                 messagebox.setText("Load color image: invalid file path.")
+                messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                 messagebox.exec()
 
     @pyqtSlot()
@@ -162,11 +164,13 @@ class MainWindowVM(QtCore.QObject):
                     messagebox = QtWidgets.QMessageBox(self._view)
                     messagebox.setWindowTitle("Error")
                     messagebox.setText("Save processed image: invalid file path.")
+                    messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                     messagebox.exec()
         else:
             messagebox = QtWidgets.QMessageBox(self._view)
             messagebox.setWindowTitle("Error")
             messagebox.setText("Save processed image: no processed image.")
+            messagebox.setIcon(QtWidgets.QMessageBox.Critical)
             messagebox.exec()
 
     def setOriginalImage(self, image):
