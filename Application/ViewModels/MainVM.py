@@ -58,8 +58,6 @@ class MainVM(QtCore.QObject):
 
         self._mainWindowVM.keyPressedSignal.connect(self._onKeyPressed)
 
-    # TODO: REMEMBER THAT APPLYING AN ALGORITHM ON THE PROCESSED IMAGE MUST SET PLOTTING DATA DIRTY + MAGNIFIER
-
     def _populateMenuBarWithAlgorithms(self):
         algorithms = [(algorithm.name, algorithm.menuPath, algorithm.before)
                       for algorithm in ImageProcessingAlgorithms.registeredAlgorithms.values()]
@@ -70,12 +68,13 @@ class MainVM(QtCore.QObject):
         if self._model.originalImage is not None:
             algorithm = ImageProcessingAlgorithms.registeredAlgorithms[algorithmName]
             args = algorithm.prepare(self._model)
-            self._model.processedImage = algorithm(self._model.originalImage.copy(), **args)
+            algorithm(self._model.originalImage.copy(), **args)
+            if algorithm.hasResult:
+                self._model.processedImage = algorithm.result
+                self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
-            self._mainWindowVM.setProcessedImage(self._model.processedImage)
-
-            if self._model.leftClickPosition is not None:
-                self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
+                if self._model.leftClickPosition is not None:
+                    self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
