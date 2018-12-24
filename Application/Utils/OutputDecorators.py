@@ -44,6 +44,8 @@ class OutputDialog:
                             if isinstance(self._func.result[-1], str):
                                 QMessageBox.about(None, self._title, self._func.result[-1])
                                 self._func.setResult(self._func.result[:-1])
+                                if len(self._func.result) == 1:
+                                    self._func.setResult(self._func.result[0])
                         except IndexError:
                             pass
                 return self._func.result
