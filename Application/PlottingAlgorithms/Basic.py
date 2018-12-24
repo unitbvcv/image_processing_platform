@@ -20,13 +20,14 @@ def plotRowValues(image, leftClickPosition):
         return []
 
     # Grayscale image
-    if len(image.shape) == 2:
+    imageShapeLen = len(image.shape)
+    if imageShapeLen == 2:
         plotName = 'Gray level'
         plottingData = PlottingData(plotName, image[leftClickPosition.y()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
-    elif len(image.shape) == 3:
+    elif imageShapeLen == 3:
         plotName = 'Red channel'
         plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 0], pen='r')
         plotDataItemsList.append(plottingData)
@@ -58,13 +59,14 @@ def plotColumnValues(image, leftClickPosition):
         return []
 
     # Grayscale image
-    if len(image.shape) == 2:
+    imageShapeLen = len(image.shape)
+    if imageShapeLen == 2:
         plotName = 'Gray level'
         plottingData = PlottingData(plotName, image[:, leftClickPosition.x()], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
-    elif len(image.shape) == 3:
+    elif imageShapeLen == 3:
         plotName = 'Red channel'
         plottingData = PlottingData(plotName, image[:, leftClickPosition.x(), 0], pen='r')
         plotDataItemsList.append(plottingData)
@@ -92,8 +94,10 @@ def plotHistogram(image):
     if image is None:
         return []
 
+    imageShapeLen = len(image.shape)
+
     # Grayscale image
-    if len(image.shape) == 2:
+    if imageShapeLen == 2:
         # numpy.histogram returns the histogram first and the buckets second
         # the last bin is shared between the last two elements, so we need one more
         # range(256) gives us [0, ..., 255], so we need range(257)
@@ -104,7 +108,7 @@ def plotHistogram(image):
         plotDataItemsList.append(plottingData)
 
     # Color image
-    elif len(image.shape) == 3:
+    elif imageShapeLen == 3:
         histogram = numpy.histogram(image[:, :, 0], bins=range(257), range=(-1, 255))[0]
         plotName = 'Red histogram'
         plottingData = PlottingData(plotName, histogram, pen='r')

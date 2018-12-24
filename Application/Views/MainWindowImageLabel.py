@@ -47,7 +47,8 @@ class MainWindowImageLabel(QtWidgets.QLabel):
     def setLabelImage(self, image):
         # TODO: think about moving this to VM
         if image is not None:
-            if len(image.shape) == 3:
+            imageShapeLen = len(image.shape)
+            if imageShapeLen == 3:
                 self._qImage = QtGui.QImage(
                     image.data,  # data
                     image.shape[1],  # width
@@ -55,7 +56,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                     3 * image.shape[1],  # bytes per line
                     QtGui.QImage.Format_RGB888
                 )
-            elif len(image.shape) == 2:
+            elif imageShapeLen == 2:
                 self._qImage = QtGui.QImage(
                     image.data,
                     image.shape[1],
