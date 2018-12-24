@@ -113,6 +113,7 @@ class MainWindowVM(QtCore.QObject):
                 self.loadOriginalImageSignal.emit(filePath, True)
             else:
                 messagebox = QtWidgets.QMessageBox(self._view)
+                messagebox.setWindowTitle("Error")
                 messagebox.setText("Load grayscale image: invalid file path.")
                 messagebox.exec()
 
@@ -133,6 +134,7 @@ class MainWindowVM(QtCore.QObject):
                 self.loadOriginalImageSignal.emit(filePath, False)
             else:
                 messagebox = QtWidgets.QMessageBox(self._view)
+                messagebox.setWindowTitle("Error")
                 messagebox.setText("Load color image: invalid file path.")
                 messagebox.exec()
 
@@ -158,10 +160,12 @@ class MainWindowVM(QtCore.QObject):
                     self.saveProcessedImageSignal.emit(filePath)
                 else:
                     messagebox = QtWidgets.QMessageBox(self._view)
+                    messagebox.setWindowTitle("Error")
                     messagebox.setText("Save processed image: invalid file path.")
                     messagebox.exec()
         else:
             messagebox = QtWidgets.QMessageBox(self._view)
+            messagebox.setWindowTitle("Error")
             messagebox.setText("Save processed image: no processed image.")
             messagebox.exec()
 
