@@ -63,7 +63,6 @@ class PlotterWindowVM(QtCore.QObject):
         # in view
         self._view.comboBoxFunction.addItems(functionNames)
 
-
     def updateOriginalImageFunctionData(self, functionName, plotDataItems):
         self._model.functionModels[functionName].originalImagePlotDataItems.availablePlotDataItems = plotDataItems
         self._model.functionModels[functionName].originalImagePlotDataItems.isDirty = False

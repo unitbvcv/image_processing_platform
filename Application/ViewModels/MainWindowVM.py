@@ -56,7 +56,7 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelOriginalImage.setLeftClickPosition(clickPosition)
         self._view.labelProcessedImage.setLeftClickPosition(clickPosition)
 
-    def highlightImageLabelRightClickLastPositions(self, clickPositions : deque):
+    def highlightImageLabelRightClickLastPositions(self, clickPositions: deque):
         self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
         self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
 

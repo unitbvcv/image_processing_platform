@@ -433,23 +433,6 @@ class MainWindowView(QtWidgets.QMainWindow):
                     menu = self._menusDictionary[lastMenuName]
                     _addAction(actionName, menu, beforeElementAction)
                     return self._menuActionsDictionary[actionName]
-
-
-    # def addMenuSeparator(self, menuName, beforeActionName=None):
-    #     """
-    #     Adds a separator in the menuName [before beforeActionName].
-    #     It does nothing if the menuName is not found.
-    #     If beforeActionName is not found, it appends the new action.
-    #     :param menuName: string
-    #     :param beforeActionName: string; default value: None
-    #     :return: None
-    #     """
-    #     if menuName in self._menusDictionary:
-    #         beforeAction = None
-    #         if beforeActionName is not None:
-    #             beforeAction = self._menuActionsDictionary[beforeActionName]
-    #         self._menusDictionary[menuName].insertSeparator(beforeAction)
-
 # endregion
 
     def _mouseLeavedEvent(self, QEvent):

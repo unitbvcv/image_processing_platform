@@ -117,7 +117,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         self.groupBoxProcessedImage.setTitle(_translate("MagnifierWindow", "Processed image"))
         self.labelColorSpace.setText(_translate("MagnifierWindow", "Color space:"))
 
-    def setColorSpace(self, colorSpace : MagnifierWindowSettings.ColorSpaces):
+    def setColorSpace(self, colorSpace: MagnifierWindowSettings.ColorSpaces):
         """
         TODO: document MagnifierWindow setColorSpace
         :return:

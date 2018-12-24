@@ -17,7 +17,7 @@ class SmartDialog(QtWidgets.QDialog):
     def _setBasicUI(self):
         self.setWindowTitle("Input dialog")
         self.setMinimumWidth(250)
-        self.setMaximumHeight(500) # sugestii?
+        self.setMaximumHeight(500)
 
         self.baseLayout = QtWidgets.QVBoxLayout(self)
         self.baseLayout.setContentsMargins(11, 11, 11, 11)

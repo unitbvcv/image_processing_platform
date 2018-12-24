@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import *
+from dataclasses import dataclass
+from typing import Iterable, Optional, Union, Tuple
 
 from pyqtgraph import PlotDataItem
 

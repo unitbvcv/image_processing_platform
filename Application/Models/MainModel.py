@@ -24,7 +24,7 @@ class MainModel(object):
         self.leftClickPosition = None
         self.rightClickLastPositions.clear()
 
-    def saveProcessedImage(self, filePath : str):
+    def saveProcessedImage(self, filePath: str):
         if self.processedImage is not None:
             processedImageShapeLen = len(self.processedImage.shape)
 

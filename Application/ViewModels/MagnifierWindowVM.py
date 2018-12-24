@@ -47,7 +47,7 @@ class MagnifierWindowVM(QtCore.QObject):
         """
         return self._view.isWindowVisible
 
-    def setMagnifierColorSpace(self, colorSpace : MagnifierWindowSettings.ColorSpaces):
+    def setMagnifierColorSpace(self, colorSpace: MagnifierWindowSettings.ColorSpaces):
         """
         TODO: document MagnifierWindowViewModel.setMagnifierColorSpace
         :param colorSpace:

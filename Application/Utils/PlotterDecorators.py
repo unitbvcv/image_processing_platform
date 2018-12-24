@@ -23,8 +23,6 @@ class PlotterFunction:
                 self._computeOnClick = onClick
                 self.__dict__.update(kwargs)
 
-                # functools.update_wrapper(self, func)
-
             def __getattr__(self, item):
                 return self._func.item
 

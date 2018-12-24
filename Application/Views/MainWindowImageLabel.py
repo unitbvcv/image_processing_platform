@@ -31,7 +31,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         self._leftClickPosition = clickPosition
         self.update()
 
-    def setRightClickLastPositions(self, rightClickLastPositions : deque):
+    def setRightClickLastPositions(self, rightClickLastPositions: deque):
         self._rightClickLastPositions = rightClickLastPositions
         self.update()
 

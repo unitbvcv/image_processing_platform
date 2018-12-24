@@ -32,8 +32,6 @@ class RegisterAlgorithm:
                 self._fromMainModel = fromMainModel
                 self.__dict__.update(kwargs)
 
-                # functools.update_wrapper(self, func)
-
             def __getattr__(self, item):
                 return getattr(self._func, item)
 

@@ -1,6 +1,9 @@
 # Taken from:
 # https://stackoverflow.com/a/34102855/6271450
-import errno, os, sys, tempfile
+import errno
+import os
+import sys
+import tempfile
 
 
 # Sadly, Python fails to provide the following magic number for us.
@@ -93,7 +96,7 @@ def _is_pathname_valid(pathname: str) -> bool:
                     return False
     # If a "TypeError" exception was raised, it almost certainly has the
     # error message "embedded NUL character" indicating an invalid pathname.
-    except TypeError as exc:
+    except TypeError:
         return False
     # If no exception was raised, all path components and hence this
     # pathname itself are valid. (Praise be to the curmudgeonly python.)
@@ -118,7 +121,8 @@ def _is_path_sibling_creatable(pathname: str) -> bool:
     try:
         # For safety, explicitly close and hence delete this temporary file
         # immediately after creating it in the passed path's parent directory.
-        with tempfile.TemporaryFile(dir=dirname): pass
+        with tempfile.TemporaryFile(dir=dirname):
+            pass
         return True
     # While the exact type of exception raised by the above function depends on
     # the current version of the Python interpreter, all such types subclass the

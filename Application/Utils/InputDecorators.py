@@ -25,8 +25,6 @@ class InputDialog:
                 self._func = func
                 self._requestedInputs = requestedInputs
 
-                # functools.update_wrapper(self, func)
-
             def __getattr__(self, item):
                 return getattr(self._func, item)
 
@@ -34,9 +32,6 @@ class InputDialog:
             def __call__(self, *args, **kwargs):
 
                 dialog = SmartDialog()
-                # readData = dialog.showDialog(**self._requestedInputs)
-                # if readData is not None:
-                #     return self._func(*args, **kwargs, **readData)
                 dialog.showDialog(**self._requestedInputs)
                 if dialog.cancelled:
                     self._func.setHasResult(False)

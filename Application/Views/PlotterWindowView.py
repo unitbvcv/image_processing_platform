@@ -1,8 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraph import PlotWidget
 
-import Application.PlottingAlgorithms
-
 
 class PlotterWindowView(QtWidgets.QMainWindow):
     """
@@ -76,7 +74,6 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.comboBoxFunction.sizePolicy().hasHeightForWidth())
         self.comboBoxFunction.setSizePolicy(sizePolicy)
-        # self.comboBoxFunction.addItems(Application.PlottingAlgorithms.registeredAlgorithms.keys())
         self.comboBoxFunction.setObjectName("comboBoxFunction")
         self.verticalLayout_5.addWidget(self.comboBoxFunction)
         self.labelVisibleOriginalImage = QtWidgets.QLabel(self.groupBoxSettings)

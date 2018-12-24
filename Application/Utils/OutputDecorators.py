@@ -26,8 +26,6 @@ class OutputDialog:
                 self._func = func
                 self._title = title
 
-                # functools.update_wrapper(self, func)
-
             def __getattr__(self, item):
                 return getattr(self._func, item)
 

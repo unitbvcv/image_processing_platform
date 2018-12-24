@@ -23,6 +23,7 @@ def relativeColorLuminance(QColor):
     # https://en.wikipedia.org/wiki/Luma_%28video%29#Use_of_relative_luminance
     return 0.2126 * componentsList[0] + 0.7152 * componentsList[1] + 0.0722 * componentsList[2]
 
+
 def calculateContrastRatio(QColor1, QColor2):
     """
     TODO: document calculateContrastRatio
