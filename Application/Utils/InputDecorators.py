@@ -26,9 +26,12 @@ class InputDialog:
             def __call__(self, *args, **kwargs):
 
                 dialog = SmartDialog()
-                readData = dialog.showDialog(**self._requestedInputs)
-
-                return self._func(*args, **kwargs, **readData)
+                # readData = dialog.showDialog(**self._requestedInputs)
+                # if readData is not None:
+                #     return self._func(*args, **kwargs, **readData)
+                dialog.showDialog(**self._requestedInputs)
+                if dialog.cancelled is False:
+                    return self._func(*args, **kwargs, **dialog.readData)
 
         wrapper = InputDialogWrapper(function, self._kwargs)
         for registeredFunctionName, registeredFunction in registeredAlgorithms.items():

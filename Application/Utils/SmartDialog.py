@@ -6,6 +6,9 @@ class SmartDialog(QtWidgets.QDialog):
         super().__init__(parent)
         self._setBasicUI()
 
+        self._cancelled = None
+        self._readData = None
+
         self._textBoxDictionary = {}
 
     def _setBasicUI(self):
@@ -55,6 +58,14 @@ class SmartDialog(QtWidgets.QDialog):
 
         self.baseLayout.addLayout(self.horizontalButtonLayout)
 
+    @property
+    def cancelled(self):
+        return self._cancelled
+
+    @property
+    def readData(self):
+        return self._readData
+
     def showDialog(self, **kwargs):
         # designing dialog
         # TODO: move font size and everything in settings
@@ -81,10 +92,12 @@ class SmartDialog(QtWidgets.QDialog):
 
         # showing dialog
         if self.exec() == QtWidgets.QDialog.Rejected:
-            return {}
+            self._cancelled = True
+            return
 
         # the dialog was accepted
-        readData = {}
+        self._cancelled = False
+        self._readData = {}
 
         for paramName, value in kwargs.items():
             if isinstance(value, tuple):
@@ -96,6 +109,4 @@ class SmartDialog(QtWidgets.QDialog):
                 convertedValue = typeRequested(self._textBoxDictionary[paramName].text())
             except:
                 convertedValue = self._textBoxDictionary[paramName].text()
-            readData[paramName] = convertedValue
-
-        return readData
+            self._readData[paramName] = convertedValue
