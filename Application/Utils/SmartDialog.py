@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtWidgets
 class SmartDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setWindowFlag(QtCore.Qt.WindowContextHelpButtonHint, False)
         self._setBasicUI()
 
         self._cancelled = None
