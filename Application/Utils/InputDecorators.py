@@ -1,4 +1,4 @@
-from functools import wraps
+import functools
 
 from Application.ImageProcessingAlgorithms import registeredAlgorithms
 from Application.Utils.SmartDialog import SmartDialog
@@ -25,10 +25,11 @@ class InputDialog:
                 self._func = func
                 self._requestedInputs = requestedInputs
 
+                functools.update_wrapper(self, self._func, functools.WRAPPER_ASSIGNMENTS + ('__bases__,',), [])
+
             def __getattr__(self, item):
                 return getattr(self._func, item)
 
-            @wraps(function)
             def __call__(self, *args, **kwargs):
 
                 dialog = SmartDialog()

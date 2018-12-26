@@ -1,4 +1,4 @@
-from functools import wraps
+import functools
 
 from Application.ImageProcessingAlgorithms import registeredAlgorithms
 from Application.Utils._BaseWrapper import BaseWrapper
@@ -32,6 +32,8 @@ class RegisterAlgorithm:
                 self._fromMainModel = fromMainModel
                 self.__dict__.update(kwargs)
 
+                functools.update_wrapper(self, self._func, functools.WRAPPER_ASSIGNMENTS+('__bases__,',), [])
+
             def __getattr__(self, item):
                 return getattr(self._func, item)
 
@@ -47,7 +49,6 @@ class RegisterAlgorithm:
             def before(self):
                 return self._before
 
-            @wraps(function)
             def __call__(self, *args, **kwargs):
                 return self._func(*args, **kwargs)
 

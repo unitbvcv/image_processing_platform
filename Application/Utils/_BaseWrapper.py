@@ -1,9 +1,14 @@
-class BaseWrapper:  # dataclass?
+import functools
+
+
+class BaseWrapper:
 
     def __init__(self, func):
         self.hasResult = None
         self.result = None
         self._func = func
+
+        functools.update_wrapper(self, self._func, functools.WRAPPER_ASSIGNMENTS + ('__bases__,',))
 
     # need to set members of BaseWrappers somehow
     # simply accessing them will create attributes in the wrapper
