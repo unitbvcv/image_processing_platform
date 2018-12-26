@@ -12,6 +12,7 @@ class MagnifierWindowVM(QtCore.QObject):
     """
 
     windowClosingSignal = pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
+    """window closing signal docstring"""
 
     def __init__(self, parent=None):
         """

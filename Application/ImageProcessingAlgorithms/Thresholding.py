@@ -7,6 +7,12 @@ from Application.Utils.OutputDecorators import OutputDialog
 @InputDialog(threshold=int)
 @OutputDialog(title="Binarization Output")
 def binarization(image, threshold):
+    """Applies binarization based on given threshold.
+
+    :param image:
+    :param threshold:
+    :return:
+    """
     # if the image is grayscale
     if len(image.shape) == 2:
         image[image < threshold] = 0
