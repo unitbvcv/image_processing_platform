@@ -1,7 +1,7 @@
 import re
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.Qt import pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 import Application.Settings
 import Application.Utils.ZoomOperations
