@@ -10,6 +10,7 @@ if __name__ == "__main__":
         app = QtWidgets.QApplication(sys.argv)
         mainViewModel = MainVM(app)
         sys.exit(app.exec_())
+
     except Exception as exception:
         # using Tk for displaying the exception as it comes with Python
         import tkinter
@@ -18,6 +19,22 @@ if __name__ == "__main__":
 
         exc_type, exc_value, exc_traceback = sys.exc_info()
 
-        tkMainWindow = tkinter.Tk()
-        tkMainWindow.withdraw()  # hide main window
-        messagebox.showerror("Exception thrown", '\n'.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+        rootTk = tkinter.Tk()
+        rootTk.withdraw()  # hide main window
+
+        # under Windows, transient windows (such as messagebox) don’t show show up in the taskbar
+        # this is a workaround
+        # https://stackoverflow.com/a/45769196
+        if rootTk._windowingsystem == 'win32':
+            # windows showerror
+            top = tkinter.Toplevel(rootTk)
+            top.iconify()
+            messagebox.showerror("Exception thrown",
+                                 '\n'.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+            top.destroy()
+        else:
+            # non-windows showerror
+            messagebox.showerror("Exception thrown",
+                                 '\n'.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+
+        rootTk.destroy()
