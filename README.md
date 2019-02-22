@@ -1,4 +1,4 @@
-# Image Processing Framework
+# Image Processing Tool
 
 # Requirements
 - Python >=3.5

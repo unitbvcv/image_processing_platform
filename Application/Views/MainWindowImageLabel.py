@@ -89,17 +89,19 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
                 # vertical line
-                painter.drawLine(self._leftClickPosition.x(), 0, self._leftClickPosition.x(), (self.height() - 1) // self._zoom)
+                # painter.drawLine(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom)
+                painter.drawLine(QtCore.QLineF(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom))
 
                 # horizontal line
-                painter.drawLine(0, self._leftClickPosition.y(), (self.width() - 1) // self._zoom, self._leftClickPosition.y())
+                # painter.drawLine(0.0, self._leftClickPosition.y() + 0.5, (self.width() - 1) / self._zoom, self._leftClickPosition.y() + 0.5)
+                painter.drawLine(QtCore.QLineF(0.0, self._leftClickPosition.y() + 0.5, (self.width() - 1) / self._zoom, self._leftClickPosition.y() + 0.5))
 
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
-                painter.drawRect(self._leftClickPosition.x() - cornerCalcOffset,
-                                 self._leftClickPosition.y() - cornerCalcOffset,
+                painter.drawRect(QtCore.QRectF(self._leftClickPosition.x() + 0.5 - cornerCalcOffset,
+                                 self._leftClickPosition.y() + 0.5 - cornerCalcOffset,
                                  Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
-                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1)
+                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1))
 
             if self._rightClickLastPositions is not None:
                 painter.setPen(QtGui.QPen(QtCore.Qt.blue))
@@ -118,10 +120,10 @@ class MainWindowImageLabel(QtWidgets.QLabel):
 
                     # +1 because we need to take into account the thickness of the rectangle itself
                     # we want its contents inside to be frameGridSize^2
-                    painter.drawRect(x - cornerCalcOffset,
-                                     y - cornerCalcOffset,
+                    painter.drawRect(QtCore.QRectF(x + 0.5 - cornerCalcOffset,
+                                     y + 0.5 - cornerCalcOffset,
                                      Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1,
-                                     Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1)
+                                     Application.Settings.RightClickPointerSettings.aroundClickSquareSize + 1))
 
                     if Application.Settings.RightClickPointerSettings.showClickOrder:
                         clickNumberStr = str(clickNumber + 1)
@@ -130,5 +132,10 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                         painter.drawText(x - horizontalAdvance / 2 + 1,
                                          y + fontMetrics.ascent() / 2 - 1,
                                          clickNumberStr)
+
+                    # draw a point in the center to know the exact selected pixel
+                    painter.setPen(QtGui.QPen(QtCore.Qt.red))
+                    painter.drawPoint(QtCore.QPointF(x + 0.5, y + 0.5))
+                    painter.setPen(QtGui.QPen(QtCore.Qt.blue))
 
         self.finishedPaintingSignal.emit()
