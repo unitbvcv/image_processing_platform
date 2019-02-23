@@ -89,11 +89,9 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
 
                 # vertical line
-                # painter.drawLine(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom)
                 painter.drawLine(QtCore.QLineF(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom))
 
                 # horizontal line
-                # painter.drawLine(0.0, self._leftClickPosition.y() + 0.5, (self.width() - 1) / self._zoom, self._leftClickPosition.y() + 0.5)
                 painter.drawLine(QtCore.QLineF(0.0, self._leftClickPosition.y() + 0.5, (self.width() - 1) / self._zoom, self._leftClickPosition.y() + 0.5))
 
                 # +1 because we need to take into account the thickness of the rectangle itself
