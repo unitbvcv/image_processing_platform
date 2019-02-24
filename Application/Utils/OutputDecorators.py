@@ -40,11 +40,14 @@ class OutputDialog:
                         self._func.setResult(None)
                     else:
                         try:
-                            if isinstance(self._func.result[-1], str):
+                            if isinstance(self._func.result[-1], str):  # if self._func.result is iterable and has at least one element and the last one is string
                                 QMessageBox.about(None, self._title, self._func.result[-1])
                                 self._func.setResult(self._func.result[:-1])
-                                if len(self._func.result) == 1:
-                                    self._func.setResult(self._func.result[0])
+                            if len(self._func.result) == 0:
+                                self._func.setHasResult(False)
+                                self._func.setResult(None)
+                            else:
+                                self._func.setResult(self._func.result[0])
                         except IndexError:
                             pass
                 return self._func.result
