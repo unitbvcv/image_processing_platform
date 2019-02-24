@@ -27,7 +27,7 @@ Run the `ImageProcessingFramework.pyw` script using Python.
 ### Adding image processing algorithms
 Adding algorithms will be done in the folder ImageProcessingAlgorithms.
 
-The tool will automatically import all files that do not start with '_'. At the moment, the tool 
+The tool will automatically import all files that do not start with `_` (underscore). At the moment, the tool 
 does not distinguish between files and packages, so packages will be included as well. If you want
 to include files from packages, do so in a `__init__.py` file in your package.
 
@@ -61,7 +61,7 @@ in the list which in turn must be the same names of the MainModel class attribut
 for getting clicks (left or right).
 - other named parameters
 
-##### Reading user inputs for an algorithm
+#### Reading user inputs for an algorithm
 Some algorithms require the user to provide one or more inputs. Similar to the `@RegisterAlgorithm` decorator which
 tells the tool what to do, there is another useful decorator called `@InputDialog`. This decorator instructs the program
 to show an input dialog before calling the function to get user input and pass this user input to the function.
@@ -81,7 +81,7 @@ the returned value of the callable will be transmitted to the function; ints, fl
 use case for this, but the user can define it's own classes and parse the string given for data (even xml or json parsers
 are possible)
 
-##### Displaying text results or errors
+#### Displaying text results or errors
 Some algorithms don't produce an image, but have other results which should be displayed to the user.
 In the same fashion, the tool provides the `@OutputDialog` decorator. It will instruct the tool to show a text dialog 
 when the function returns.
@@ -90,7 +90,7 @@ Requirements for a function to use `@OutputDialog`:
 - your module/package must import the `@OutputDialog` decorator
 - the function must have the `@RegisterAlgorithm` decorator; order of decorators doesn't mater; 
 
-The `@OutputDialog` decorator can accept one string parameter: the dialog's title.
+The `@OutputDialog` decorator accepts one mandatory string parameter: the dialog's title.
 
 The displayed message will be OPTIONALLY* transmitted in the return value of the function in the following manners:
 1) as the only return value:  `return "My message"`
