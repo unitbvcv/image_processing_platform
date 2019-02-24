@@ -40,7 +40,7 @@ Requirements for a function to be registered correctly:
 - it must receive at least one parameter (name doesn't matter)
 - it must return None or a numpy.ndarray (representing an image)
 - the `@RegisterAlgorithm` decorator will receive the following 2 parameters in this order:
-    1) an unique name for the algorithm (string)
+    1) a unique name for the algorithm (string)
     2) a menu or menu path in which it will reside in the UI (string)
 
 Notes on the above mentioned:
@@ -103,6 +103,45 @@ The displayed message will be OPTIONALLY* transmitted in the return value of the
 *you can still transmit just the image if you wish so
 
 ### Adding plotting algorithms
+One of the ways to extract information about an image is to plot different data or functions based on the image. The tool
+comes with three basic algorithms in the PlottingAlgorithms package. You can add your own algorithms in this package. 
+Same conventions apply to importing plotting algorithms (see above section): those who start with an underscore are
+not imported, no distinction between modules and packages etc.
+
+Plotting algorithms will be put in functions decorated with `@PlotterFunction`. It does not work on classes.
+These functions will be registered by the tool and will be integrated in the UI automatically. It will be present in the
+"Plot Function" drop down list in the Plotter window.
+
+Requirements for a function to be registered correctly:
+- your module/package must import the `@PlotterFunction` decorator and the `PlottingData` class
+- it must receive at least one parameter (name doesn't matter)
+- it must return a list
+- the `@PlotterFunction` decorator will receive a unique name for the algorithm (string); it will be shown in the UI
+
+Optional decorator parameters:
+- fromMainModel: list of strings; if data from the mainModel is needed, members of the MainModel class can be specified as strings,
+and they will be sent to the function as named arguments (the function's parameters' names must match the names written
+in the list which in turn must be the same names of the MainModel class attributes). Especially useful
+for getting clicks (left or right).
+- computeOnImageChanged: bool; set this to true if you want to compute the plot function when the image in the panel 
+changes; this function is called only once; especially useful for functions that do not depend on user
+interaction or other outside data;
+- computeOnClick: bool; set this to true if your data changes based on user clicks;
+- other named parameters
+
+Plotting functions are called in a lazy fashion. They are not called until they are selected in the drop-down list.
+
+The values that you want to plot are stored in a `PlottingData` object. A plotting function must return a list of 
+`PlottingData` objects. This allows one function to have multiple plots for comparison. 
+Each `PlottingData` object contains:
+- name: string; mandatory; this will be shown in the legend of the plotting window;
+- y: iterable; mandatory; this is an iterable (list, tuple, generator, numpy.ndarray etc.) of values that will be 
+plotted on the Y axis
+- x: iterable; this is an iterable (list, tuple, generator, numpy.ndarray etc.) of values that will be 
+plotted on the X axis; if not provided, the default is equivalent to `range(len(y))` (done by pyqtgraph library)
+- pen: string or tuple of 4 ints; this sets the color of the plot; supported formats are RGBA and strings ('w' for white,
+'b' for black, 'r' for red, 'g' for green, 'b' for green); see pyqtgraph library for details
+
 
 ### Customizing the application settings
 
