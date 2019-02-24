@@ -38,7 +38,7 @@ registered by the tool. At the moment, the decorator works exclusively on functi
 Requirements for a function to be registered correctly:
 - your module/package must import numpy and the `@RegisterAlgorithm` decorator
 - it must receive at least one parameter (name doesn't matter)
-- it must return None or a numpy.ndarray
+- it must return None or a numpy.ndarray (representing an image)
 - the `@RegisterAlgorithm` decorator will receive the following 2 parameters in this order:
     1) an unique name for the algorithm (string)
     2) a menu or menu path in which it will reside in the UI (string)
