@@ -25,6 +25,10 @@ Run the `ImageProcessingFramework.pyw` script using Python.
 ### UI Introduction
 
 ### Adding image processing algorithms
+
+Examples present in the application in [PointwiseOperations.py](Application/ImageProcessingAlgorithms/PointwiseOperations.py) 
+and [Thresholding.py](Application/ImageProcessingAlgorithms/Thresholding.py).
+
 Adding algorithms will be done in the folder ImageProcessingAlgorithms.
 
 The tool will automatically import all files that do not start with `_` (underscore). At the moment, the tool 
@@ -103,6 +107,9 @@ The displayed message will be OPTIONALLY* transmitted in the return value of the
 *you can still transmit just the image if you wish so
 
 ### Adding plotting algorithms
+
+Examples present in the tool [here](Application/PlottingAlgorithms/Basic.py).
+
 One of the ways to extract information about an image is to plot different data or functions based on the image. The tool
 comes with three basic algorithms in the PlottingAlgorithms package. You can add your own algorithms in this package. 
 Same conventions apply to importing plotting algorithms (see above section): those who start with an underscore are
