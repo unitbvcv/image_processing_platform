@@ -14,7 +14,7 @@ class MainWindowSettings:
     zoomSingleStep: float = 0.05
     zoomPageStep: float = 1.0
     zoomDefaultValue: float = 1.0
-    ticksInterval: int = 1
+    zoomTicksInterval: int = 1
 
     def __post_init__(self):
         # TODO: think if more tests are needed

@@ -307,7 +307,7 @@ class MainWindowView(QtWidgets.QMainWindow):
                 Application.Settings.MainWindowSettings.zoomPageStep))
         self.horizontalSliderZoom.setTickInterval(
             Application.Utils.ZoomOperations.calculateSliderValueFromZoom(
-                Application.Settings.MainWindowSettings.ticksInterval)
+                Application.Settings.MainWindowSettings.zoomTicksInterval)
         )
 
         self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
