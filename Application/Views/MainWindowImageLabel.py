@@ -86,7 +86,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 painter.setPen(QtGui.QPen(QtCore.Qt.red))
                 painter.pen().setWidth(1)
 
-                cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.frameGridSize / 2) + 1
+                cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.gridSize / 2) + 1
 
                 # vertical line
                 painter.drawLine(QtCore.QLineF(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom))
@@ -97,9 +97,9 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
                 painter.drawRect(QtCore.QRectF(self._leftClickPosition.x() + 0.5 - cornerCalcOffset,
-                                 self._leftClickPosition.y() + 0.5 - cornerCalcOffset,
-                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1,
-                                 Application.Settings.MagnifierWindowSettings.frameGridSize + 1))
+                                               self._leftClickPosition.y() + 0.5 - cornerCalcOffset,
+                                               Application.Settings.MagnifierWindowSettings.gridSize + 1,
+                                               Application.Settings.MagnifierWindowSettings.gridSize + 1))
 
             if self._rightClickLastPositions is not None:
                 painter.setPen(QtGui.QPen(QtCore.Qt.blue))

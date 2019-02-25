@@ -261,7 +261,7 @@ class MainVM(QtCore.QObject):
         :param clickPosition: QPoint
         :return:
         """
-        frameGridSize = Application.Settings.MagnifierWindowSettings.frameGridSize
+        frameGridSize = Application.Settings.MagnifierWindowSettings.gridSize
 
         imagePixels = numpy.full((frameGridSize, frameGridSize), None)
 

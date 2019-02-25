@@ -32,10 +32,10 @@ class MagnifierWindowSettings:
     TODO: document MagnifierWindowSettings
     """
 
-    frameGridSize: int = 9  # positive odd number here
-    threeZoneHeightPadding: int = 12  # in pixels
-    fourZoneHeightPadding: int = 6  # in pixels
-    fontSize: int = 8  # in points
+    gridSize: int = 9  # positive odd number here
+    textThreeRowsHeightPadding: int = 12  # in pixels
+    textFourRowsHeightPadding: int = 6  # in pixels
+    textFontSize: int = 8  # in points
 
     class ColorSpaces(Enum):
         RGB = (0, 'RGB (Red, Green, Blue) (max. 255R, 255G, 255B)')
@@ -51,9 +51,9 @@ class MagnifierWindowSettings:
 
     def __post_init__(self):
         # TODO: think if more tests are needed
-        assert self.frameGridSize % 2 == 1
-        assert self.frameGridSize > 0
-        assert self.fontSize > 0
+        assert self.gridSize % 2 == 1
+        assert self.gridSize > 0
+        assert self.textFontSize > 0
 
 
 # TODO: must be singleton! find alternative or explain

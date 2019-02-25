@@ -31,8 +31,8 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         # make sure the window is always on top so that when we click it doesn't fall behind the main window
         self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint, True)
 
-        rows = MagnifierWindowSettings.frameGridSize
-        columns = MagnifierWindowSettings.frameGridSize
+        rows = MagnifierWindowSettings.gridSize
+        columns = MagnifierWindowSettings.gridSize
         generateList = lambda nbRows, nbColumns: [
             [MagnifierPixelFrame() for column in range(nbColumns)] for row in range(nbRows)
         ]
@@ -122,8 +122,8 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         TODO: document MagnifierWindow setColorSpace
         :return:
         """
-        for row in range(MagnifierWindowSettings.frameGridSize):
-            for column in range(MagnifierWindowSettings.frameGridSize):
+        for row in range(MagnifierWindowSettings.gridSize):
+            for column in range(MagnifierWindowSettings.gridSize):
                 self.frameListOriginalImage[row][column].setColorDisplayFormat(colorSpace)
                 self.frameListProcessedImage[row][column].setColorDisplayFormat(colorSpace)
 
@@ -162,8 +162,8 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
         TODO: document MagnifierWindow reset
         :return: None
         """
-        for row in range(MagnifierWindowSettings.frameGridSize):
-            for column in range(MagnifierWindowSettings.frameGridSize):
+        for row in range(MagnifierWindowSettings.gridSize):
+            for column in range(MagnifierWindowSettings.gridSize):
                 self.frameListOriginalImage[row][column].clear()
                 self.frameListProcessedImage[row][column].clear()
 

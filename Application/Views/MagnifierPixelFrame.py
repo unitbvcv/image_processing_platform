@@ -61,7 +61,7 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
             painter.fillRect(self.rect(), self._backgroundColor)
 
             font = QtGui.QFont("Arial")
-            font.setPointSize(MagnifierWindowSettings.fontSize)
+            font.setPointSize(MagnifierWindowSettings.textFontSize)
             painter.setFont(font)
             fontMetrics = QtGui.QFontMetrics(font)
 
@@ -93,10 +93,10 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 # the (usually) visible part of the text is the ascent, not the height
                 # fonts usually have a baseline; the font will have parts of it below the baseline
                 # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
-                zoneHeight = (self.height() - MagnifierWindowSettings.fourZoneHeightPadding) / 4
+                zoneHeight = (self.height() - MagnifierWindowSettings.textFourRowsHeightPadding) / 4
                 halfFontAscent = fontMetrics.ascent() / 2
                 halfZoneHeight = zoneHeight / 2
-                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.fourZoneHeightPadding / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.textFourRowsHeightPadding / 2
 
                 painter.drawText((self.width() - horizontalAdvanceCyan) / 2, zoneHeight - zoneHeightOffset,
                                  textCyan)
@@ -131,10 +131,10 @@ class MagnifierPixelFrame(QtWidgets.QFrame):
                 # the (usually) visible part of the text is the ascent, not the height
                 # fonts usually have a baseline; the font will have parts of it below the baseline
                 # but those are exceptions (eg. Q - the line below the O that forms the Q is below the baseline)
-                zoneHeight = (self.height() - MagnifierWindowSettings.threeZoneHeightPadding) / 3
+                zoneHeight = (self.height() - MagnifierWindowSettings.textThreeRowsHeightPadding) / 3
                 halfFontAscent = fontMetrics.ascent() / 2
                 halfZoneHeight = zoneHeight / 2
-                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.threeZoneHeightPadding / 2
+                zoneHeightOffset = halfZoneHeight - halfFontAscent - MagnifierWindowSettings.textThreeRowsHeightPadding / 2
 
                 painter.drawText((self.width() - horizontalAdvanceRed) / 2, zoneHeight - zoneHeightOffset,
                                  textFirst)

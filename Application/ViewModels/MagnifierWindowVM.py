@@ -75,7 +75,7 @@ class MagnifierWindowVM(QtCore.QObject):
         :param processedImagePixels:
         :return:
         """
-        frameGridSize = MagnifierWindowSettings.frameGridSize
+        frameGridSize = MagnifierWindowSettings.gridSize
 
         for row in range(frameGridSize):
             for column in range(frameGridSize):
