@@ -7,7 +7,7 @@ You can also plot different functions based on the images. There is also a magni
 Image processing and plotting algorithms are easy to integrate with the app.
 
 ## Requirements
-- Python >= 3.5
+- [Python](https://www.python.org/downloads/) >= 3.5
 - [PyQt5](https://pypi.org/project/PyQt5/)
 - [opencv-python](https://pypi.org/project/opencv-python/)
 - [numpy](https://pypi.org/project/numpy/)
