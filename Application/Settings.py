@@ -67,9 +67,9 @@ class RightClickPointerSettings:
     """
 
     aroundClickSquareSize: int = 25  # in pixels
-    numberOfClicksToRemember = 4
-    showClickOrder = True
-    clickOrderFontSize = 12
+    numberOfClicksToRemember: int = 4
+    showClickOrder: bool = True
+    clickOrderFontSize: int = 12
 
     def __post_init__(self):
         # TODO: think if more tests are needed
