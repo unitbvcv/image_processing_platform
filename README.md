@@ -154,22 +154,22 @@ plotted on the X axis; if not provided, the default is equivalent to `range(len(
 
 
 ### Customizing the application settings
-The application splits the settings into 3 classes:
-* MainWindowSettings
+The settings file can be found at [Application/Settings.py](Application/Settings.py). All the settings below are automatically validated by the app (you cannot input wrong settings). The application splits the settings into 3 classes:
+* MainWindowSettings class
     * zoomMinimumValue: float - minimum zoom for the pictures
     * zoomMaximumValue: float - maximum zoom for the pictures
     * zoomSingleStep: float - zoom step when using arrow keys or scroll
     * zoomPageStep: float - zoom step when using PageUp/PageDown keys
     * zoomDefaultValue: float - default zoom value
     * zoomTicksInterval: int - zoom level indicators distance
-* MagnifierWindowSettings
-    * gridSize: int - **positive odd number here**, indicates size of the magnifier (gridSize x gridSize)
+* MagnifierWindowSettings class
+    * gridSize: int - **odd number here**, indicates size of the magnifier (gridSize x gridSize)
     * textThreeRowsHeightPadding: int - in pixels, the height padding when displaying a color with 3 properties
     * textFourRowsHeightPadding: int - in pixels, the height padding when displaying a color with 4 properties
     * textFontSize: int - in points, the font size of the properties of a color
-* RightClickPointerSettings
+* RightClickPointerSettings class
     * aroundClickSquareSize: int - in pixels, displayed square size for right click
-    * numberOfClicksToRemember - number of clicks to put in the queue
+    * numberOfClicksToRemember: int - number of clicks to put in the queue
     * showClickOrder: bool - display right clicks on the images
     * clickOrderFontSize: int - in points, the font size for the order of the clicks
 
