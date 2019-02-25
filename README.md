@@ -23,6 +23,9 @@ Install all the dependencies using the following command in a Command Prompt/Ter
 Run the `ImageProcessingFramework.pyw` script using Python.
 
 ### UI Introduction
+The tool provides a magnifier and a plotter for usage on the original image and on the processed image. After opening the magnifier/plotter, the original/processed image can be **left clicked** and the magnifier/plotter will update. All the markings will dissapear after closing the magnifier/plotter window.
+
+**Right clicking** the original/processed image will add the click location into a queue that can be used by your algorithms as input. Those positions will also be marked in the application. This queue can be emptied using the **Esc** key.
 
 ### Adding image processing algorithms
 
@@ -151,6 +154,24 @@ plotted on the X axis; if not provided, the default is equivalent to `range(len(
 
 
 ### Customizing the application settings
+The application splits the settings into 3 classes:
+* MainWindowSettings
+    * zoomMinimumValue: float - minimum zoom for the pictures
+    * zoomMaximumValue: float - maximum zoom for the pictures
+    * zoomSingleStep: float - zoom step when using arrow keys or scroll
+    * zoomPageStep: float - zoom step when using PageUp/PageDown keys
+    * zoomDefaultValue: float - default zoom value
+    * zoomTicksInterval: int - zoom level indicators distance
+* MagnifierWindowSettings
+    * gridSize: int - **positive odd number here**, indicates size of the magnifier (gridSize x gridSize)
+    * textThreeRowsHeightPadding: int - in pixels, the height padding when displaying a color with 3 properties
+    * textFourRowsHeightPadding: int - in pixels, the height padding when displaying a color with 4 properties
+    * textFontSize: int - in points, the font size of the properties of a color
+* RightClickPointerSettings
+    * aroundClickSquareSize: int - in pixels, displayed square size for right click
+    * numberOfClicksToRemember - number of clicks to put in the queue
+    * showClickOrder: bool - display right clicks on the images
+    * clickOrderFontSize: int - in points, the font size for the order of the clicks
 
 ## Frequently Asked Questions
 > The app throws an "Import Error: DLL load failed: The specified module could not be found" exception
