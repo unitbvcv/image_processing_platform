@@ -23,6 +23,8 @@ Install all the dependencies using the following command in a Command Prompt/Ter
 Run the `ImageProcessingFramework.pyw` script using Python.
 
 ### UI Introduction
+The main window can load an image from disk, show a processed image, zoom the images and save the processed image. The main window also displays your custom image processing algorithms on the top menu bar.
+
 The tool provides a magnifier and a plotter for usage on the original image and on the processed image. After opening the magnifier/plotter, the original/processed image can be **left clicked** and the magnifier/plotter will update. All the markings will dissapear after closing the magnifier/plotter window.
 
 **Right clicking** the original/processed image will add the click location into a queue that can be used by your algorithms as input. Those positions will also be marked in the application. This queue can be emptied using the **Esc** key.
