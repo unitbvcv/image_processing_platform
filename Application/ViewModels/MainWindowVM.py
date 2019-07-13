@@ -58,7 +58,7 @@ class MainWindowVM(QtCore.QObject):
 
     def highlightImageLabelRightClickLastPositions(self, clickPositions: deque):
         self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
-        self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
+        # self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
 
     @pyqtSlot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
