@@ -1,15 +1,28 @@
-from dataclasses import dataclass
-import cv2 as opencv
 from collections import deque
+import cv2 as opencv
+from dataclasses import dataclass
+import numpy as np
+
 import Application.Settings
 
 
 @dataclass
 class MainModel(object):
     originalImage = None
-    processedImage = None
+    _processedImage = None
     leftClickPosition = None
     rightClickLastPositions = deque(maxlen=Application.Settings.RightClickPointerSettings.numberOfClicksToRemember)
+
+    @property
+    def processedImage(self):
+        return self._processedImage
+
+    @processedImage.setter
+    def processedImage(self, value):
+        if value is not None:
+            if value.base is not None:
+                value = value.copy()
+        self._processedImage = value
 
     def readOriginalImage(self, filePath: str, asGrayscale: bool):
         if asGrayscale:
