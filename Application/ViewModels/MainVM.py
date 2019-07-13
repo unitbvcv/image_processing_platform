@@ -103,27 +103,29 @@ class MainVM(QtCore.QObject):
 
         # updating original image pixel label
         if self._model.originalImage is not None:
-            originalImageShapeLen = len(self._model.originalImage.shape)
-            if originalImageShapeLen == 3:
-                pixel = self._model.originalImage[y][x]
-                labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
-            elif originalImageShapeLen == 2:
-                pixel = self._model.originalImage[y][x]
-                labelText = f'(Gray) = ({pixel})'
-        self._mainWindowVM.setOriginalImagePixelValueLabelText(labelText)
+            if y < self._model.originalImage.shape[0] and x < self._model.originalImage.shape[1] and y >= 0 and x >= 0:
+                originalImageShapeLen = len(self._model.originalImage.shape)
+                if originalImageShapeLen == 3:
+                    pixel = self._model.originalImage[y][x]
+                    labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
+                elif originalImageShapeLen == 2:
+                    pixel = self._model.originalImage[y][x]
+                    labelText = f'(Gray) = ({pixel})'
+            self._mainWindowVM.setOriginalImagePixelValueLabelText(labelText)
 
         labelText = ''
 
         # updating processed image pixel label
         if self._model.processedImage is not None:
-            processedImageShapeLen = len(self._model.processedImage.shape)
-            if processedImageShapeLen == 3:
-                pixel = self._model.processedImage[y][x]
-                labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
-            elif processedImageShapeLen == 2:
-                pixel = self._model.processedImage[y][x]
-                labelText = f'(Gray) = ({pixel})'
-        self._mainWindowVM.setProcessedImagePixelValueLabelText(labelText)
+            if y < self._model.processedImage.shape[0] and x < self._model.processedImage.shape[1] and y >= 0 and x >= 0:
+                processedImageShapeLen = len(self._model.processedImage.shape)
+                if processedImageShapeLen == 3:
+                    pixel = self._model.processedImage[y][x]
+                    labelText = f'(R, G, B) = ({pixel[0]}, {pixel[1]}, {pixel[2]})'
+                elif processedImageShapeLen == 2:
+                    pixel = self._model.processedImage[y][x]
+                    labelText = f'(Gray) = ({pixel})'
+            self._mainWindowVM.setProcessedImagePixelValueLabelText(labelText)
 
     @pyqtSlot(str)
     def _onSaveProcessedImageAction(self, filePath):
