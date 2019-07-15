@@ -1,6 +1,6 @@
-from functools import wraps
+import functools
 
-from Application.PlottingAlgorithms import registeredAlgorithms
+from Application.Utils._BaseWrapper import BaseWrapper
 
 
 class PlotterFunction:
@@ -23,8 +23,10 @@ class PlotterFunction:
                 self._computeOnClick = onClick
                 self.__dict__.update(kwargs)
 
+                functools.update_wrapper(self, self._func, functools.WRAPPER_ASSIGNMENTS + ('__bases__,',), [])
+
             def __getattr__(self, item):
-                return self._func.item
+                return getattr(self._func, item)
 
             @property
             def name(self):
@@ -38,12 +40,14 @@ class PlotterFunction:
             def computeOnClick(self):
                 return self._computeOnClick
 
-            @wraps(function)
             def __call__(self, *args, **kwargs):
                 return self._func(*args, **kwargs)
 
             def prepare(self, mainModel):
                 return {argName: mainModel.__dict__[argName] for argName in self._argNames}
+
+        if not hasattr(function, 'result'):
+            function = BaseWrapper(function)
 
         wrapper = PlotterFunctionWrapper(
             self._name,
@@ -53,5 +57,5 @@ class PlotterFunction:
             self._computeOnClick,
             **self._kwargs
         )
-        registeredAlgorithms[self._name] = wrapper
+        function.registeredAlgorithms[self._name] = wrapper
         return wrapper

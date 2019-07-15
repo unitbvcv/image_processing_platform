@@ -2,7 +2,6 @@ import functools
 
 from PyQt5.QtWidgets import QMessageBox
 
-from Application.ImageProcessingAlgorithms import registeredAlgorithms
 from Application.Utils._BaseWrapper import BaseWrapper
 
 
@@ -54,9 +53,9 @@ class OutputDialog:
 
         wrapper = OutputDialogWrapper(function, self._title)
         try:
-            registeredAlgorithms[wrapper.name] = wrapper
+            function.registeredAlgorithms[wrapper.name] = wrapper
         except AttributeError:
-            for registeredFunctionName, registeredFunction in registeredAlgorithms.items():
+            for registeredFunctionName, registeredFunction in function.registeredAlgorithms.items():
                 if function is registeredFunction:
-                    registeredAlgorithms[registeredFunctionName] = wrapper
+                    function.registeredAlgorithms[registeredFunctionName] = wrapper
         return wrapper

@@ -24,7 +24,8 @@ class PlotterWindowView(QtWidgets.QMainWindow):
         self._isWindowVisible = False
 
         # make sure the window is always on top so that when we click it doesn't fall behind the main window
-        self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint, True)
+        # commented this because the input dialog must be able to stay on top
+        # self.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint, True)
 
         ''' this int is needed to clear the visiblePlotDataItems dictionary of the previously
         selected function, otherwise on the next selection, nothing will show up '''

@@ -1,6 +1,5 @@
 import functools
 
-from Application.ImageProcessingAlgorithms import registeredAlgorithms
 from Application.Utils.SmartDialog import SmartDialog
 from Application.Utils._BaseWrapper import BaseWrapper
 
@@ -41,9 +40,9 @@ class InputDialog:
 
         wrapper = InputDialogWrapper(function, self._kwargs)
         try:
-            registeredAlgorithms[wrapper.name] = wrapper
+            function.registeredAlgorithms[wrapper.name] = wrapper
         except AttributeError:
-            for registeredFunctionName, registeredFunction in registeredAlgorithms.items():
+            for registeredFunctionName, registeredFunction in function.registeredAlgorithms.items():
                 if function is registeredFunction:
-                    registeredAlgorithms[registeredFunctionName] = wrapper
+                    function.registeredAlgorithms[registeredFunctionName] = wrapper
         return wrapper

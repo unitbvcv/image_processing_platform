@@ -1,6 +1,5 @@
 import functools
 
-from Application.ImageProcessingAlgorithms import registeredAlgorithms
 from Application.Utils._BaseWrapper import BaseWrapper
 
 
@@ -63,5 +62,5 @@ class RegisterAlgorithm:
             self._fromMainModel,
             **self._kwargs
         )
-        registeredAlgorithms[wrapper.name] = wrapper
+        function.registeredAlgorithms[wrapper.name] = wrapper
         return wrapper
