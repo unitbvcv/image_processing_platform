@@ -200,10 +200,11 @@ class MainVM(QtCore.QObject):
         if image is not None:
             plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
             args = plottingFunction.prepare(self._model)
-            plottingDataList = plottingFunction(image, **args)
-            plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                                 for plottingData in plottingDataList}
-            updateFunction(plottingFunction.name, plotDataItemsDict)
+            plottingFunction(image, **args)
+            if plottingFunction.hasResult:
+                plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
+                                     for plottingData in plottingFunction.result}
+                updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtGui.QKeyEvent)
     def _onKeyPressed(self, QKeyEvent):

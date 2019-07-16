@@ -45,9 +45,11 @@ class OutputDialog:
                                 if len(self._func.result) == 0:
                                     self._func.setHasResult(False)
                                     self._func.setResult(None)
-                                else:
+                                elif len(self._func.result) == 1:
                                     self._func.setResult(self._func.result[0])
                         except IndexError:
+                            pass
+                        except TypeError:
                             pass
                 return self._func.result
 
