@@ -1,5 +1,6 @@
-import numpy
+import collections
 
+import numpy
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
 
@@ -10,6 +11,10 @@ from Application.Models.MainModel import MainModel
 from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
 from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
+
+
+# Point class for main model: https://docs.python.org/3/library/collections.html#collections.namedtuple
+Point = collections.namedtuple('Point', ['x', 'y'])
 
 
 class MainVM(QtCore.QObject):
@@ -146,7 +151,7 @@ class MainVM(QtCore.QObject):
         if self._model.leftClickPosition is not None:
             self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
-        if self._model.rightClickLastPositions.__len__() > 0:
+        if len(self._model.rightClickLastPositions) > 0:
             for x, y in list(self._model.rightClickLastPositions):
                 self._onMousePressedImageLabel(QtCore.QPoint(x, y), QtCore.Qt.RightButton)
 
@@ -221,7 +226,7 @@ class MainVM(QtCore.QObject):
         """
         if mouseButton == QtCore.Qt.LeftButton:
             if self._magnifierVM.isVisible or self._plotterVM.isVisible:
-                self._model.leftClickPosition = clickPosition
+                self._model.leftClickPosition = Point(clickPosition.x(), clickPosition.y())
 
                 self._mainWindowVM.highlightImageLabelLeftClickPosition(clickPosition)
 
@@ -240,7 +245,7 @@ class MainVM(QtCore.QObject):
             self._addRightClickPosition(clickPosition)
 
     def _addRightClickPosition(self, clickPosition):
-        self._model.rightClickLastPositions.append((clickPosition.x(), clickPosition.y()))
+        self._model.rightClickLastPositions.append(Point(clickPosition.x(), clickPosition.y()))
         self._mainWindowVM.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
 
     def _clearRightClickLastPositions(self):

@@ -8,10 +8,10 @@ import Application.Settings
 
 @dataclass
 class MainModel(object):
-    originalImage = None
-    _processedImage = None
-    leftClickPosition = None
-    rightClickLastPositions = deque(maxlen=Application.Settings.RightClickPointerSettings.numberOfClicksToRemember)
+    originalImage = None  # ndarray
+    _processedImage = None  # ndarray
+    leftClickPosition = None  # Point - namedtuple (x, y)
+    rightClickLastPositions = deque(maxlen=Application.Settings.RightClickPointerSettings.numberOfClicksToRemember)  # deque of Point -namedtuples (x, y)
 
     @property
     def processedImage(self):

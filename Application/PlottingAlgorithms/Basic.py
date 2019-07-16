@@ -25,21 +25,21 @@ def plotRowValues(image, leftClickPosition):
     imageShapeLen = len(image.shape)
     if imageShapeLen == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(plotName, image[leftClickPosition.y()], pen='r')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif imageShapeLen == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 0], pen='r')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y, :, 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 1], pen='g')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y, :, 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[leftClickPosition.y(), :, 2], pen='b')
+        plottingData = PlottingData(plotName, image[leftClickPosition.y, :, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
@@ -64,21 +64,21 @@ def plotColumnValues(image, leftClickPosition):
     imageShapeLen = len(image.shape)
     if imageShapeLen == 2:
         plotName = 'Gray level'
-        plottingData = PlottingData(plotName, image[:, leftClickPosition.x()], pen='r')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x], pen='r')
         plotDataItemsList.append(plottingData)
 
     # Color image
     elif imageShapeLen == 3:
         plotName = 'Red channel'
-        plottingData = PlottingData(plotName, image[:, leftClickPosition.x(), 0], pen='r')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x, 0], pen='r')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Green channel'
-        plottingData = PlottingData(plotName, image[:, leftClickPosition.y(), 1], pen='g')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x, 1], pen='g')
         plotDataItemsList.append(plottingData)
 
         plotName = 'Blue channel'
-        plottingData = PlottingData(plotName, image[:, leftClickPosition.y(), 2], pen='b')
+        plottingData = PlottingData(plotName, image[:, leftClickPosition.x, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
     return plotDataItemsList
