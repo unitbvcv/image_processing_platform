@@ -41,14 +41,7 @@ class PlotterFunction:
                 return self._computeOnClick
 
             def __call__(self, *args, **kwargs):
-                self._func(*args, **kwargs)
-                try:
-                    if self._func.result is None or len(self._func.result) == 0:
-                        self._func.setHasResult(False)
-                        self._func.setResult(None)
-                except TypeError:
-                    pass
-                return self._func.result
+                return self._func(*args, **kwargs)
 
             def prepare(self, mainModel):
                 return {argName: mainModel.__dict__[argName] for argName in self._argNames}

@@ -211,13 +211,18 @@ class MainVM(QtCore.QObject):
         )
 
     def _sendPlotterData(self, functionName, image, updateFunction):
-        if image is not None:
+        if image is not None:  # probably move this down 2 lines
             plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
             args = plottingFunction.prepare(self._model)
             plottingFunction(image, **args)
             if plottingFunction.hasResult:
+                if plottingFunction.result is None:
+                    plottingFunction.setResult({})
+                plottingDataList = plottingFunction.result.get('plottingDataList')
+                if plottingDataList is None:
+                    plottingDataList = []
                 plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                                     for plottingData in plottingFunction.result}
+                                     for plottingData in plottingDataList}
                 updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtGui.QKeyEvent)

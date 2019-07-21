@@ -34,7 +34,7 @@ class InputDialog:
                 dialog.showDialog(**self._requestedInputs)
                 if dialog.cancelled:
                     self._func.setHasResult(False)
-                    self._func.result = {}
+                    self._func.setResult({})
                     return self._func.result
                 return self._func(*args, **kwargs, **dialog.readData)
 
