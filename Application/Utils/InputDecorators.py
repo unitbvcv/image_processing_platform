@@ -30,12 +30,12 @@ class InputDialog:
                 return getattr(self._func, item)
 
             def __call__(self, *args, **kwargs):
-
                 dialog = SmartDialog()
                 dialog.showDialog(**self._requestedInputs)
                 if dialog.cancelled:
                     self._func.setHasResult(False)
-                    return
+                    self._func.result = {}
+                    return self._func.result
                 return self._func(*args, **kwargs, **dialog.readData)
 
         wrapper = InputDialogWrapper(function, self._kwargs)

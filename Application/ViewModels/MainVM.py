@@ -78,7 +78,8 @@ class MainVM(QtCore.QObject):
                 # Check for original iamge
                 newOriginalImage = algorithm.result.get('originalImage')
                 if newOriginalImage is not None:
-                    pass
+                    self._model.originalImage = newOriginalImage
+                    self._mainWindowVM.setOriginalImage(self._model.originalImage)
 
                 # Check for processed image
                 newProcessedImage = algorithm.result.get('processedImage')
