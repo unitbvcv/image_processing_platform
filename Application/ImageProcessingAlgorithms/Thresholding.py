@@ -17,6 +17,10 @@ def binarization(image, threshold):
     if len(image.shape) == 2:
         image[image < threshold] = 0
         image[image >= threshold] = 255
-        return image
+        return {
+            'processedImage': image
+        }
     else:
-        return "Error: image is not grayscale!"
+        return {
+            'outputMessage': "Error: image is not grayscale!"
+        }

@@ -75,8 +75,16 @@ class MainVM(QtCore.QObject):
             args = algorithm.prepare(self._model)
             algorithm(self._model.originalImage.copy(), **args)
             if algorithm.hasResult:
-                self._model.processedImage = algorithm.result
-                self._mainWindowVM.setProcessedImage(self._model.processedImage)
+                # Check for original iamge
+                newOriginalImage = algorithm.result.get('originalImage')
+                if newOriginalImage is not None:
+                    pass
+
+                # Check for processed image
+                newProcessedImage = algorithm.result.get('processedImage')
+                if newProcessedImage is not None:
+                    self._model.processedImage = newProcessedImage
+                    self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
                 if self._model.leftClickPosition is not None:
                     self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)

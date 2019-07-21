@@ -13,4 +13,6 @@ def invert(image):
     :param image:
     :return:
     """
-    return numpy.invert(image)
+    return {
+        'processedImage': numpy.invert(image)
+    }

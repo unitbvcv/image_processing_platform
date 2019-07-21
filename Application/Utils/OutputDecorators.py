@@ -33,24 +33,10 @@ class OutputDialog:
             def __call__(self, *args, **kwargs):
                 self._func(*args, **kwargs)
                 if self._func.hasResult:
-                    if isinstance(self._func.result, str):
-                        QMessageBox.about(None, self._title, self._func.result)
-                        self._func.setHasResult(False)
-                        self._func.setResult(None)
-                    else:
-                        try:
-                            if isinstance(self._func.result[-1], str):  # if self._func.result is iterable and has at least one element and the last one is string
-                                QMessageBox.about(None, self._title, self._func.result[-1])
-                                self._func.setResult(self._func.result[:-1])
-                                if len(self._func.result) == 0:
-                                    self._func.setHasResult(False)
-                                    self._func.setResult(None)
-                                elif len(self._func.result) == 1:
-                                    self._func.setResult(self._func.result[0])
-                        except IndexError:
-                            pass
-                        except TypeError:
-                            pass
+                    # try except?
+                    outputMessage = self._func.result.get('outputMessage')
+                    if outputMessage is not None:
+                        QMessageBox.about(None, self._title, outputMessage)
                 return self._func.result
 
         wrapper = OutputDialogWrapper(function, self._title)
