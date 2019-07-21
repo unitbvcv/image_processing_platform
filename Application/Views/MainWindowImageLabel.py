@@ -88,16 +88,18 @@ class MainWindowImageLabel(QtWidgets.QLabel):
 
                 cornerCalcOffset = int(Application.Settings.MagnifierWindowSettings.gridSize / 2) + 1
 
+                x, y = self._leftClickPosition
+
                 # vertical line
-                painter.drawLine(QtCore.QLineF(self._leftClickPosition.x() + 0.5, 0.0, self._leftClickPosition.x() + 0.5, (self.height() - 1) / self._zoom))
+                painter.drawLine(QtCore.QLineF(x + 0.5, 0.0, x + 0.5, (self.height() - 1) / self._zoom))
 
                 # horizontal line
-                painter.drawLine(QtCore.QLineF(0.0, self._leftClickPosition.y() + 0.5, (self.width() - 1) / self._zoom, self._leftClickPosition.y() + 0.5))
+                painter.drawLine(QtCore.QLineF(0.0, y + 0.5, (self.width() - 1) / self._zoom, y + 0.5))
 
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
-                painter.drawRect(QtCore.QRectF(self._leftClickPosition.x() + 0.5 - cornerCalcOffset,
-                                               self._leftClickPosition.y() + 0.5 - cornerCalcOffset,
+                painter.drawRect(QtCore.QRectF(x + 0.5 - cornerCalcOffset,
+                                               y + 0.5 - cornerCalcOffset,
                                                Application.Settings.MagnifierWindowSettings.gridSize + 1,
                                                Application.Settings.MagnifierWindowSettings.gridSize + 1))
 

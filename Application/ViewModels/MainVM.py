@@ -1,5 +1,3 @@
-import collections
-
 import numpy
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import pyqtSlot
@@ -11,10 +9,7 @@ from Application.Models.MainModel import MainModel
 from Application.ViewModels.MainWindowVM import MainWindowVM
 from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
 from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
-
-
-# Point class for main model: https://docs.python.org/3/library/collections.html#collections.namedtuple
-Point = collections.namedtuple('Point', ['x', 'y'])
+from Application.Utils.Point import Point
 
 
 class MainVM(QtCore.QObject):
@@ -75,8 +70,17 @@ class MainVM(QtCore.QObject):
             args = algorithm.prepare(self._model)
             algorithm(self._model.originalImage.copy(), **args)
             if algorithm.hasResult:
-                self._model.processedImage = algorithm.result
-                self._mainWindowVM.setProcessedImage(self._model.processedImage)
+                # Check for original iamge
+                newOriginalImage = algorithm.result.get('originalImage')
+                if newOriginalImage is not None:
+                    self._model.originalImage = newOriginalImage
+                    self._mainWindowVM.setOriginalImage(self._model.originalImage)
+
+                # Check for processed image
+                newProcessedImage = algorithm.result.get('processedImage')
+                if newProcessedImage is not None:
+                    self._model.processedImage = newProcessedImage
+                    self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
                 if self._model.leftClickPosition is not None:
                     self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
@@ -93,10 +97,9 @@ class MainVM(QtCore.QObject):
                     self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
                     self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
 
-    @pyqtSlot(QtCore.QPoint)
+    @pyqtSlot(Point)
     def _onMouseMovedImageLabel(self, clickPosition):
-        x = clickPosition.x()
-        y = clickPosition.y()
+        x, y = clickPosition
 
         labelText = ''
 
@@ -151,9 +154,8 @@ class MainVM(QtCore.QObject):
         if self._model.leftClickPosition is not None:
             self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
-        if len(self._model.rightClickLastPositions) > 0:
-            for x, y in list(self._model.rightClickLastPositions):
-                self._onMousePressedImageLabel(QtCore.QPoint(x, y), QtCore.Qt.RightButton)
+        for point in self._model.rightClickLastPositions:
+            self._onMousePressedImageLabel(point, QtCore.Qt.RightButton)
 
         if self._plotterVM.isVisible:
             self._plotterVM.refresh()
@@ -202,13 +204,18 @@ class MainVM(QtCore.QObject):
         )
 
     def _sendPlotterData(self, functionName, image, updateFunction):
-        if image is not None:
+        if image is not None:  # probably move this down 2 lines
             plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
             args = plottingFunction.prepare(self._model)
             plottingFunction(image, **args)
             if plottingFunction.hasResult:
+                if plottingFunction.result is None:
+                    plottingFunction.setResult({})
+                plottingDataList = plottingFunction.result.get('plottingDataList')
+                if plottingDataList is None:
+                    plottingDataList = []
                 plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                                     for plottingData in plottingFunction.result}
+                                     for plottingData in plottingDataList}
                 updateFunction(plottingFunction.name, plotDataItemsDict)
 
     @pyqtSlot(QtGui.QKeyEvent)
@@ -217,16 +224,16 @@ class MainVM(QtCore.QObject):
             self._model.rightClickLastPositions.clear()
             self._mainWindowVM.highlightImageLabelRightClickLastPositions(None)
 
-    @pyqtSlot(QtCore.QPoint, QtCore.Qt.MouseButton)
+    @pyqtSlot(Point, QtCore.Qt.MouseButton)
     def _onMousePressedImageLabel(self, clickPosition, mouseButton):
         """
         # TODO: document MainViewModel.imageClickedEvent
-        :param clickPosition: QPoint
+        :param clickPosition: Utils.Point
         :return:
         """
         if mouseButton == QtCore.Qt.LeftButton:
             if self._magnifierVM.isVisible or self._plotterVM.isVisible:
-                self._model.leftClickPosition = Point(clickPosition.x(), clickPosition.y())
+                self._model.leftClickPosition = clickPosition
 
                 self._mainWindowVM.highlightImageLabelLeftClickPosition(clickPosition)
 
@@ -245,7 +252,7 @@ class MainVM(QtCore.QObject):
             self._addRightClickPosition(clickPosition)
 
     def _addRightClickPosition(self, clickPosition):
-        self._model.rightClickLastPositions.append(Point(clickPosition.x(), clickPosition.y()))
+        self._model.rightClickLastPositions.append(clickPosition)
         self._mainWindowVM.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
 
     def _clearRightClickLastPositions(self):
@@ -255,7 +262,7 @@ class MainVM(QtCore.QObject):
     def _getMagnifiedRegions(self, clickPosition):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
-        :param clickPosition: QPoint
+        :param clickPosition: Utils.Point
         :return:
         """
         originalImagePixels = self._getMagnifiedRegion(self._model.originalImage, clickPosition)
@@ -266,7 +273,7 @@ class MainVM(QtCore.QObject):
         """
         # TODO: document MainViewModel._getMagnifiedRegions
         Should explain what the function does here.
-        :param clickPosition: QPoint
+        :param clickPosition: Utils.Point
         :return:
         """
         frameGridSize = Application.Settings.MagnifierWindowSettings.gridSize
@@ -280,13 +287,13 @@ class MainVM(QtCore.QObject):
             frameOffset = frameGridSize // 2
 
             startIndexes = lambda pos, offset: (pos - offset, 0) if pos - offset >= 0 else (0, offset - pos)
-            rowStartIndex, startEmptyRows = startIndexes(clickPosition.y(), frameOffset)
-            columnStartIndex, startEmptyColumns = startIndexes(clickPosition.x(), frameOffset)
+            rowStartIndex, startEmptyRows = startIndexes(clickPosition.y, frameOffset)
+            columnStartIndex, startEmptyColumns = startIndexes(clickPosition.x, frameOffset)
 
             endIndexes = lambda pos, offset, gridSize, imageSize: \
                 (pos + offset + 1, gridSize) if pos + offset + 1 <= imageSize else (imageSize, offset + imageSize - pos)
-            rowEndIndex, endFullRows = endIndexes(clickPosition.y(), frameOffset, frameGridSize, image.shape[0])
-            columnEndIndex, endFullColumns = endIndexes(clickPosition.x(), frameOffset, frameGridSize, image.shape[1])
+            rowEndIndex, endFullRows = endIndexes(clickPosition.y, frameOffset, frameGridSize, image.shape[0])
+            columnEndIndex, endFullColumns = endIndexes(clickPosition.x, frameOffset, frameGridSize, image.shape[1])
 
             imagePixels[startEmptyRows:endFullRows, startEmptyColumns:endFullColumns] = \
                 image[rowStartIndex:rowEndIndex, columnStartIndex:columnEndIndex]

@@ -1,17 +1,27 @@
 from collections import deque
 import cv2 as opencv
 from dataclasses import dataclass
-import numpy as np
 
 import Application.Settings
 
 
 @dataclass
 class MainModel(object):
-    originalImage = None  # ndarray
+    _originalImage = None  # ndarray
     _processedImage = None  # ndarray
     leftClickPosition = None  # Point - namedtuple (x, y)
     rightClickLastPositions = deque(maxlen=Application.Settings.RightClickPointerSettings.numberOfClicksToRemember)  # deque of Point -namedtuples (x, y)
+
+    @property
+    def originalImage(self):
+        return self._originalImage
+
+    @originalImage.setter
+    def originalImage(self, value):
+        if value is not None:
+            if value.base is not None:
+                value = value.copy()
+        self._originalImage = value
 
     @property
     def processedImage(self):

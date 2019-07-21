@@ -19,7 +19,9 @@ def plotRowValues(image, leftClickPosition):
     plotDataItemsList = []
 
     if image is None or leftClickPosition is None:
-        return []
+        return {
+            'plottingDataList': []
+        }
 
     # Grayscale image
     imageShapeLen = len(image.shape)
@@ -42,7 +44,9 @@ def plotRowValues(image, leftClickPosition):
         plottingData = PlottingData(plotName, image[leftClickPosition.y, :, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
-    return plotDataItemsList
+    return {
+        'plottingDataList': plotDataItemsList
+    }
 
 
 @PlotterFunction(name="Plot column values", fromMainModel=["leftClickPosition"], computeOnClick=True)
@@ -58,7 +62,9 @@ def plotColumnValues(image, leftClickPosition):
     plotDataItemsList = []
 
     if image is None or leftClickPosition is None:
-        return []
+        return {
+            'plottingDataList': []
+        }
 
     # Grayscale image
     imageShapeLen = len(image.shape)
@@ -81,7 +87,9 @@ def plotColumnValues(image, leftClickPosition):
         plottingData = PlottingData(plotName, image[:, leftClickPosition.x, 2], pen='b')
         plotDataItemsList.append(plottingData)
 
-    return plotDataItemsList
+    return {
+        'plottingDataList': plotDataItemsList
+    }
 
 
 @PlotterFunction(name="Plot histogram", computeOnImageChanged=True)
@@ -94,7 +102,9 @@ def plotHistogram(image):
     plotDataItemsList = []
 
     if image is None:
-        return []
+        return {
+            'plottingDataList': []
+        }
 
     imageShapeLen = len(image.shape)
 
@@ -126,4 +136,6 @@ def plotHistogram(image):
         plottingData = PlottingData(plotName, histogram, pen='b')
         plotDataItemsList.append(plottingData)
 
-    return plotDataItemsList
+    return {
+        'plottingDataList': plotDataItemsList
+    }
