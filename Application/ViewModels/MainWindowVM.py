@@ -191,6 +191,7 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelProcessedImage.setRightClickLastPositions(None)
 
         self._view.labelOriginalImage.setOverlayData(None)
+        self._view.labelProcessedImage.setOverlayData(None)
 
         self._view.zoomValueResetEvent()
 
@@ -207,3 +208,6 @@ class MainWindowVM(QtCore.QObject):
 
     def setOriginalImageOverlayData(self, overlayData):
         self._view.labelOriginalImage.setOverlayData(overlayData)
+
+    def setProcessedImageOverlayData(self, overlayData):
+        self._view.labelProcessedImage.setOverlayData(overlayData)
