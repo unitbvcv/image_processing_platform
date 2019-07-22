@@ -144,11 +144,12 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                     painter.setPen(QtGui.QPen(QtCore.Qt.blue))
 
             if self._overlayData is not None:
-                painterPath, colorName = self._overlayData
+                painterPath, colorName, width = self._overlayData
                 color = QtGui.QColor()
                 color.setNamedColor(colorName)
-                painter.setPen(QtGui.QPen(color))
-                painter.pen().setWidth(10)  # ?? not working
+                pen = QtGui.QPen(color)
+                pen.setWidth(width)
+                painter.setPen(pen)
                 painter.drawPath(painterPath)
 
         self.finishedPaintingSignal.emit()
