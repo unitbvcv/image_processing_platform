@@ -190,6 +190,9 @@ class MainWindowVM(QtCore.QObject):
         self._view.labelOriginalImage.setRightClickLastPositions(None)
         self._view.labelProcessedImage.setRightClickLastPositions(None)
 
+        self._view.labelOriginalImage.setOverlayData(None)
+        self._view.labelProcessedImage.setOverlayData(None)
+
         self._view.zoomValueResetEvent()
 
     def registerAlgorithmsInUi(self, algorithms):
@@ -202,3 +205,9 @@ class MainWindowVM(QtCore.QObject):
     def _actionAlgorithm(self):
         senderAction = self.sender()
         self.algorithmTriggered.emit(senderAction.text())
+
+    def setOriginalImageOverlayData(self, overlayData):
+        self._view.labelOriginalImage.setOverlayData(overlayData)
+
+    def setProcessedImageOverlayData(self, overlayData):
+        self._view.labelProcessedImage.setOverlayData(overlayData)

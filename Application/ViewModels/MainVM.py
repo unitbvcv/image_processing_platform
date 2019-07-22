@@ -82,6 +82,14 @@ class MainVM(QtCore.QObject):
                     self._model.processedImage = newProcessedImage
                     self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
+                # Check for original image overlay drawing
+                overlayData = algorithm.result.get('originalIamgeOverlayData')
+                self._mainWindowVM.setOriginalImageOverlayData(overlayData)
+
+                # Check for processed image overlay drawing
+                overlayData = algorithm.result.get('processedIamgeOverlayData')
+                self._mainWindowVM.setProcessedImageOverlayData(overlayData)
+
                 if self._model.leftClickPosition is not None:
                     self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 

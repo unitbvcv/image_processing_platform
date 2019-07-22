@@ -21,6 +21,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         self._zoom = Application.Settings.MainWindowSettings.zoomDefaultValue
         self._leftClickPosition = None
         self._rightClickLastPositions = None
+        self._overlayData = None
 
     def setZoom(self, zoom):
         self._zoom = zoom
@@ -33,6 +34,10 @@ class MainWindowImageLabel(QtWidgets.QLabel):
 
     def setRightClickLastPositions(self, rightClickLastPositions: deque):
         self._rightClickLastPositions = rightClickLastPositions
+        self.update()
+
+    def setOverlayData(self, overlayData):
+        self._overlayData = overlayData
         self.update()
 
     def mouseMoveEvent(self, QMouseEvent):
@@ -137,5 +142,14 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                     painter.setPen(QtGui.QPen(QtCore.Qt.red))
                     painter.drawPoint(QtCore.QPointF(x + 0.5, y + 0.5))
                     painter.setPen(QtGui.QPen(QtCore.Qt.blue))
+
+            if self._overlayData is not None:
+                painterPath, colorName, width = self._overlayData
+                color = QtGui.QColor()
+                color.setNamedColor(colorName)
+                pen = QtGui.QPen(color)
+                pen.setWidth(width)
+                painter.setPen(pen)
+                painter.drawPath(painterPath)
 
         self.finishedPaintingSignal.emit()
