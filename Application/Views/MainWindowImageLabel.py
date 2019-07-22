@@ -110,10 +110,10 @@ class MainWindowImageLabel(QtWidgets.QLabel):
                 x, y = self._leftClickPosition
 
                 # vertical line
-                painter.drawLine(QtCore.QLineF(x + 0.5, 0.0, x + 0.5, (self.height() - 1) / self._zoom))
+                painter.drawLine(QtCore.QLineF(x + 0.5, 0.0, x + 0.5, (self.height - 1) / self._zoom))
 
                 # horizontal line
-                painter.drawLine(QtCore.QLineF(0.0, y + 0.5, (self.width() - 1) / self._zoom, y + 0.5))
+                painter.drawLine(QtCore.QLineF(0.0, y + 0.5, (self.width - 1) / self._zoom, y + 0.5))
 
                 # +1 because we need to take into account the thickness of the rectangle itself
                 # we want its contents inside to be frameGridSize^2
