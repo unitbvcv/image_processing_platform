@@ -175,14 +175,14 @@ class MainWindowVM(QtCore.QObject):
             messagebox.exec()
 
     def setOriginalImage(self, image):
-        self._view.labelOriginalImage.setLabelImage(image)
+        self._view.setOriginalImage(image)
 
     def setProcessedImage(self, image):
-        self._view.labelProcessedImage.setLabelImage(image)
+        self._view.setProcessedImage(image)
 
     def reset(self):
-        self._view.labelOriginalImage.setLabelImage(None)
-        self._view.labelProcessedImage.setLabelImage(None)
+        self._view.setOriginalImage(None)
+        self._view.setProcessedImage(None)
 
         self._view.labelOriginalImage.setLeftClickPosition(None)
         self._view.labelProcessedImage.setLeftClickPosition(None)

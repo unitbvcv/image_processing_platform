@@ -27,16 +27,8 @@ class MainWindowView(QtWidgets.QMainWindow):
         self._setupMenuCornerWidget()
         self._setupZoomFunctionality()
 
-        # synchronize the scrollbars of the scrollAreas
-        self.scrollAreaOriginalImage.horizontalScrollBar().valueChanged.connect(
-            self.scrollAreaProcessedImage.horizontalScrollBar().setValue)
-        self.scrollAreaProcessedImage.horizontalScrollBar().valueChanged.connect(
-            self.scrollAreaOriginalImage.horizontalScrollBar().setValue)
-
-        self.scrollAreaOriginalImage.verticalScrollBar().valueChanged.connect(
-            self.scrollAreaProcessedImage.verticalScrollBar().setValue)
-        self.scrollAreaProcessedImage.verticalScrollBar().valueChanged.connect(
-            self.scrollAreaOriginalImage.verticalScrollBar().setValue)
+        # scrollbars' synchronization data
+        self._areSbsConnected = False
 
         # connect signals to slots
         self.labelOriginalImage.mouseLeavedSignal.connect(self._mouseLeavedEvent)
@@ -435,19 +427,67 @@ class MainWindowView(QtWidgets.QMainWindow):
                     return self._menuActionsDictionary[actionName]
 # endregion
 
+    def setOriginalImage(self, image):
+        self.labelOriginalImage.setLabelImage(image)
+        self._manageScrollbarsSync()
+
+    def setProcessedImage(self, image):
+        self.labelProcessedImage.setLabelImage(image)
+        self._manageScrollbarsSync()
+
     def _mouseLeavedEvent(self, QEvent):
         self.labelMousePosition.setText('')
         self.labelOriginalImagePixelValue.setText('')
         self.labelProcessedImagePixelValue.setText('')
 
-    def _labelFinishedPaintingEvent(self):
-        # here we can synchronize scrollbars, after the paint event has finished
-        # before paint event, the scrollbars don't exist
-        self.scrollAreaProcessedImage.horizontalScrollBar().setValue(
-            self.scrollAreaOriginalImage.horizontalScrollBar().value())
+    def _manageScrollbarsSync(self):
+        '''Called after an image was changed to dynamically
+        (dis)connect the scrollbars based on image sizes.'''
+        sameSizeImages = self.labelOriginalImage.width == self.labelProcessedImage.width \
+            and self.labelOriginalImage.height == self.labelProcessedImage.height
 
-        self.scrollAreaProcessedImage.verticalScrollBar().setValue(
-            self.scrollAreaOriginalImage.verticalScrollBar().value())
+        if self._areSbsConnected:
+            if not sameSizeImages:
+                self._disconnectScrollbars()
+        else:
+            if sameSizeImages:
+                self._connectScrollbars()
+
+    def _connectScrollbars(self):
+        if not self._areSbsConnected:
+            oHSb = self.scrollAreaOriginalImage.horizontalScrollBar()
+            pHSb = self.scrollAreaProcessedImage.horizontalScrollBar()
+            oVSb = self.scrollAreaOriginalImage.verticalScrollBar()
+            pVSb = self.scrollAreaProcessedImage.verticalScrollBar()
+
+            oHSb.valueChanged.connect(pHSb.setValue)
+            pHSb.valueChanged.connect(oHSb.setValue)
+            oVSb.valueChanged.connect(pVSb.setValue)
+            pVSb.valueChanged.connect(oVSb.setValue)
+            self._areSbsConnected = True
+
+    def _disconnectScrollbars(self):
+        if self._areSbsConnected:
+            oHSb = self.scrollAreaOriginalImage.horizontalScrollBar()
+            pHSb = self.scrollAreaProcessedImage.horizontalScrollBar()
+            oVSb = self.scrollAreaOriginalImage.verticalScrollBar()
+            pVSb = self.scrollAreaProcessedImage.verticalScrollBar()
+
+            oHSb.valueChanged.disconnect(pHSb.setValue)
+            pHSb.valueChanged.disconnect(oHSb.setValue)
+            oVSb.valueChanged.disconnect(pVSb.setValue)
+            pVSb.valueChanged.disconnect(oVSb.setValue)
+            self._areSbsConnected = False
+
+    def _labelFinishedPaintingEvent(self):
+        if self._areSbsConnected:
+            # here we can synchronize scrollbars, after the paint event has finished
+            # before paint event, the scrollbars don't exist
+            self.scrollAreaProcessedImage.horizontalScrollBar().setValue(
+                self.scrollAreaOriginalImage.horizontalScrollBar().value())
+
+            self.scrollAreaProcessedImage.verticalScrollBar().setValue(
+                self.scrollAreaOriginalImage.verticalScrollBar().value())
 
     def closeEvent(self, QCloseEvent):
         QtCore.QCoreApplication.quit()
