@@ -23,6 +23,20 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         self._rightClickLastPositions = None
         self._overlayData = None
 
+    @property
+    def width(self):
+        try:
+            return self._qImage.width()
+        except AttributeError:
+            return 0
+
+    @property
+    def height(self):
+        try:
+            return self._qImage.height()
+        except AttributeError:
+            return 0
+
     def setZoom(self, zoom):
         self._zoom = zoom
         if self._qImage is not None:
