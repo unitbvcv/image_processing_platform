@@ -435,6 +435,12 @@ class MainWindowView(QtWidgets.QMainWindow):
                     return self._menuActionsDictionary[actionName]
 # endregion
 
+    def setOriginalImage(self, image):
+        self.labelOriginalImage.setLabelImage(image)
+
+    def setProcessedImage(self, image):
+        self.labelProcessedImage.setLabelImage(image)
+
     def _mouseLeavedEvent(self, QEvent):
         self.labelMousePosition.setText('')
         self.labelOriginalImagePixelValue.setText('')
