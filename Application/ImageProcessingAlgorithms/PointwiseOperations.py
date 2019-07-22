@@ -14,6 +14,5 @@ def invert(image):
     :return:
     """
     return {
-        'originalImage': numpy.zeros((200, 200)),
         'processedImage': numpy.invert(image)
     }
