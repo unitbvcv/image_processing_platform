@@ -70,7 +70,7 @@ class MainVM(QtCore.QObject):
             args = algorithm.prepare(self._model)
             algorithm(self._model.originalImage.copy(), **args)
             if algorithm.hasResult:
-                # Check for original iamge
+                # Check for original image
                 newOriginalImage = algorithm.result.get('originalImage')
                 if newOriginalImage is not None:
                     self._model.originalImage = newOriginalImage
@@ -83,11 +83,11 @@ class MainVM(QtCore.QObject):
                     self._mainWindowVM.setProcessedImage(self._model.processedImage)
 
                 # Check for original image overlay drawing
-                overlayData = algorithm.result.get('originalIamgeOverlayData')
+                overlayData = algorithm.result.get('originalImageOverlayData')
                 self._mainWindowVM.setOriginalImageOverlayData(overlayData)
 
                 # Check for processed image overlay drawing
-                overlayData = algorithm.result.get('processedIamgeOverlayData')
+                overlayData = algorithm.result.get('processedImageOverlayData')
                 self._mainWindowVM.setProcessedImageOverlayData(overlayData)
 
                 if self._model.leftClickPosition is not None:
