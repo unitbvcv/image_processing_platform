@@ -1,17 +1,17 @@
-# Image Processing Tool
+# Image Processing Platform
 ## Features
-This tool allows you to load a color/grayscale image and apply image processing algorithms on it, showing you the result in a different panel.
+This Platform allows you to load a color/grayscale image and apply image processing algorithms on it, showing you the result in a different panel.
 
 You can also plot different functions based on the images. There is also a magnifier avaiable.
 
 Image processing and plotting algorithms are easy to integrate with the app.
 
 ## Requirements
-- [Python](https://www.python.org/downloads/) >= 3.7
-- [PyQt5](https://pypi.org/project/PyQt5/)
+- [Python](https://www.python.org/downloads/) == 3.7
+- [PyQt5](https://pypi.org/project/PyQt5/) == 5.12.3
 - [opencv-python](https://pypi.org/project/opencv-python/)
 - [numpy](https://pypi.org/project/numpy/)
-- [pyqtgraph](https://pypi.org/project/pyqtgraph/)
+- [pyqtgraph](https://pypi.org/project/pyqtgraph/) == 0.10.0
 
 ## Installation
 Install all the dependencies using the following command in a Command Prompt/Terminal (make sure you have the path to Python in the Environment Variables - PATH):
@@ -20,12 +20,12 @@ Install all the dependencies using the following command in a Command Prompt/Ter
 
 ## Usage
 ### Starting the application
-Run the `ImageProcessingFramework.pyw` script using Python.
+Run the `ImageProcessingPlatform.pyw` script using Python.
 
 ### UI Introduction
 The main window can load an image from disk, show a processed image, zoom the images and save the processed image. The main window also displays your custom image processing algorithms on the top menu bar.
 
-The tool provides a magnifier and a plotter for usage on the original image and on the processed image. After opening the magnifier/plotter, the original/processed image can be **left clicked** and the magnifier/plotter will update. All the markings will dissapear after closing the magnifier/plotter window.
+The platform provides a magnifier and a plotter for usage on the original image and on the processed image. After opening the magnifier/plotter, the original/processed image can be **left clicked** and the magnifier/plotter will update. All the markings will dissapear after closing the magnifier/plotter window.
 
 **Right clicking** the original/processed image will add the click location into a queue that can be used by your algorithms as input. Those positions will also be marked in the application. This queue can be emptied using the **Esc** key.
 
@@ -36,13 +36,13 @@ and [Thresholding.py](Application/ImageProcessingAlgorithms/Thresholding.py).
 
 Adding algorithms will be done in the folder ImageProcessingAlgorithms.
 
-The tool will automatically import all files that do not start with `_` (underscore). At the moment, the tool 
+The platform will automatically import all files that do not start with `_` (underscore). At the moment, the platform 
 does not distinguish between files and packages, so packages will be included as well. If you want
 to include files from packages, do so in a `__init__.py` file in your package.
 
 In an imported file, algorithms shall be put in functions and they must be decorated with
 the `@RegisterAlgorithm` decorator. Functions that do not have this decorator will not be 
-registered by the tool. At the moment, the decorator works exclusively on functions (not on classes).
+registered by the platform. At the moment, the decorator works exclusively on functions (not on classes).
 
 Requirements for a function to be registered correctly:
 - your module/package must import numpy and the `@RegisterAlgorithm` decorator
@@ -72,7 +72,7 @@ for getting clicks (left or right).
 
 #### Reading user inputs for an algorithm
 Some algorithms require the user to provide one or more inputs. Similar to the `@RegisterAlgorithm` decorator which
-tells the tool what to do, there is another useful decorator called `@InputDialog`. This decorator instructs the program
+tells the platform what to do, there is another useful decorator called `@InputDialog`. This decorator instructs the program
 to show an input dialog before calling the function to get user input and pass this user input to the function.
 
 Requirements for a function to use `@InputDialog`:
@@ -92,7 +92,7 @@ are possible)
 
 #### Displaying text results or errors
 Some algorithms don't produce an image, but have other results which should be displayed to the user.
-In the same fashion, the tool provides the `@OutputDialog` decorator. It will instruct the tool to show a text dialog 
+In the same fashion, the platform provides the `@OutputDialog` decorator. It will instruct the platform to show a text dialog 
 when the function returns.
 
 Requirements for a function to use `@OutputDialog`:
@@ -106,22 +106,22 @@ The displayed message will be OPTIONALLY* transmitted in the return value of the
 2) as a second value in an iterable: `return image, "My message"`
     - the first case is equivalent to: `None, "My message"`
     - the message is removed from the iterable after it is displayed; after the removal, if the iterable contains just one element, the 
-    element is returned to the tool, not the iterable; if the iterable contains more than one element, the first one is 
+    element is returned to the platform, not the iterable; if the iterable contains more than one element, the first one is 
     transmitted as the result of the function and the rest of the iterable is discarded
 
 *you can still transmit just the image if you wish so
 
 ### Adding plotting algorithms
 
-Examples present in the tool [here](Application/PlottingAlgorithms/Basic.py).
+Examples present in the platform [here](Application/PlottingAlgorithms/Basic.py).
 
-One of the ways to extract information about an image is to plot different data or functions based on the image. The tool
+One of the ways to extract information about an image is to plot different data or functions based on the image. The platform
 comes with three basic algorithms in the PlottingAlgorithms package. You can add your own algorithms in this package. 
 Same conventions apply to importing plotting algorithms (see above section): those who start with an underscore are
 not imported, no distinction between modules and packages etc.
 
 Plotting algorithms will be put in functions decorated with `@PlotterFunction`. It does not work on classes.
-These functions will be registered by the tool and will be integrated in the UI automatically. It will be present in the
+These functions will be registered by the platform and will be integrated in the UI automatically. It will be present in the
 "Plot Function" drop down list in the Plotter window.
 
 Requirements for a function to be registered correctly:

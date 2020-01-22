@@ -1,0 +1,4 @@
+PyQt5 == 5.12.3
+pyqtgraph == 0.10.0
+opencv-python
+numpy
