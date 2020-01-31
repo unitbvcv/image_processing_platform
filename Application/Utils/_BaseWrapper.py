@@ -23,7 +23,7 @@ class BaseWrapper:
 
     def __call__(self, *args, **kwargs):
         self.result = self._func(*args, **kwargs)
-        self.hasResult = True
+        self.hasResult = self.result is not None
         return self.result
 
     def __getattr__(self, item):
