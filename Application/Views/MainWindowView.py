@@ -236,7 +236,7 @@ class MainWindowView(QtWidgets.QMainWindow):
 
     def _retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Image Processing Tool"))
+        self.setWindowTitle(_translate("MainWindow", "Image Processing Platform"))
         self.groupBoxOriginalImage.setTitle(_translate("MainWindow", "Original image"))
         self.groupBoxProcessedImage.setTitle(_translate("MainWindow", "Processed image"))
         self.buttonResetZoom.setText(_translate("MainWindow", "Reset"))

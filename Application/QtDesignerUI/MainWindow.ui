@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Image Processing Tool</string>
+   <string>Image Processing Platform</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -48,8 +48,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>471</width>
-              <height>568</height>
+              <width>477</width>
+              <height>584</height>
              </rect>
             </property>
            </widget>
@@ -86,8 +86,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>470</width>
-              <height>568</height>
+              <width>477</width>
+              <height>584</height>
              </rect>
             </property>
            </widget>
@@ -278,7 +278,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
