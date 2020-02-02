@@ -6,9 +6,9 @@ from Application.Models.PlottingFunctionModel import PlottingFunctionModel
 from Application.Views.PlotterWindowView import PlotterWindowView
 
 
-class PlotterWindowVM(QtCore.QObject):
+class PlotterWindowPresenter(QtCore.QObject):
     """
-    TODO: document PlotterWindowViewModel
+    TODO: document PlotterWindowPresenter
     """
 
     windowClosingSignal = QtCore.pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
@@ -17,7 +17,7 @@ class PlotterWindowVM(QtCore.QObject):
 
     def __init__(self, parent=None):
         """
-        TODO: document PlotterWindowViewModel constructor
+        TODO: document PlotterWindowPresenter constructor
         :param parent:
         """
         super().__init__(parent)
@@ -51,7 +51,7 @@ class PlotterWindowVM(QtCore.QObject):
     @property
     def isVisible(self):
         """
-        TODO: document PlotterWindowViewModel.isVisible
+        TODO: document PlotterWindowPresenter.isVisible
         :return:
         """
         return self._view.isWindowVisible
@@ -85,7 +85,7 @@ class PlotterWindowVM(QtCore.QObject):
 
     def reset(self):
         """
-        TODO: document PlotterWindowViewModel resetPlotter
+        TODO: document PlotterWindowPresenter resetPlotter
         :return:
         """
 
@@ -104,7 +104,7 @@ class PlotterWindowVM(QtCore.QObject):
     @pyqtSlot()
     def _scaleAndCenterButtonPressed(self):
         """
-        TODO: document PlotterWindowViewModel _scaleAndCenterButtonPressed
+        TODO: document PlotterWindowPresenter _scaleAndCenterButtonPressed
         :return:
         """
         currentFunctionName = self._view.comboBoxFunction.currentText()
@@ -153,7 +153,7 @@ class PlotterWindowVM(QtCore.QObject):
 
     def _visiblePlotsSelectionChanged(self, plotItem, availablePlotDataItems, visiblePlotDataItems, listWidget):
         """
-        TODO: document PlotterWindowViewModel _visiblePlotsSelectionChanged
+        TODO: document PlotterWindowPresenter _visiblePlotsSelectionChanged
         :param plotItem:
         :param availablePlotDataItems:
         :param visiblePlotDataItems:
@@ -199,7 +199,7 @@ class PlotterWindowVM(QtCore.QObject):
     @pyqtSlot()
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
         """
-        TODO document PlotterWindowViewModel _visiblePlotsOriginalImageSelectionChangedEvent
+        TODO document PlotterWindowPresenter _visiblePlotsOriginalImageSelectionChangedEvent
         :return:
         """
 
@@ -215,7 +215,7 @@ class PlotterWindowVM(QtCore.QObject):
     @pyqtSlot()
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
         """
-        TODO: document PlotterWindowViewModel _visiblePlotsProcessedImageSelectionChangedEvent
+        TODO: document PlotterWindowPresenter _visiblePlotsProcessedImageSelectionChangedEvent
         :return:
         """
 

@@ -11,7 +11,7 @@ from Application.Views.MainWindowView import MainWindowView
 from Application.Utils.Point import Point
 
 
-class MainWindowVM(QtCore.QObject):
+class MainWindowPresenter(QtCore.QObject):
     loadOriginalImageSignal = pyqtSignal(str, bool, name="loadOriginalImageSignal")
     saveProcessedImageSignal = pyqtSignal(str, name="saveProcessedImageSignal")
     openPlotterSignal = pyqtSignal(name="openPlotterSignal")

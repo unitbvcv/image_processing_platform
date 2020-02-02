@@ -6,20 +6,20 @@ import Application.Settings
 from Application import PlottingAlgorithms
 from Application import ImageProcessingAlgorithms
 from Application.Models.MainModel import MainModel
-from Application.ViewModels.MainWindowVM import MainWindowVM
-from Application.ViewModels.MagnifierWindowVM import MagnifierWindowVM
-from Application.ViewModels.PlotterWindowVM import PlotterWindowVM
+from Application.Presenters.MainWindowPresenter import MainWindowPresenter
+from Application.Presenters.MagnifierWindowPresenter import MagnifierWindowPresenter
+from Application.Presenters.PlotterWindowPresenter import PlotterWindowPresenter
 from Application.Utils.Point import Point
 
 
-class MainVM(QtCore.QObject):
+class MainPresenter(QtCore.QObject):
     """
-    TODO: document MainViewModel class
+    TODO: document MainPresenter class
     """
 
     def __init__(self, parent=None):
         """
-        # TODO: document MainViewModel constructor
+        # TODO: document MainPresenter constructor
         :param parent:
         """
         super().__init__(parent)
@@ -27,41 +27,41 @@ class MainVM(QtCore.QObject):
         # Instantiate MainModel
         self._model = MainModel()
 
-        # Instantiate MainWindowViewModel
-        self._mainWindowVM = MainWindowVM(self)
-        self._mainWindowVM.loadOriginalImageSignal.connect(self.onLoadImageAction)
+        # Instantiate MainWindowPresenter
+        self._mainWindowPresenter = MainWindowPresenter(self)
+        self._mainWindowPresenter.loadOriginalImageSignal.connect(self.onLoadImageAction)
 
         # Create UI for the registered algorithms and connect them
         self._populateMenuBarWithAlgorithms()
-        self._mainWindowVM.algorithmTriggered.connect(self._onAlgorithmTriggerred)
+        self._mainWindowPresenter.algorithmTriggered.connect(self._onAlgorithmTriggerred)
 
-        # Instantiate MagnifierViewModel
-        self._magnifierVM = MagnifierWindowVM(self)
+        # Instantiate MagnifierPresenter
+        self._magnifierPresenter = MagnifierWindowPresenter(self)
 
-        # Instantiate PlotterViewModel
-        self._plotterVM = PlotterWindowVM(self)
-        self._plotterVM.registerFunctions(list(Application.PlottingAlgorithms.registeredAlgorithms.keys()))
-        self._plotterVM.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
-        self._plotterVM.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
+        # Instantiate PlotterPresenter
+        self._plotterPresenter = PlotterWindowPresenter(self)
+        self._plotterPresenter.registerFunctions(list(Application.PlottingAlgorithms.registeredAlgorithms.keys()))
+        self._plotterPresenter.needOriginalImageData.connect(self.onSendOriginalImagePlotterData)
+        self._plotterPresenter.needProcessedImageData.connect(self.onSendProcessedImagePlotterData)
 
-        self._mainWindowVM.openPlotterSignal.connect(self._onOpenPlotterAction)
-        self._mainWindowVM.openMagnifierSignal.connect(self._onOpenMagnifierAction)
+        self._mainWindowPresenter.openPlotterSignal.connect(self._onOpenPlotterAction)
+        self._mainWindowPresenter.openMagnifierSignal.connect(self._onOpenMagnifierAction)
 
-        self._mainWindowVM.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
-        self._mainWindowVM.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
+        self._mainWindowPresenter.saveAsOriginalImageSignal.connect(self._onSaveAsOriginalImageAction)
+        self._mainWindowPresenter.saveProcessedImageSignal.connect(self._onSaveProcessedImageAction)
 
-        self._mainWindowVM.mouseMovedImageLabelSignal.connect(self._onMouseMovedImageLabel)
-        self._mainWindowVM.mousePressedImageLabelSignal.connect(self._onMousePressedImageLabel)
+        self._mainWindowPresenter.mouseMovedImageLabelSignal.connect(self._onMouseMovedImageLabel)
+        self._mainWindowPresenter.mousePressedImageLabelSignal.connect(self._onMousePressedImageLabel)
 
-        self._magnifierVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
-        self._plotterVM.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
+        self._magnifierPresenter.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
+        self._plotterPresenter.windowClosingSignal.connect(self._onMagnifierOrPlotterWindowClose)
 
-        self._mainWindowVM.keyPressedSignal.connect(self._onKeyPressed)
+        self._mainWindowPresenter.keyPressedSignal.connect(self._onKeyPressed)
 
     def _populateMenuBarWithAlgorithms(self):
         algorithms = [(algorithm.name, algorithm.menuPath, algorithm.before)
                       for algorithm in ImageProcessingAlgorithms.registeredAlgorithms.values()]
-        self._mainWindowVM.registerAlgorithmsInUi(algorithms)
+        self._mainWindowPresenter.registerAlgorithmsInUi(algorithms)
 
     @pyqtSlot(str)
     def _onAlgorithmTriggerred(self, algorithmName):
@@ -74,36 +74,36 @@ class MainVM(QtCore.QObject):
                 newOriginalImage = algorithm.result.get('originalImage')
                 if newOriginalImage is not None:
                     self._model.originalImage = newOriginalImage
-                    self._mainWindowVM.setOriginalImage(self._model.originalImage)
+                    self._mainWindowPresenter.setOriginalImage(self._model.originalImage)
 
                 # Check for processed image
                 newProcessedImage = algorithm.result.get('processedImage')
                 if newProcessedImage is not None:
                     self._model.processedImage = newProcessedImage
-                    self._mainWindowVM.setProcessedImage(self._model.processedImage)
+                    self._mainWindowPresenter.setProcessedImage(self._model.processedImage)
 
                 # Check for original image overlay drawing
                 overlayData = algorithm.result.get('originalImageOverlayData')
-                self._mainWindowVM.setOriginalImageOverlayData(overlayData)
+                self._mainWindowPresenter.setOriginalImageOverlayData(overlayData)
 
                 # Check for processed image overlay drawing
                 overlayData = algorithm.result.get('processedImageOverlayData')
-                self._mainWindowVM.setProcessedImageOverlayData(overlayData)
+                self._mainWindowPresenter.setProcessedImageOverlayData(overlayData)
 
                 if self._model.leftClickPosition is not None:
                     self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
 
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
-        if not self._magnifierVM.isVisible and not self._plotterVM.isVisible:
-            self._mainWindowVM.highlightImageLabelLeftClickPosition(None)
+        if not self._magnifierPresenter.isVisible and not self._plotterPresenter.isVisible:
+            self._mainWindowPresenter.highlightImageLabelLeftClickPosition(None)
             self._model.leftClickPosition = None
-            self._magnifierVM.clear()
+            self._magnifierPresenter.clear()
 
             for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
                 if plottingFunction.computeOnClick:
-                    self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-                    self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+                    self._plotterPresenter.setOriginalImageDataAsDirty(plottingFunction.name)
+                    self._plotterPresenter.setProcessedImageDataAsDirty(plottingFunction.name)
 
     @pyqtSlot(Point)
     def _onMouseMovedImageLabel(self, clickPosition):
@@ -113,7 +113,7 @@ class MainVM(QtCore.QObject):
 
         if self._model.originalImage is not None or self._model.processedImage is not None:
             labelText = f'Mouse position: (X, Y) = ({x}, {y})'
-        self._mainWindowVM.setMousePositionLabelText(labelText)
+        self._mainWindowPresenter.setMousePositionLabelText(labelText)
 
         labelText = ''
 
@@ -127,7 +127,7 @@ class MainVM(QtCore.QObject):
                 elif originalImageShapeLen == 2:
                     pixel = self._model.originalImage[y][x]
                     labelText = f'(Gray) = ({pixel})'
-            self._mainWindowVM.setOriginalImagePixelValueLabelText(labelText)
+            self._mainWindowPresenter.setOriginalImagePixelValueLabelText(labelText)
 
         labelText = ''
 
@@ -141,7 +141,7 @@ class MainVM(QtCore.QObject):
                 elif processedImageShapeLen == 2:
                     pixel = self._model.processedImage[y][x]
                     labelText = f'(Gray) = ({pixel})'
-            self._mainWindowVM.setProcessedImagePixelValueLabelText(labelText)
+            self._mainWindowPresenter.setProcessedImagePixelValueLabelText(labelText)
 
     @pyqtSlot(str)
     def _onSaveProcessedImageAction(self, filePath):
@@ -152,11 +152,11 @@ class MainVM(QtCore.QObject):
         processedImageCopy = self._model.processedImage
         self._model.reset()
         self._model.originalImage = processedImageCopy
-        self.resetVMs()
+        self.resetPresenters()
 
         # setup main window
-        self._mainWindowVM.setOriginalImage(self._model.originalImage)
-        self._mainWindowVM.setProcessedImage(None)
+        self._mainWindowPresenter.setOriginalImage(self._model.originalImage)
+        self._mainWindowPresenter.setProcessedImage(None)
 
         # tell the magnifier we still have a click
         if self._model.leftClickPosition is not None:
@@ -165,42 +165,42 @@ class MainVM(QtCore.QObject):
         for point in self._model.rightClickLastPositions:
             self._onMousePressedImageLabel(point, QtCore.Qt.RightButton)
 
-        if self._plotterVM.isVisible:
-            self._plotterVM.refresh()
+        if self._plotterPresenter.isVisible:
+            self._plotterPresenter.refresh()
 
     @pyqtSlot()
     def _onOpenPlotterAction(self):
-        self._plotterVM.showWindow()
+        self._plotterPresenter.showWindow()
 
     @pyqtSlot()
     def _onOpenMagnifierAction(self):
-        self._magnifierVM.showWindow()
+        self._magnifierPresenter.showWindow()
 
     @pyqtSlot(str, bool)
     def onLoadImageAction(self, filePath, asGreyscale):
         self._model.reset()
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
-        self.resetVMs()
+        self.resetPresenters()
 
         # setup main window
-        self._mainWindowVM.setOriginalImage(self._model.originalImage)
-        self._mainWindowVM.setProcessedImage(None)
+        self._mainWindowPresenter.setOriginalImage(self._model.originalImage)
+        self._mainWindowPresenter.setProcessedImage(None)
 
         # setup magnifier
         if asGreyscale:
-            self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
+            self._magnifierPresenter.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.GRAY)
         else:
-            self._magnifierVM.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
+            self._magnifierPresenter.setMagnifierColorSpace(Application.Settings.MagnifierWindowSettings.ColorSpaces.RGB)
 
-        if self._plotterVM.isVisible:
-            self._plotterVM.refresh()
+        if self._plotterPresenter.isVisible:
+            self._plotterPresenter.refresh()
 
     @pyqtSlot(str)
     def onSendOriginalImagePlotterData(self, functionName):
         self._sendPlotterData(
             functionName,
             self._model.originalImage,
-            self._plotterVM.updateOriginalImageFunctionData
+            self._plotterPresenter.updateOriginalImageFunctionData
         )
 
     @pyqtSlot(str)
@@ -208,7 +208,7 @@ class MainVM(QtCore.QObject):
         self._sendPlotterData(
             functionName,
             self._model.processedImage,
-            self._plotterVM.updateProcessedImageFunctionData
+            self._plotterPresenter.updateProcessedImageFunctionData
         )
 
     def _sendPlotterData(self, functionName, image, updateFunction):
@@ -230,46 +230,46 @@ class MainVM(QtCore.QObject):
     def _onKeyPressed(self, QKeyEvent):
         if QKeyEvent.key() == QtCore.Qt.Key_Escape:
             self._model.rightClickLastPositions.clear()
-            self._mainWindowVM.highlightImageLabelRightClickLastPositions(None)
+            self._mainWindowPresenter.highlightImageLabelRightClickLastPositions(None)
 
     @pyqtSlot(Point, QtCore.Qt.MouseButton)
     def _onMousePressedImageLabel(self, clickPosition, mouseButton):
         """
-        # TODO: document MainViewModel.imageClickedEvent
+        # TODO: document MainPresenter.imageClickedEvent
         :param clickPosition: Utils.Point
         :return:
         """
         if mouseButton == QtCore.Qt.LeftButton:
-            if self._magnifierVM.isVisible or self._plotterVM.isVisible:
+            if self._magnifierPresenter.isVisible or self._plotterPresenter.isVisible:
                 self._model.leftClickPosition = clickPosition
 
-                self._mainWindowVM.highlightImageLabelLeftClickPosition(clickPosition)
+                self._mainWindowPresenter.highlightImageLabelLeftClickPosition(clickPosition)
 
                 magnifiedRegions = self._getMagnifiedRegions(clickPosition)
-                self._magnifierVM.setMagnifiedPixels(*magnifiedRegions)
+                self._magnifierPresenter.setMagnifiedPixels(*magnifiedRegions)
 
                 for plottingFunction in PlottingAlgorithms.registeredAlgorithms.values():
                     if plottingFunction.computeOnClick:
-                        self._plotterVM.setOriginalImageDataAsDirty(plottingFunction.name)
-                        self._plotterVM.setProcessedImageDataAsDirty(plottingFunction.name)
+                        self._plotterPresenter.setOriginalImageDataAsDirty(plottingFunction.name)
+                        self._plotterPresenter.setProcessedImageDataAsDirty(plottingFunction.name)
 
-                if self._plotterVM.isVisible:
-                    self._plotterVM.refresh()
+                if self._plotterPresenter.isVisible:
+                    self._plotterPresenter.refresh()
 
         elif mouseButton == QtCore.Qt.RightButton:
             self._addRightClickPosition(clickPosition)
 
     def _addRightClickPosition(self, clickPosition):
         self._model.rightClickLastPositions.append(clickPosition)
-        self._mainWindowVM.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
+        self._mainWindowPresenter.highlightImageLabelRightClickLastPositions(self._model.rightClickLastPositions)
 
     def _clearRightClickLastPositions(self):
         self._model.rightClickLastPositions.clear()
-        self._mainWindowVM.highlightImageLabelRightClickLastPositions(None)
+        self._mainWindowPresenter.highlightImageLabelRightClickLastPositions(None)
 
     def _getMagnifiedRegions(self, clickPosition):
         """
-        # TODO: document MainViewModel._getMagnifiedRegions
+        # TODO: document MainPresenter._getMagnifiedRegions
         :param clickPosition: Utils.Point
         :return:
         """
@@ -279,7 +279,7 @@ class MainVM(QtCore.QObject):
 
     def _getMagnifiedRegion(self, image, clickPosition):
         """
-        # TODO: document MainViewModel._getMagnifiedRegions
+        # TODO: document MainPresenter._getMagnifiedRegions
         Should explain what the function does here.
         :param clickPosition: Utils.Point
         :return:
@@ -308,7 +308,7 @@ class MainVM(QtCore.QObject):
 
         return imagePixels
 
-    def resetVMs(self):
-        self._magnifierVM.clear()
-        self._plotterVM.reset()
-        self._mainWindowVM.reset()
+    def resetPresenters(self):
+        self._magnifierPresenter.clear()
+        self._plotterPresenter.reset()
+        self._mainWindowPresenter.reset()

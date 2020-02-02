@@ -64,7 +64,7 @@ class MainWindowImageLabel(QtWidgets.QLabel):
         self.mouseLeavedSignal.emit(QEvent)
 
     def setLabelImage(self, image):
-        # TODO: think about moving this to VM
+        # TODO: think about moving this to Presenter
         if image is not None:
             imageShapeLen = len(image.shape)
             if imageShapeLen == 3:

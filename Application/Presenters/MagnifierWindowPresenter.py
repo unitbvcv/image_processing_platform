@@ -6,9 +6,9 @@ from Application.Models.MagnifierWindowModel import MagnifierWindowModel
 from Application.Views.MagnifierWindowView import MagnifierWindowView
 
 
-class MagnifierWindowVM(QtCore.QObject):
+class MagnifierWindowPresenter(QtCore.QObject):
     """
-    TODO: document MagnifierWindowViewModel
+    TODO: document MagnifierWindowPresenter
     """
 
     windowClosingSignal = pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
@@ -16,7 +16,7 @@ class MagnifierWindowVM(QtCore.QObject):
 
     def __init__(self, parent=None):
         """
-        TODO: document MagnifierWindowViewModel constructor
+        TODO: document MagnifierWindowPresenter constructor
         :param parent:
         """
         super().__init__(parent)
@@ -43,14 +43,14 @@ class MagnifierWindowVM(QtCore.QObject):
     @property
     def isVisible(self):
         """
-        TODO: document MagnifierWindowViewModel.isVisible
+        TODO: document MagnifierWindowPresenter.isVisible
         :return:
         """
         return self._view.isWindowVisible
 
     def setMagnifierColorSpace(self, colorSpace: MagnifierWindowSettings.ColorSpaces):
         """
-        TODO: document MagnifierWindowViewModel.setMagnifierColorSpace
+        TODO: document MagnifierWindowPresenter.setMagnifierColorSpace
         :param colorSpace:
         :return:
         """
@@ -60,7 +60,7 @@ class MagnifierWindowVM(QtCore.QObject):
     @pyqtSlot(int)
     def _magnifierColorSpaceIndexChanged(self, index):
         """
-        TODO: document MagnifierWindowViewModel._magnifierColorSpaceIndexChanged
+        TODO: document MagnifierWindowPresenter._magnifierColorSpaceIndexChanged
         :param index:
         :return:
         """
@@ -70,7 +70,7 @@ class MagnifierWindowVM(QtCore.QObject):
 
     def setMagnifiedPixels(self, originalImagePixels, processedImagePixels):
         """
-        TODO: document MagnifierWindowViewModel.setMagnifiedPixels
+        TODO: document MagnifierWindowPresenter.setMagnifiedPixels
         :param originalImagePixels:
         :param processedImagePixels:
         :return:
@@ -88,7 +88,7 @@ class MagnifierWindowVM(QtCore.QObject):
     def clear(self):
         """Clears the magnifier window.
 
-        Resetting the model isn't necessary as the view will reset it indirectly through the VM.
+        Resetting the model isn't necessary as the view will reset it indirectly through the Presenter.
 
         Returns:
             None
