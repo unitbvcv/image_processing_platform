@@ -11,7 +11,9 @@ if __name__ == "__main__":
         mainPresenter = MainPresenter(app)
         sys.exit(app.exec_())
 
-    except Exception as exception:
+    except SystemExit as exception:
+        raise
+    except BaseException as exception:
         # using Tk for displaying the exception as it comes with Python
         import tkinter
         from tkinter import messagebox

@@ -1,6 +1,8 @@
 import numpy
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import pyqtSlot
+import traceback
+import sys
 
 import Application.Settings
 from Application import PlottingAlgorithms
@@ -68,31 +70,46 @@ class MainPresenter(QtCore.QObject):
         if self._model.originalImage is not None:
             algorithm = ImageProcessingAlgorithms.registeredAlgorithms[algorithmName]
             args = algorithm.prepare(self._model)
-            algorithm(self._model.originalImage.copy(), **args)
-            if algorithm.hasResult:
-                # Check for original image
-                newOriginalImage = algorithm.result.get('originalImage')
-                if newOriginalImage is not None:
-                    self._model.originalImage = newOriginalImage
-                    self._mainWindowPresenter.setOriginalImage(self._model.originalImage)
+            try:
+                algorithm(self._model.originalImage.copy(), **args)
 
-                # Check for processed image
-                newProcessedImage = algorithm.result.get('processedImage')
-                if newProcessedImage is not None:
-                    self._model.processedImage = newProcessedImage
-                    self._mainWindowPresenter.setProcessedImage(self._model.processedImage)
+                if algorithm.hasResult:
+                    # Check for original image
+                    newOriginalImage = algorithm.result.get('originalImage')
+                    if newOriginalImage is not None:
+                        self._model.originalImage = newOriginalImage
+                        self._mainWindowPresenter.setOriginalImage(self._model.originalImage)
 
-                # Check for original image overlay drawing
-                overlayData = algorithm.result.get('originalImageOverlayData')
-                self._mainWindowPresenter.setOriginalImageOverlayData(overlayData)
+                    # Check for processed image
+                    newProcessedImage = algorithm.result.get('processedImage')
+                    if newProcessedImage is not None:
+                        self._model.processedImage = newProcessedImage
+                        self._mainWindowPresenter.setProcessedImage(self._model.processedImage)
 
-                # Check for processed image overlay drawing
-                overlayData = algorithm.result.get('processedImageOverlayData')
-                self._mainWindowPresenter.setProcessedImageOverlayData(overlayData)
+                    # Check for original image overlay drawing
+                    overlayData = algorithm.result.get('originalImageOverlayData')
+                    self._mainWindowPresenter.setOriginalImageOverlayData(overlayData)
 
-                if self._model.leftClickPosition is not None:
-                    self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
+                    # Check for processed image overlay drawing
+                    overlayData = algorithm.result.get('processedImageOverlayData')
+                    self._mainWindowPresenter.setProcessedImageOverlayData(overlayData)
 
+                    if self._model.leftClickPosition is not None:
+                        self._onMousePressedImageLabel(self._model.leftClickPosition, QtCore.Qt.LeftButton)
+            except:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                messagebox = QtWidgets.QMessageBox(self._mainWindowPresenter._view)
+                messagebox.setWindowTitle("Image processing algorithm error")
+                messagebox.setText('\n'.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+                messagebox.setIcon(QtWidgets.QMessageBox.Critical)
+                messagebox.exec()
+        else:
+            messagebox = QtWidgets.QMessageBox(self._mainWindowPresenter._view)
+            messagebox.setWindowTitle("Image processing algorithm warning")
+            messagebox.setText("Algorithm not executed: no source image")
+            messagebox.setIcon(QtWidgets.QMessageBox.Warning)
+            messagebox.exec()
+                
     @pyqtSlot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
         if not self._magnifierPresenter.isVisible and not self._plotterPresenter.isVisible:
@@ -215,16 +232,24 @@ class MainPresenter(QtCore.QObject):
         if image is not None:  # probably move this down 2 lines
             plottingFunction = PlottingAlgorithms.registeredAlgorithms[functionName]
             args = plottingFunction.prepare(self._model)
-            plottingFunction(image, **args)
-            if plottingFunction.hasResult:
-                if plottingFunction.result is None:
-                    plottingFunction.setResult({})
-                plottingDataList = plottingFunction.result.get('plottingDataList')
-                if plottingDataList is None:
-                    plottingDataList = []
-                plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
-                                     for plottingData in plottingDataList}
-                updateFunction(plottingFunction.name, plotDataItemsDict)
+            try:
+                plottingFunction(image, **args)
+                if plottingFunction.hasResult:
+                    if plottingFunction.result is None:
+                        plottingFunction.setResult({})
+                    plottingDataList = plottingFunction.result.get('plottingDataList')
+                    if plottingDataList is None:
+                        plottingDataList = []
+                    plotDataItemsDict = {plottingData.name: plottingData.toPlotDataItem()
+                                        for plottingData in plottingDataList}
+                    updateFunction(plottingFunction.name, plotDataItemsDict)
+            except:
+                exc_type, exc_value, exc_traceback = sys.exc_info()
+                messagebox = QtWidgets.QMessageBox(self._plotterPresenter._view)
+                messagebox.setWindowTitle("Plotting algorithm error")
+                messagebox.setText('\n'.join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
+                messagebox.setIcon(QtWidgets.QMessageBox.Critical)
+                messagebox.exec()
 
     @pyqtSlot(QtGui.QKeyEvent)
     def _onKeyPressed(self, QKeyEvent):
