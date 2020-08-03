@@ -7,16 +7,16 @@ You can also plot different functions based on the images. There is also a magni
 Image processing and plotting algorithms are easy to integrate with the app.
 
 ## Requirements
-- [Python](https://www.python.org/downloads/) == 3.7
-- [PyQt5](https://pypi.org/project/PyQt5/) == 5.12.3
+- [Python](https://www.python.org/downloads/) == 3.8
+- [PySide2](https://pypi.org/project/PyQt5/) == 5.15.0
 - [opencv-python](https://pypi.org/project/opencv-python/)
 - [numpy](https://pypi.org/project/numpy/)
-- [pyqtgraph](https://pypi.org/project/pyqtgraph/) == 0.10.0
+- [pyqtgraph](https://pypi.org/project/pyqtgraph/) == 0.11.0
 
 ## Installation
-Install all the dependencies using the following command in a Command Prompt/Terminal (make sure you have the path to Python in the Environment Variables - PATH):
+Install all the dependencies using the following command in a Command Prompt/Terminal in the directory you've cloned the repository in (make sure you have the path to Python in the Environment Variables - PATH):
 
-`pip install pyqt5 opencv-python numpy pyqtgraph`
+`pip install --user -r requirements.txt`
 
 ## Usage
 ### Starting the application
