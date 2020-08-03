@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PySide2 import QtCore, QtGui
+from PySide2.QtCore import Slot, Signal
 
 from Application.Settings import MagnifierWindowSettings
 from Application.Models.MagnifierWindowModel import MagnifierWindowModel
@@ -11,7 +11,7 @@ class MagnifierWindowPresenter(QtCore.QObject):
     TODO: document MagnifierWindowPresenter
     """
 
-    windowClosingSignal = pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
+    windowClosingSignal = Signal(QtGui.QCloseEvent, name="windowClosingSignal")
     """window closing signal docstring"""
 
     def __init__(self, parent=None):
@@ -57,7 +57,7 @@ class MagnifierWindowPresenter(QtCore.QObject):
         self._model.colorSpace = colorSpace
         self._view.comboBoxColorSpace.setCurrentIndex(colorSpace.value[0])
 
-    @pyqtSlot(int)
+    @Slot(int)
     def _magnifierColorSpaceIndexChanged(self, index):
         """
         TODO: document MagnifierWindowPresenter._magnifierColorSpaceIndexChanged

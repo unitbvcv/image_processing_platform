@@ -1,5 +1,5 @@
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import pyqtSlot
+from PySide2 import QtCore, QtGui
+from PySide2.QtCore import Slot
 
 from Application.Models.PlotterWindowModel import PlotterWindowModel
 from Application.Models.PlottingFunctionModel import PlottingFunctionModel
@@ -11,9 +11,9 @@ class PlotterWindowPresenter(QtCore.QObject):
     TODO: document PlotterWindowPresenter
     """
 
-    windowClosingSignal = QtCore.pyqtSignal(QtGui.QCloseEvent, name="windowClosingSignal")
-    needOriginalImageData = QtCore.pyqtSignal(str, name='needOriginalImageData')
-    needProcessedImageData = QtCore.pyqtSignal(str, name='needProcessedImageData')
+    windowClosingSignal = QtCore.Signal(QtGui.QCloseEvent, name="windowClosingSignal")
+    needOriginalImageData = QtCore.Signal(str, name='needOriginalImageData')
+    needProcessedImageData = QtCore.Signal(str, name='needProcessedImageData')
 
     def __init__(self, parent=None):
         """
@@ -101,7 +101,7 @@ class PlotterWindowPresenter(QtCore.QObject):
         self._view.clearPlotItems()
         self._view.clearListWidgets()
 
-    @pyqtSlot()
+    @Slot()
     def _scaleAndCenterButtonPressed(self):
         """
         TODO: document PlotterWindowPresenter _scaleAndCenterButtonPressed
@@ -115,7 +115,7 @@ class PlotterWindowPresenter(QtCore.QObject):
 
         self._view.scaleAndCenterToPlots(plots)
 
-    @pyqtSlot(int)
+    @Slot(int)
     def _functionComboBoxIndexChanged(self, functionIndex):
 
         # clearing the visible plotDataItems for the previous function
@@ -196,7 +196,7 @@ class PlotterWindowPresenter(QtCore.QObject):
         if self._view.checkBoxAutoScaleAndCenterOnChange.isChecked():
             self._scaleAndCenterButtonPressed()
 
-    @pyqtSlot()
+    @Slot()
     def _visiblePlotsOriginalImageSelectionChangedEvent(self):
         """
         TODO document PlotterWindowPresenter _visiblePlotsOriginalImageSelectionChangedEvent
@@ -212,7 +212,7 @@ class PlotterWindowPresenter(QtCore.QObject):
             originalImagePlotDataItems.visiblePlotDataItems,
             self._view.listWidgetVisibleOriginalImage)
 
-    @pyqtSlot()
+    @Slot()
     def _visiblePlotsProcessedImageSelectionChangedEvent(self):
         """
         TODO: document PlotterWindowPresenter _visiblePlotsProcessedImageSelectionChangedEvent

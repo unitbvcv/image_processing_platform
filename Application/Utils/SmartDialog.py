@@ -1,6 +1,6 @@
 from sys import exc_info
 
-from PyQt5 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets
 
 
 class SmartDialog(QtWidgets.QDialog):

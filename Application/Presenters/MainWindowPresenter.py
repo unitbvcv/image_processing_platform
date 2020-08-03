@@ -1,8 +1,8 @@
 import os
 from collections import deque
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import Signal, Slot
 
 import Application.Settings
 import Application.Utils.FileOperations
@@ -12,15 +12,15 @@ from Application.Utils.Point import Point
 
 
 class MainWindowPresenter(QtCore.QObject):
-    loadOriginalImageSignal = pyqtSignal(str, bool, name="loadOriginalImageSignal")
-    saveProcessedImageSignal = pyqtSignal(str, name="saveProcessedImageSignal")
-    openPlotterSignal = pyqtSignal(name="openPlotterSignal")
-    openMagnifierSignal = pyqtSignal(name="openMagnifierSignal")
-    saveAsOriginalImageSignal = pyqtSignal(name="saveAsOriginalImageSignal")
-    mouseMovedImageLabelSignal = pyqtSignal(Point, name="mouseMovedImageLabelSignal")
-    mousePressedImageLabelSignal = pyqtSignal(Point, QtCore.Qt.MouseButton, name="mousePressedImageLabelSignal")
-    keyPressedSignal = pyqtSignal(QtGui.QKeyEvent, name="keyPressedSignal")
-    algorithmTriggered = pyqtSignal(str, name="algorithmTriggered")
+    loadOriginalImageSignal = Signal(str, bool, name="loadOriginalImageSignal")
+    saveProcessedImageSignal = Signal(str, name="saveProcessedImageSignal")
+    openPlotterSignal = Signal(name="openPlotterSignal")
+    openMagnifierSignal = Signal(name="openMagnifierSignal")
+    saveAsOriginalImageSignal = Signal(name="saveAsOriginalImageSignal")
+    mouseMovedImageLabelSignal = Signal(Point, name="mouseMovedImageLabelSignal")
+    mousePressedImageLabelSignal = Signal(Point, QtCore.Qt.MouseButton, name="mousePressedImageLabelSignal")
+    keyPressedSignal = Signal(QtGui.QKeyEvent, name="keyPressedSignal")
+    algorithmTriggered = Signal(str, name="algorithmTriggered")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -61,21 +61,21 @@ class MainWindowPresenter(QtCore.QObject):
         self._view.labelOriginalImage.setRightClickLastPositions(clickPositions)
         # self._view.labelProcessedImage.setRightClickLastPositions(clickPositions)
 
-    @pyqtSlot(QtGui.QMouseEvent)
+    @Slot(QtGui.QMouseEvent)
     def _onMousePressedImageLabel(self, QMouseEvent):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
             self.mousePressedImageLabelSignal.emit(Point(x, y), QMouseEvent.button())
 
-    @pyqtSlot(QtGui.QMouseEvent)
+    @Slot(QtGui.QMouseEvent)
     def _onMouseMovedImageLabel(self, QMouseEvent):
         if self._view.zoom != 0:
             x = int(QMouseEvent.x() / self._view.zoom)
             y = int(QMouseEvent.y() / self._view.zoom)
             self.mouseMovedImageLabelSignal.emit(Point(x, y))
 
-    @pyqtSlot(QtCore.QEvent)
+    @Slot(QtCore.QEvent)
     def _onMouseLeavedImageLabel(self, QEvent):
         self._view.labelMousePosition.setText('')
         self._view.labelOriginalImagePixelValue.setText('')
@@ -90,15 +90,15 @@ class MainWindowPresenter(QtCore.QObject):
     def setProcessedImagePixelValueLabelText(self, text):
         self._view.labelProcessedImagePixelValue.setText(text)
 
-    @pyqtSlot()
+    @Slot()
     def _actionSaveAsOriginalImage(self):
         self.saveAsOriginalImageSignal.emit()
 
-    @pyqtSlot()
+    @Slot()
     def _actionExit(self):
         QtCore.QCoreApplication.quit()
 
-    @pyqtSlot()
+    @Slot()
     def _actionLoadGrayscaleImage(self):
         fileDialog = QtWidgets.QFileDialog(self._view)
         fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
@@ -119,7 +119,7 @@ class MainWindowPresenter(QtCore.QObject):
                 messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                 messagebox.exec()
 
-    @pyqtSlot()
+    @Slot()
     def _actionLoadColorImage(self):
         fileDialog = QtWidgets.QFileDialog(self._view)
         fileDialog.setFileMode(QtWidgets.QFileDialog.AnyFile)
@@ -141,7 +141,7 @@ class MainWindowPresenter(QtCore.QObject):
                 messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                 messagebox.exec()
 
-    @pyqtSlot()
+    @Slot()
     def _actionSaveProcessedImage(self):
         if self._view.labelProcessedImage.isImageSet:
             fileDialog = QtWidgets.QFileDialog(self._view)
@@ -201,7 +201,7 @@ class MainWindowPresenter(QtCore.QObject):
             if newAction is not None:
                 newAction.triggered.connect(self._actionAlgorithm)
 
-    @pyqtSlot()
+    @Slot()
     def _actionAlgorithm(self):
         senderAction = self.sender()
         self.algorithmTriggered.emit(senderAction.text())

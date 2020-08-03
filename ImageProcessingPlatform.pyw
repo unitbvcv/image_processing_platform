@@ -4,7 +4,7 @@ if __name__ == "__main__":
     try:
         # these imports are here so that if one does not have a certain package installed
         # it will be caught as an exception and be shown on screen
-        from PyQt5 import QtWidgets
+        from PySide2 import QtWidgets
         from Application.Presenters.MainPresenter import MainPresenter
 
         app = QtWidgets.QApplication(sys.argv)

@@ -1,7 +1,7 @@
 import re
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import Signal
 
 import Application.Settings
 import Application.Utils.ZoomOperations
@@ -9,7 +9,7 @@ from Application.Views.MainWindowImageLabel import MainWindowImageLabel
 
 
 class MainWindowView(QtWidgets.QMainWindow):
-    keyPressedSignal = pyqtSignal(QtGui.QKeyEvent, name="keyPressedSignal")
+    keyPressedSignal = Signal(QtGui.QKeyEvent, name="keyPressedSignal")
 
     @property
     def zoom(self):

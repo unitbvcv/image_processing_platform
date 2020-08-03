@@ -1,7 +1,7 @@
 import numpy as np
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import Signal
 
 from Application.Settings import MagnifierWindowSettings
 from Application.Views.MagnifierPixelFrame import MagnifierPixelFrame
@@ -12,7 +12,7 @@ class MagnifierWindowView(QtWidgets.QMainWindow):
     TODO: MagnifierWindow documentation
     """
 
-    windowClosingSignal = pyqtSignal(QtGui.QCloseEvent, name='windowClosingSignal')
+    windowClosingSignal = Signal(QtGui.QCloseEvent, name='windowClosingSignal')
 
     @property
     def isWindowVisible(self):

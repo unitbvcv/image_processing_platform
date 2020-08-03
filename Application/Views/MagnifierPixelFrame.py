@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 
 from Application.Settings import MagnifierWindowSettings
 import Application.Utils.ColorSpaceOperations

@@ -1,6 +1,6 @@
 import numpy
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSlot
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import Slot
 import traceback
 import sys
 
@@ -65,7 +65,7 @@ class MainPresenter(QtCore.QObject):
                       for algorithm in ImageProcessingAlgorithms.registeredAlgorithms.values()]
         self._mainWindowPresenter.registerAlgorithmsInUi(algorithms)
 
-    @pyqtSlot(str)
+    @Slot(str)
     def _onAlgorithmTriggerred(self, algorithmName):
         if self._model.originalImage is not None:
             algorithm = ImageProcessingAlgorithms.registeredAlgorithms[algorithmName]
@@ -110,7 +110,7 @@ class MainPresenter(QtCore.QObject):
             messagebox.setIcon(QtWidgets.QMessageBox.Warning)
             messagebox.exec()
                 
-    @pyqtSlot(QtGui.QCloseEvent)
+    @Slot(QtGui.QCloseEvent)
     def _onMagnifierOrPlotterWindowClose(self, QCloseEvent):
         if not self._magnifierPresenter.isVisible and not self._plotterPresenter.isVisible:
             self._mainWindowPresenter.highlightImageLabelLeftClickPosition(None)
@@ -122,7 +122,7 @@ class MainPresenter(QtCore.QObject):
                     self._plotterPresenter.setOriginalImageDataAsDirty(plottingFunction.name)
                     self._plotterPresenter.setProcessedImageDataAsDirty(plottingFunction.name)
 
-    @pyqtSlot(Point)
+    @Slot(Point)
     def _onMouseMovedImageLabel(self, clickPosition):
         x, y = clickPosition
 
@@ -160,11 +160,11 @@ class MainPresenter(QtCore.QObject):
                     labelText = f'(Gray) = ({pixel})'
             self._mainWindowPresenter.setProcessedImagePixelValueLabelText(labelText)
 
-    @pyqtSlot(str)
+    @Slot(str)
     def _onSaveProcessedImageAction(self, filePath):
         self._model.saveProcessedImage(filePath)
 
-    @pyqtSlot()
+    @Slot()
     def _onSaveAsOriginalImageAction(self):
         processedImageCopy = self._model.processedImage
         self._model.reset()
@@ -185,15 +185,15 @@ class MainPresenter(QtCore.QObject):
         if self._plotterPresenter.isVisible:
             self._plotterPresenter.refresh()
 
-    @pyqtSlot()
+    @Slot()
     def _onOpenPlotterAction(self):
         self._plotterPresenter.showWindow()
 
-    @pyqtSlot()
+    @Slot()
     def _onOpenMagnifierAction(self):
         self._magnifierPresenter.showWindow()
 
-    @pyqtSlot(str, bool)
+    @Slot(str, bool)
     def onLoadImageAction(self, filePath, asGreyscale):
         self._model.reset()
         self._model.readOriginalImage(filePath, asGreyscale)  # should return bool if read was successful?
@@ -212,7 +212,7 @@ class MainPresenter(QtCore.QObject):
         if self._plotterPresenter.isVisible:
             self._plotterPresenter.refresh()
 
-    @pyqtSlot(str)
+    @Slot(str)
     def onSendOriginalImagePlotterData(self, functionName):
         self._sendPlotterData(
             functionName,
@@ -220,7 +220,7 @@ class MainPresenter(QtCore.QObject):
             self._plotterPresenter.updateOriginalImageFunctionData
         )
 
-    @pyqtSlot(str)
+    @Slot(str)
     def onSendProcessedImagePlotterData(self, functionName):
         self._sendPlotterData(
             functionName,
@@ -251,13 +251,13 @@ class MainPresenter(QtCore.QObject):
                 messagebox.setIcon(QtWidgets.QMessageBox.Critical)
                 messagebox.exec()
 
-    @pyqtSlot(QtGui.QKeyEvent)
+    @Slot(QtGui.QKeyEvent)
     def _onKeyPressed(self, QKeyEvent):
         if QKeyEvent.key() == QtCore.Qt.Key_Escape:
             self._model.rightClickLastPositions.clear()
             self._mainWindowPresenter.highlightImageLabelRightClickLastPositions(None)
 
-    @pyqtSlot(Point, QtCore.Qt.MouseButton)
+    @Slot(Point, QtCore.Qt.MouseButton)
     def _onMousePressedImageLabel(self, clickPosition, mouseButton):
         """
         # TODO: document MainPresenter.imageClickedEvent

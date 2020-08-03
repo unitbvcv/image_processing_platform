@@ -1,6 +1,6 @@
 import functools
 
-from PyQt5.QtWidgets import QMessageBox
+from PySide2.QtWidgets import QMessageBox
 
 from Application.Utils._BaseWrapper import BaseWrapper
 

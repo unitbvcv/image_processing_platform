@@ -1,15 +1,15 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import pyqtSignal
+from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import Signal
 
 import Application.Settings
 from collections import deque
 
 
 class MainWindowImageLabel(QtWidgets.QLabel):
-    mouseMovedSignal = pyqtSignal(QtGui.QMouseEvent, name='mouseMovedSignal')
-    mousePressedSignal = pyqtSignal(QtGui.QMouseEvent, name='mousePressedSignal')
-    mouseLeavedSignal = pyqtSignal(QtCore.QEvent, name='mouseLeavedSignal')
-    finishedPaintingSignal = pyqtSignal(name='finishedPaintingSignal')
+    mouseMovedSignal = Signal(QtGui.QMouseEvent, name='mouseMovedSignal')
+    mousePressedSignal = Signal(QtGui.QMouseEvent, name='mousePressedSignal')
+    mouseLeavedSignal = Signal(QtCore.QEvent, name='mouseLeavedSignal')
+    finishedPaintingSignal = Signal(name='finishedPaintingSignal')
 
     @property
     def isImageSet(self):

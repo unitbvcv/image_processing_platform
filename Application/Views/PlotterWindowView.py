@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PySide2 import QtCore, QtGui, QtWidgets
 from pyqtgraph import PlotWidget
 
 
@@ -7,7 +7,7 @@ class PlotterWindowView(QtWidgets.QMainWindow):
     TODO: document PlotterWindow
     """
 
-    windowClosingSignal = QtCore.pyqtSignal(QtGui.QCloseEvent, name='windowClosingSignal')
+    windowClosingSignal = QtCore.Signal(QtGui.QCloseEvent, name='windowClosingSignal')
 
     @property
     def isWindowVisible(self):
