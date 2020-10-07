@@ -1,6 +1,6 @@
 # Image Processing Platform
 ## Romanian Guide
-An application guide in Romanian can be found here: [doc/ghid_utilizare.pdf]
+An application guide in Romanian can be found here: [doc/ghid_utilizare.pdf](doc/ghid_utilizare.pdf)
 
 ## Features
 This Platform allows you to load a color/grayscale image and apply image processing algorithms on it, showing you the result in a different panel.
