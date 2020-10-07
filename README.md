@@ -1,4 +1,7 @@
 # Image Processing Platform
+## Romanian Guide
+An application guide in Romanian can be found here: [doc/ghid_utilizare.pdf]
+
 ## Features
 This Platform allows you to load a color/grayscale image and apply image processing algorithms on it, showing you the result in a different panel.
 
@@ -7,8 +10,8 @@ You can also plot different functions based on the images. There is also a magni
 Image processing and plotting algorithms are easy to integrate with the app.
 
 ## Requirements
-- [Python](https://www.python.org/downloads/) == 3.8
-- [PySide2](https://pypi.org/project/PyQt5/) == 5.15.0
+- [Python](https://www.python.org/downloads/) >= 3.8
+- [PySide2](https://pypi.org/project/PyQt5/) == 5.15.1
 - [opencv-python](https://pypi.org/project/opencv-python/)
 - [numpy](https://pypi.org/project/numpy/)
 - [pyqtgraph](https://pypi.org/project/pyqtgraph/) == 0.11.0
